@@ -382,8 +382,15 @@ Use case ends.
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
+2.  Should be able to hold up to 1000 players, 50 teams/groups, and multiple tags per player without noticeable performance degradation.
 3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+4. All standard commands (add, delete, list, filter, edit) should execute within 200 ms for up to 1000 players on a typical laptop.
+5. All successful modifying commands should automatically save data to prevent loss of information.
+6. The application should prevent data corruption and handle unexpected shutdowns safely.
+7. A user with above-average typing speed should be able to complete common tasks faster using commands than using mouse-driven interactions.
+8. The system should provide clear and actionable error messages when invalid input is entered.
+9. The application should not crash during normal usage and should handle invalid inputs gracefully.
+10. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be added without major refactoring.
 
 *{More to be added}*
 
