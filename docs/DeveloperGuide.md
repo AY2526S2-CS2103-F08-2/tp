@@ -326,7 +326,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Academy**: The full set of staff/players used to represent all contacts in the contact list
+* **Position**: The roles that each player is specialised/assigned in the team
+* **Performance Stats**: The player statistics based on their previous games (e.g. goals, assist, shots on target, calculated rating, etc.)
 
 --------------------------------------------------------------------------------------------------------------------
 
