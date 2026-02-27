@@ -1,6 +1,6 @@
 ---
 layout: page
-title: John Doe's Project Portfolio Page
+title: Neo Ryan's Project Portfolio Page
 ---
 
 ## Neo Ryan "ryrybn"
