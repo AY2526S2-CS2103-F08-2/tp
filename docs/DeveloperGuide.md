@@ -406,6 +406,28 @@ Use case ends.
 *a. At any time, manager cancels.  
 Use case ends.
 
+**Use case: UC04 - Delete player**  
+**MSS**
+1. Manager requests list of players.
+2. SoCcer Manager shows list with IDs.
+3. Manager requests to delete by ID.
+4. SoCcer Manager requests confirmation.
+5. Manager confirms.
+6. SoCcer Manager deletes player and shows success.  
+   Use case ends.
+
+**Extensions**
+* 2a. List empty.
+    * 2a1. "No players to delete." Ends.
+
+* 3a. Invalid ID.
+    * 3a1. Error: "Invalid ID."  
+      Resume step 2.
+
+* 4a. Manager cancels confirmation. Ends.
+
+*a. Cancel anytime. Ends.
+
 *{More to be added}*
 
 ### Non-Functional Requirements
