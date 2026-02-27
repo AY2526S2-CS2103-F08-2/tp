@@ -288,30 +288,70 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC01 - Record player training attendance**
 
 **MSS**
-
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
-
+1.  Manager requests to list players for a specific training session.
+2.  SoCcer Manager shows the list of players with checkboxes for attendance.
+3.  Manager marks specific players as present/absent.
+4.  SoCcer Manager updates attendance records and shows confirmation.
     Use case ends.
 
 **Extensions**
+* 2a. No players are registered for the session.
+    * 2a1. SoCcer Manager shows "No players for this session."
+      Use case ends.
 
-* 2a. The list is empty.
-
-  Use case ends.
-
-* 3a. The given index is invalid.
-
-    * 3a1. AddressBook shows an error message.
-
+* 3a. Manager enters invalid player ID.
+    * 3a1. SoCcer Manager shows error: "Invalid player ID."
       Use case resumes at step 2.
+
+* 3b. Manager requests to mark multiple players at once.
+    * 3b1. SoCcer Manager updates all specified players.
+    * 3b2. SoCcer Manager shows summary of updates.
+      Use case ends.
+
+*a. At any time, manager requests to cancel.
+*a1. SoCcer Manager confirms cancellation.
+Use case ends.
+
+**Use case: UC02 - Draft a match team from stats**
+
+**MSS**
+1.  Manager requests to filter players by criteria (e.g., position=striker, goals>5).
+2.  SoCcer Manager shows filtered list of eligible players sorted by performance stats.
+3.  Manager selects top N players to add to match team.
+4.  SoCcer Manager updates team assignments and shows new team list.
+    Use case ends.
+
+**Extensions**
+* 1a. No players match the filter criteria.
+    * 1a1. SoCcer Manager shows "No players match criteria. Try broader filters."
+      Use case resumes at step 1.
+
+* 3a. Selected player is injured or unavailable.
+    * 3a1. SoCcer Manager warns: "Player unavailable. Skip?"
+    * 3a2. Manager confirms skip or chooses alternative.
+      Use case resumes at step 4.
+
+**Use case: UC03 - View low-attendance players**
+
+**MSS**
+1.  Manager requests list of players with attendance below threshold (e.g., <80% last 5 sessions).
+2.  SoCcer Manager shows flagged players with attendance stats and details.
+3.  Manager reviews details or adds notes/flags.
+    Use case ends.
+
+**Extensions**
+* 2a. No players below threshold.
+    * 2a1. SoCcer Manager shows "All players meeting attendance standards."
+      Use case ends.
+
+* 3a. Manager requests to email/remind flagged players.
+    * 3a1. SoCcer Manager generates contact list for export.
+      Use case ends.
 
 *{More to be added}*
 
