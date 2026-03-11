@@ -41,7 +41,7 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void execute_confirmedDelete_validIndexUnfilteredList_success() {
+    public void executeConfirmedDelete_unfilteredList_success() {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON, true);
 
@@ -79,7 +79,7 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void execute_confirmedDelete_validIndexFilteredList_success() {
+    public void executeConfirmedDelete_filteredList_success() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
