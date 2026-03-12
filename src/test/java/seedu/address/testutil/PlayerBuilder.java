@@ -8,7 +8,6 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Player;
-import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -26,7 +25,6 @@ public class PlayerBuilder extends PersonBuilder {
     private Email email;
     private Address address;
     private Set<Tag> tags;
-    private final Role role = Role.PLAYER;
 
     /**
      * Creates a {@code PlayerBuilder} with the default details.
@@ -90,6 +88,9 @@ public class PlayerBuilder extends PersonBuilder {
         return this;
     }
 
+    /**
+     * Builds and returns a {@code Player} with the current attributes.
+     */
     public Player build() {
         return new Player(name, phone, email, address, tags);
     }

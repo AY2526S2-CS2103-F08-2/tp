@@ -17,6 +17,7 @@ import java.util.List;
 
 import seedu.address.model.AddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
 
 /**
  * A utility class containing a list of {@code Person} objects to be used in tests.
@@ -41,6 +42,14 @@ public class TypicalPersons {
             .withEmail("lydia@example.com").withAddress("little tokyo").build();
     public static final Person GEORGE = new PersonBuilder().withName("George Best").withPhone("9482442")
             .withEmail("anna@example.com").withAddress("4th street").build();
+
+    // Persons with roles
+    public static final Person PLAYER_ALICE = new PersonBuilder().withName("Alice Tan").withPhone("91234567")
+            .withEmail("alicetan@example.com").withAddress("5th street").withRole(Role.PLAYER).build();
+    public static final Person PLAYER_BOB = new PersonBuilder().withName("Bob Lim").withPhone("92345678")
+            .withEmail("boblim@example.com").withAddress("6th street").withRole(Role.PLAYER).build();
+    public static final Person STAFF_CHARLIE = new PersonBuilder().withName("Charlie Ng").withPhone("93456789")
+            .withEmail("charlieng@example.com").withAddress("7th street").withRole(Role.STAFF).build();
 
     // Manually added
     public static final Person HOON = new PersonBuilder().withName("Hoon Meier").withPhone("8482424")
@@ -72,5 +81,25 @@ public class TypicalPersons {
 
     public static List<Person> getTypicalPersons() {
         return new ArrayList<>(Arrays.asList(ALICE, BENSON, CARL, DANIEL, ELLE, FIONA, GEORGE));
+    }
+
+    /**
+     * Returns a list of typical persons including persons with roles assigned.
+     * Used for testing role-based filtering.
+     */
+    public static List<Person> getTypicalPersonsWithRoles() {
+        return new ArrayList<>(Arrays.asList(ALICE, BENSON, CARL, DANIEL, ELLE, FIONA, GEORGE,
+                PLAYER_ALICE, PLAYER_BOB, STAFF_CHARLIE));
+    }
+
+    /**
+     * Returns an {@code AddressBook} with typical persons including role-assigned persons.
+     */
+    public static AddressBook getTypicalAddressBookWithRoles() {
+        AddressBook ab = new AddressBook();
+        for (Person person : getTypicalPersonsWithRoles()) {
+            ab.addPerson(person);
+        }
+        return ab;
     }
 }
