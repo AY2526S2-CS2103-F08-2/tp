@@ -15,17 +15,18 @@ import static seedu.address.testutil.TypicalPersons.BOB;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.PlayerBuilder;
 
-public class PersonTest {
+public class PlayerTest {
 
     @Test
     public void asObservableList_modifyList_throwsUnsupportedOperationException() {
-        Person person = new PersonBuilder().build();
-        assertThrows(UnsupportedOperationException.class, () -> person.getTags().remove(0));
+        Player player = new PlayerBuilder().build();
+        assertThrows(UnsupportedOperationException.class, () -> player.getTags().remove(0));
     }
 
     @Test
-    public void isSamePlayer() {
+    public void isSamePerson() {
         // same object -> returns true
         assertTrue(ALICE.isSamePerson(ALICE));
 
@@ -97,3 +98,4 @@ public class PersonTest {
         assertEquals(expected, ALICE.toString());
     }
 }
+
