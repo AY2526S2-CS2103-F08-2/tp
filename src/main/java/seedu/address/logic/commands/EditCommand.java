@@ -27,7 +27,9 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Player;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Staff;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -103,8 +105,12 @@ public class EditCommand extends Command {
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        Role updatedRole = editPersonDescriptor.getRole().orElse(personToEdit.getRole());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        return switch (updatedRole) {
+            case PLAYER -> new Player(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+            case STAFF -> new Staff(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        };
     }
 
     @Override
