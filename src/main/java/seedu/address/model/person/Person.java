@@ -14,7 +14,7 @@ import seedu.address.model.tag.Tag;
  * Represents a Person in the address book.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
-public class Person {
+public abstract class Person {
 
     // Identity fields
     private final Name name;
@@ -27,22 +27,9 @@ public class Person {
     private final Role role;
 
     /**
-     * Every field must be present and not null.
-     */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.tags.addAll(tags);
-        this.role = null;
-    }
-
-    /**
      * Every field must be present and not null. Includes role field.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role) {
+    protected Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
@@ -50,6 +37,14 @@ public class Person {
         this.address = address;
         this.tags.addAll(tags);
         this.role = role;
+    }
+
+    public static Person createPerson(Name name, Phone phone, Email email,
+                                      Address address, Set<Tag> tags, Role role) {
+        return switch (role) {
+            case PLAYER -> new Player(name, phone, email, address, tags);
+            case STAFF -> new Staff(name, phone, email, address, tags);
+        };
     }
 
     public Name getName() {
