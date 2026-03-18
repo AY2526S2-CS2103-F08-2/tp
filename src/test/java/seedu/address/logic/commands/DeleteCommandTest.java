@@ -105,7 +105,7 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void execute_criteriaClashWithIndexAndConfirm_deletesSelected_success() {
+    public void executeCriteriaClashWithIndexAndConfirmDeletesSelectedSuccess() {
         DeleteCommand deleteCommand = new DeleteCommand(KEYWORD_MATCHING_MEIER, INDEX_SECOND_PERSON,
                 DeletionDecision.CONFIRM);
         Person personToDelete = model.getAddressBook().getPersonList().get(3);
