@@ -79,6 +79,12 @@ public class DeleteCommand extends Command {
         this(targetIndex, isConfirmed ? DeletionDecision.CONFIRM : DeletionDecision.UNDECIDED);
     }
 
+    /**
+     * Creates a {@code DeleteCommand} for deletion by index with an explicit decision state.
+     *
+     * @param targetIndex index of the player in the filtered list.
+     * @param deletionDecision user confirmation state.
+     */
     public DeleteCommand(Index targetIndex, DeletionDecision deletionDecision) {
         this.targetIndex = targetIndex;
         this.criteria = null;
