@@ -16,9 +16,9 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-import seedu.address.model.person.Player;
-import seedu.address.model.person.Staff;
+import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -37,27 +37,20 @@ public class AddCommandParser implements Parser<AddCommand> {
                         PREFIX_ADDRESS, PREFIX_TAG, PREFIX_ROLE);
         String preamble = argMultimap.getPreamble();
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL)
-                || (!preamble.isEmpty() && !preamble.equalsIgnoreCase("staff"))) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ROLE)
+                || (!preamble.isEmpty())) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_ROLE);
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
+        Role role = ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get());
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
-        // command: add staff
-        if (preamble.equalsIgnoreCase("staff")) {
-            Staff staff = new Staff(name, phone, email, address, tagList);
-            return new AddCommand(staff);
-        } else {
-            // add player by default
-            Player player = new Player(name, phone, email, address, tagList);
-            return new AddCommand(player);
-        }
+        return new AddCommand(Person.createPerson(name, phone, email, address, tagList, role));
     }
 
     /**
