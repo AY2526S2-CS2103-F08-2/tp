@@ -124,7 +124,9 @@ public class DeleteCommand extends Command {
     }
 
     private CommandResult executeCriteriaDelete(Model model) throws CommandException {
-        List<Person> matches = findMatches(model, criteria);
+        NameContainsKeywordsPredicate predicate = buildNamePredicate(criteria);
+        model.updateFilteredPersonList(predicate);
+        List<Person> matches = model.getFilteredPersonList();
         if (matches.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_NO_MATCHING_PERSON, criteria));
         }
@@ -171,13 +173,9 @@ public class DeleteCommand extends Command {
                 false, false, baseCommandForContinuation, null);
     }
 
-    private List<Person> findMatches(Model model, String rawCriteria) {
+    private NameContainsKeywordsPredicate buildNamePredicate(String rawCriteria) {
         List<String> keywords = Arrays.asList(rawCriteria.trim().split("\\s+"));
-        NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(keywords);
-
-        return model.getAddressBook().getPersonList().stream()
-                .filter(predicate)
-                .collect(Collectors.toList());
+        return new NameContainsKeywordsPredicate(keywords);
     }
 
     private String formatMatches(List<Person> matches) {

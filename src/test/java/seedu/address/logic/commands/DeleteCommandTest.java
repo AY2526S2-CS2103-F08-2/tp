@@ -11,6 +11,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.KEYWORD_MATCHING_MEIER;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -19,6 +21,7 @@ import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 
 /**
@@ -87,6 +90,7 @@ public class DeleteCommandTest {
                 Messages.format(personToDelete), "Y", "N", "Y", "N");
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.updateFilteredPersonList(new NameContainsKeywordsPredicate(Arrays.asList("George")));
         CommandResult expectedResult = new CommandResult(expectedMessage, false, false, "delete George", null);
         assertCommandSuccess(deleteCommand, model, expectedResult, expectedModel);
     }
@@ -100,6 +104,8 @@ public class DeleteCommandTest {
                 KEYWORD_MATCHING_MEIER, expectedList);
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.updateFilteredPersonList(
+                new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
         CommandResult expectedResult = new CommandResult(expectedMessage, false, false, null, KEYWORD_MATCHING_MEIER);
         assertCommandSuccess(deleteCommand, model, expectedResult, expectedModel);
     }
@@ -113,6 +119,8 @@ public class DeleteCommandTest {
                 Messages.format(personToDelete));
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.updateFilteredPersonList(
+                new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
         expectedModel.deletePerson(personToDelete);
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }

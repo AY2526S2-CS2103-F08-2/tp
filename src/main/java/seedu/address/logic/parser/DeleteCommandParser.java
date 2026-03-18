@@ -52,7 +52,7 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
 
         if (tokens.length == 2) {
             String secondToken = tokens[1].toLowerCase(Locale.ROOT);
-            if (secondToken.equals(DeleteCommand.CONFIRM_KEYWORD) || secondToken.equals(DeleteCommand.YES_KEYWORD)) {
+            if (secondToken.equals(DeleteCommand.CONFIRM_KEYWORD)) {
                 return new DeleteCommand(index, DeletionDecision.CONFIRM);
             }
 
