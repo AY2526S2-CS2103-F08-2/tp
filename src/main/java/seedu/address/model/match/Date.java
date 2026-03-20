@@ -1,0 +1,77 @@
+package seedu.address.model.match;
+
+import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.AppUtil.checkArgument;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+/**
+ * Represents a Match's date in the address book.
+ * Guarantees: immutable; is valid as declared in {@link #isValidDate(String)}
+ */
+public class Date {
+    public static final String MESSAGE_CONSTRAINTS =
+            "Date should follow the following format: yyyy-MM-dd HHmm";
+
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+
+    public final LocalDateTime matchDate;
+
+    /**
+     * Constructs a {@code Date}.
+     *
+     * @param date A valid date.
+     */
+    public Date(String date) {
+        requireNonNull(date);
+        checkArgument(isValidDate(date), MESSAGE_CONSTRAINTS);
+        matchDate = parse(date);
+    }
+    /**
+     * Returns true if a given string is a valid date.
+     */
+    public static boolean isValidDate(String date) {
+        try {
+            LocalDateTime.parse(date, FORMATTER);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+    /**
+     * Parses a string into a LocalDateTime object with the correct format.
+     *
+     * @param date A valid date.
+     */
+    public LocalDateTime parse(String date) {
+            return LocalDateTime.parse(date, FORMATTER);
+        }
+
+    @Override
+    public String toString() {
+        return matchDate.toString();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        // instanceof handles nulls
+        if (!(other instanceof Date)) {
+            return false;
+        }
+
+        Date otherDate = (Date) other;
+        return matchDate.equals(otherDate.matchDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return matchDate.hashCode();
+    }
+
+}
