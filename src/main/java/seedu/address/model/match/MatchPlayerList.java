@@ -42,6 +42,10 @@ public class MatchPlayerList implements Iterable<Person> {
         uniquePersonList.add(person);
     }
 
+    public ObservableList<Person> asUnmodifiableObservableList() {
+        return uniquePersonList.asUnmodifiableObservableList();
+    }
+
     @Override
     public Iterator<Person> iterator() {
         return uniquePersonList.iterator();
