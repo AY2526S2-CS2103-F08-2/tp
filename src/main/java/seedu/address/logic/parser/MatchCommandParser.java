@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.match.Date;
-import seedu.address.model.match.Match;
 import seedu.address.model.match.OpponentName;
 
 /**

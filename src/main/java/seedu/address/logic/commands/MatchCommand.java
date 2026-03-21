@@ -22,7 +22,7 @@ import seedu.address.model.person.Role;
 /**
  * Adds a match to the address book.
  */
-public class MatchCommand extends Command{
+public class MatchCommand extends Command {
 
     public static final String COMMAND_WORD = "match";
 
