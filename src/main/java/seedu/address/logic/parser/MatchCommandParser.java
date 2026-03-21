@@ -8,6 +8,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
 import java.util.List;
 import java.util.stream.Stream;
 
+import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.match.Date;
@@ -16,7 +17,7 @@ import seedu.address.model.match.OpponentName;
 /**
  * Parses input arguments and creates a new MatchCommand object
  */
-public class MatchCommandParser {
+public class MatchCommandParser implements Parser<Command> {
 
     /**
      * Parses the given {@code String} of arguments in the context of the MatchCommand
