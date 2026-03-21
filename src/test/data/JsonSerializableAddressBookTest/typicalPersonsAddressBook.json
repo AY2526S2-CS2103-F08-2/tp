@@ -43,5 +43,9 @@
     "tags" : [ ],
     "role" : "STAFF"
   } ],
-  "matches" : [ ]
+  "matches" : [ {
+      "opponentName" : "Manchester United",
+      "date" : "2026-04-15 1600",
+      "players" : [ "Amy Bee" ]
+    } ]
 }

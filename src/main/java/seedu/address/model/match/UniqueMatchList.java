@@ -15,8 +15,8 @@ import seedu.address.model.match.exceptions.MatchNotFoundException;
  * A list of matches that enforces uniqueness between its elements and does not allow nulls.
  * A match is considered unique by comparing using {@code Match#isSameMatch(Match)}. As such, adding and updating of
  * matches uses Match#isSameMatch(Match) for equality so as to ensure that the match being added or updated is
- * unique in terms of identity in the UniqueMatchList. However, the removal of a person uses Match#equals(Object) so
- * as to ensure that the person with exactly the same fields will be removed.
+ * unique in terms of identity in the UniqueMatchList. However, the removal of a match uses Match#equals(Object) so
+ * as to ensure that the match with exactly the same fields will be removed.
  *
  * Supports a minimal set of list operations.
  *
