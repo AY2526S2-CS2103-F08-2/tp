@@ -22,6 +22,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
@@ -148,6 +149,26 @@ public class AddCommandTest {
         public void setPerson(Person target, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public boolean hasMatch(Match match) {
+            throw new AssertionError("This method should not be called.");
+        };
+
+        @Override
+        public void deleteMatch(Match target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addMatch(Match match) {
+            throw new AssertionError("This method should not be called.");
+        };
+
+        @Override
+        public void setMatch(Match target, Match editedMatch) {
+            throw new AssertionError("This method should not be called.");
+        };
 
         @Override
         public ObservableList<Person> getFilteredPersonList() {
