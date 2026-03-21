@@ -68,7 +68,7 @@ class JsonSerializableAddressBook {
         for (JsonAdaptedMatch jsonAdaptedMatch : matches) {
             Match match = jsonAdaptedMatch.toModelType(personMap);
             if (addressBook.hasMatch(match)) {
-                throw  new IllegalValueException((MESSAGE_DUPLICATE_MATCH));
+                throw new IllegalValueException((MESSAGE_DUPLICATE_MATCH));
             }
         }
         return addressBook;

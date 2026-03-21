@@ -47,7 +47,7 @@ public class Match {
      */
     public boolean isSameMatch(Match otherMatch) {
         if (otherMatch == this) {
-            return  true;
+            return true;
         }
 
         return otherMatch != null

@@ -46,8 +46,8 @@ public class Date {
      * @param date A valid date.
      */
     public LocalDateTime parse(String date) {
-            return LocalDateTime.parse(date, FORMATTER);
-        }
+        return LocalDateTime.parse(date, FORMATTER);
+    }
 
     @Override
     public String toString() {
