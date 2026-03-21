@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -40,6 +41,7 @@ public class MatchCommand extends Command {
     public static final String MESSAGE_DUPLICATE_MATCH = "This match already exists in the address book!";
     public static final String MESSAGE_PERSON_DOES_NOT_EXIST = "%s does not exist in the address book!";
     public static final String MESSAGE_NOT_A_PLAYER = "%s is not a player!";
+    public static final String MESSAGE_ADD_DUPLICATE_PLAYER = "Cannot add same player twice!";
 
     private final OpponentName opponentName;
     private final Date date;
@@ -58,7 +60,7 @@ public class MatchCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) throws CommandException {
+    public CommandResult execute(Model model) throws CommandException, RuntimeException {
         requireNonNull(model);
 
         List<Person> playerList = new ArrayList<>();
@@ -74,6 +76,10 @@ public class MatchCommand extends Command {
             }
 
             playerList.add(person);
+        }
+
+        if (playerList.size() != new HashSet<>(playerList).size()) {
+            throw new CommandException(MESSAGE_ADD_DUPLICATE_PLAYER);
         }
 
         MatchPlayerList matchPlayerList = new MatchPlayerList(playerList);
