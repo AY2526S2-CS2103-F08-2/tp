@@ -136,6 +136,14 @@ public class AddressBook implements ReadOnlyAddressBook {
         matches.setMatch(target, editedMatch);
     }
 
+    /**
+     * Removes {@code key} from this {@code AddressBook}.
+     * {@code key} must exist in the address book.
+     */
+    public void removeMatch(Match key) {
+        matches.remove(key);
+    }
+
     //// util methods
 
     @Override

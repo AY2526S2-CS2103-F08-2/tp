@@ -51,7 +51,7 @@ public class Date {
 
     @Override
     public String toString() {
-        return matchDate.toString();
+        return matchDate.format(FORMATTER);
     }
 
     @Override

@@ -70,6 +70,7 @@ class JsonSerializableAddressBook {
             if (addressBook.hasMatch(match)) {
                 throw new IllegalValueException((MESSAGE_DUPLICATE_MATCH));
             }
+            addressBook.addMatch(match);
         }
         return addressBook;
     }
