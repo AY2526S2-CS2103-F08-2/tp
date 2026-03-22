@@ -93,6 +93,20 @@ Examples:
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
 * `add n/Betsy Crowe r/staff t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 
+### Adding a match: `match`
+
+Adds a match to the address book.
+
+Format: `match n/OPPONENT_NAME d/DATE [pl/PLAYER_NAME]…​`
+
+Notes: 
+- Date must have format `yyyy-MM-dd HHmm`
+- Variable number of players can be added to the match, and must exist in the address book
+
+Examples:
+- `match n/Mancherster United d/2026-05-15`
+- `match n/Mancherster United d/2026-05-15 pl/John Doe`
+
 ### Listing persons: `list`
 
 Shows persons in the address book, optionally filtered by role.
@@ -215,6 +229,7 @@ _Details coming soon ..._
 Action | Format, Examples
 --------|------------------
 **Add** | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Match** | `match n/OPPONENT_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `match n/Mancherster United d/2026-05-15 pl/John Doe`
 **Clear** | `clear`
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
