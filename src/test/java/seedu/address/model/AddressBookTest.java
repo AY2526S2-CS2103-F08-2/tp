@@ -32,6 +32,9 @@ public class AddressBookTest {
     @Test
     public void constructor() {
         assertEquals(Collections.emptyList(), addressBook.getPersonList());
+        assertEquals(Collections.emptyList(), addressBook.getTeamList());
+        assertEquals(Collections.emptyList(), addressBook.getPositionList());
+        assertEquals(Collections.emptyList(), addressBook.getStatusList());
     }
 
     @Test
@@ -86,6 +89,21 @@ public class AddressBookTest {
     @Test
     public void getPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> addressBook.getPersonList().remove(0));
+    }
+
+    @Test
+    public void getTeamList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> addressBook.getTeamList().remove(0));
+    }
+
+    @Test
+    public void getPositionList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> addressBook.getPositionList().remove(0));
+    }
+
+    @Test
+    public void getStatusList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> addressBook.getStatusList().remove(0));
     }
 
     @Test
