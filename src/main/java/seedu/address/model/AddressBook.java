@@ -10,8 +10,8 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
-import seedu.address.model.person.UniquePositionList;
 import seedu.address.model.person.UniquePersonList;
+import seedu.address.model.person.UniquePositionList;
 import seedu.address.model.person.UniqueStatusList;
 import seedu.address.model.person.UniqueTeamList;
 
