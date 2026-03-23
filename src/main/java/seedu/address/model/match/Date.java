@@ -15,7 +15,9 @@ public class Date {
     public static final String MESSAGE_CONSTRAINTS =
             "Date should follow the following format: yyyy-MM-dd HHmm";
 
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    public static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    public static final DateTimeFormatter DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("d MMMM y, h:mm a");
+
 
     public final LocalDateTime matchDate;
 
@@ -34,7 +36,7 @@ public class Date {
      */
     public static boolean isValidDate(String date) {
         try {
-            LocalDateTime.parse(date, FORMATTER);
+            LocalDateTime.parse(date, INPUT_FORMATTER);
             return true;
         } catch (DateTimeParseException e) {
             return false;
@@ -46,12 +48,12 @@ public class Date {
      * @param date A valid date.
      */
     public LocalDateTime parse(String date) {
-        return LocalDateTime.parse(date, FORMATTER);
+        return LocalDateTime.parse(date, INPUT_FORMATTER);
     }
 
     @Override
     public String toString() {
-        return matchDate.format(FORMATTER);
+        return matchDate.format(DISPLAY_FORMATTER);
     }
 
     @Override

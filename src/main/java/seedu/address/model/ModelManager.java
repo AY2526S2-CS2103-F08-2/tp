@@ -23,6 +23,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final FilteredList<Match> matchList;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -35,6 +36,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        matchList = new FilteredList<>(this.addressBook.getMatchList());
     }
 
     public ModelManager() {
@@ -134,8 +136,16 @@ public class ModelManager implements Model {
 
         addressBook.setMatch(target, editedMatch);
     }
+    //=========== Match List Accessors =======================================================================
 
-
+    /**
+     * Returns an unmodifiable view of the list of {@code Match} backed by the internal list of
+     * {@code versionedAddressBook}
+     */
+    @Override
+    public ObservableList<Match> getMatchList() {
+         return matchList;
+    }
 
     //=========== Filtered Person List Accessors =============================================================
 
