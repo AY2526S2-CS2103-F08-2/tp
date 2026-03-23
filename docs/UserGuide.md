@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, AB3 can get your contact management tasks done faster than traditional GUI apps.
+SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -17,7 +17,7 @@ AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized fo
 
 1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
+1. Copy the file to the folder you want to use as the _home folder_ for your SoCcer Manager data.
 
 1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
@@ -32,7 +32,7 @@ AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized fo
 
    * `list staff` : Lists only staff.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a player named `John Doe` to SoCcer Manager.
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
 
@@ -79,7 +79,7 @@ Format: `help`
 
 ### Adding a person: `add`
 
-Adds a player/staff to the address book.
+Adds a player/staff to SoCcer Manager.
 
 Format: `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 
@@ -95,7 +95,7 @@ Examples:
 
 ### Listing persons: `list`
 
-Shows persons in the address book, optionally filtered by role.
+Shows persons in SoCcer Manager, optionally filtered by role.
 
 Format:
 * `list` (shows all persons)
@@ -113,7 +113,7 @@ Examples:
 
 ### Editing a person : `edit`
 
-Edits an existing person in the address book.
+Edits an existing person in SoCcer Manager.
 
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`
 
@@ -130,44 +130,47 @@ Examples:
 
 ### Locating persons by name: `find`
 
-Finds persons whose names contain any of the given keywords.
+Finds persons whose names contain any of the given keywords, optionally limited by role.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: `find [player, players, staff] KEYWORD [MORE_KEYWORDS]`
 
 * The search is case-insensitive. e.g `hans` will match `Hans`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
+* Prefixing with `player`/`players` or `staff` limits the results to that role.
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 
 Examples:
 * `find John` returns `john` and `John Doe`
+* `find player John` returns players whose names match `John`
+* `find staff alex david` returns staff whose names match `alex` OR `david`
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
 ### Deleting a person : `delete`
 
-Deletes a person from the address book by list index or name keywords.
+Deletes a person from SoCcer Manager by list index or name keywords.
 
 Format: `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`
 
 * `delete INDEX` selects the person at the specified `INDEX`.
 * The index refers to the index number shown in the displayed person list.
-* `delete KEYWORD [MORE_KEYWORDS]` searches by name (same matching rules as `find`).
+* `delete KEYWORD [MORE_KEYWORDS]` searches by name (same name-matching rules as `find`).
 * If one person matches, it will show that person and ask for confirmation.
 * If multiple persons match, it will show a clash list with indexes. Enter the clash index to choose a person.
 * To confirm or cancel deletion, type `y`/`Y` or `n`/`N`.
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2`, then `y` deletes the 2nd person in the address book.
+* `list` followed by `delete 2`, then `y` deletes the 2nd person in SoCcer Manager.
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
 ### Clearing all entries : `clear`
 
-Clears all entries from the address book.
+Clears all entries from SoCcer Manager.
 
 Format: `clear`
 
@@ -179,15 +182,15 @@ Format: `exit`
 
 ### Saving the data
 
-AddressBook data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
+SoCcer Manager data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
 
 ### Editing the data file
 
-AddressBook data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
+SoCcer Manager data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your changes to the data file makes its format invalid, AddressBook will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
-Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+If your changes to the data file makes its format invalid, SoCcer Manager will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
+Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
 ### Archiving data files `[coming in v2.0]`
@@ -199,7 +202,7 @@ _Details coming soon ..._
 ## FAQ
 
 **Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
+**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data from your previous SoCcer Manager home folder.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -218,6 +221,6 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**Find** | `find [player, players, staff] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find player James`, `find staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
 **Help** | `help`
