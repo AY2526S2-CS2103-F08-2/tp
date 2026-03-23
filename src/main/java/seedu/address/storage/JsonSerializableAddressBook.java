@@ -12,6 +12,9 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
@@ -20,15 +23,35 @@ import seedu.address.model.person.Person;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
+    public static final String MESSAGE_DUPLICATE_TEAM = "Teams list contains duplicate team(s).";
+    public static final String MESSAGE_DUPLICATE_POSITION = "Positions list contains duplicate position(s).";
+    public static final String MESSAGE_DUPLICATE_STATUS = "Statuses list contains duplicate status(es).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
+    private final List<JsonAdaptedTeam> teams = new ArrayList<>();
+    private final List<JsonAdaptedPosition> positions = new ArrayList<>();
+    private final List<JsonAdaptedStatus> statuses = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonSerializableAddressBook} with the given persons.
+     * Constructs a {@code JsonSerializableAddressBook} with the given data.
      */
     @JsonCreator
-    public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons) {
-        this.persons.addAll(persons);
+    public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons,
+            @JsonProperty("teams") List<JsonAdaptedTeam> teams,
+            @JsonProperty("positions") List<JsonAdaptedPosition> positions,
+            @JsonProperty("statuses") List<JsonAdaptedStatus> statuses) {
+        if (persons != null) {
+            this.persons.addAll(persons);
+        }
+        if (teams != null) {
+            this.teams.addAll(teams);
+        }
+        if (positions != null) {
+            this.positions.addAll(positions);
+        }
+        if (statuses != null) {
+            this.statuses.addAll(statuses);
+        }
     }
 
     /**
@@ -38,6 +61,9 @@ class JsonSerializableAddressBook {
      */
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
         persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
+        teams.addAll(source.getTeamList().stream().map(JsonAdaptedTeam::new).collect(Collectors.toList()));
+        positions.addAll(source.getPositionList().stream().map(JsonAdaptedPosition::new).collect(Collectors.toList()));
+        statuses.addAll(source.getStatusList().stream().map(JsonAdaptedStatus::new).collect(Collectors.toList()));
     }
 
     /**
@@ -47,6 +73,31 @@ class JsonSerializableAddressBook {
      */
     public AddressBook toModelType() throws IllegalValueException {
         AddressBook addressBook = new AddressBook();
+
+        for (JsonAdaptedTeam jsonAdaptedTeam : teams) {
+            Team team = jsonAdaptedTeam.toModelType();
+            if (addressBook.hasTeam(team)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_TEAM);
+            }
+            addressBook.addTeam(team);
+        }
+
+        for (JsonAdaptedPosition jsonAdaptedPosition : positions) {
+            Position position = jsonAdaptedPosition.toModelType();
+            if (addressBook.hasPosition(position)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_POSITION);
+            }
+            addressBook.addPosition(position);
+        }
+
+        for (JsonAdaptedStatus jsonAdaptedStatus : statuses) {
+            Status status = jsonAdaptedStatus.toModelType();
+            if (addressBook.hasStatus(status)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_STATUS);
+            }
+            addressBook.addStatus(status);
+        }
+
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
             Person person = jsonAdaptedPerson.toModelType();
             if (addressBook.hasPerson(person)) {
