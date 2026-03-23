@@ -105,8 +105,23 @@ public class AddressBookTest {
     }
 
     @Test
+    public void hasTeam_teamInAddressBook_returnsTrue() {
+        Team team = new Team("First Team");
+        addressBook.addTeam(team);
+        assertTrue(addressBook.hasTeam(new Team("first team")));
+    }
+
+    @Test
     public void removeTeam_teamDoesNotExist_throwsTeamNotFoundException() {
         assertThrows(TeamNotFoundException.class, () -> addressBook.removeTeam(new Team("First Team")));
+    }
+
+    @Test
+    public void removeTeam_existingTeam_removesTeam() {
+        Team team = new Team("First Team");
+        addressBook.addTeam(team);
+        addressBook.removeTeam(team);
+        assertFalse(addressBook.hasTeam(team));
     }
 
     @Test
@@ -122,8 +137,23 @@ public class AddressBookTest {
     }
 
     @Test
+    public void hasPosition_positionInAddressBook_returnsTrue() {
+        Position position = new Position("Forward");
+        addressBook.addPosition(position);
+        assertTrue(addressBook.hasPosition(new Position("forward")));
+    }
+
+    @Test
     public void removePosition_positionDoesNotExist_throwsPositionNotFoundException() {
         assertThrows(PositionNotFoundException.class, () -> addressBook.removePosition(new Position("Forward")));
+    }
+
+    @Test
+    public void removePosition_existingPosition_removesPosition() {
+        Position position = new Position("Forward");
+        addressBook.addPosition(position);
+        addressBook.removePosition(position);
+        assertFalse(addressBook.hasPosition(position));
     }
 
     @Test
@@ -139,8 +169,23 @@ public class AddressBookTest {
     }
 
     @Test
+    public void hasStatus_statusInAddressBook_returnsTrue() {
+        Status status = new Status("Unknown");
+        addressBook.addStatus(status);
+        assertTrue(addressBook.hasStatus(new Status("unknown")));
+    }
+
+    @Test
     public void removeStatus_statusDoesNotExist_throwsStatusNotFoundException() {
         assertThrows(StatusNotFoundException.class, () -> addressBook.removeStatus(new Status("Unknown")));
+    }
+
+    @Test
+    public void removeStatus_existingStatus_removesStatus() {
+        Status status = new Status("Unknown");
+        addressBook.addStatus(status);
+        addressBook.removeStatus(status);
+        assertFalse(addressBook.hasStatus(status));
     }
 
     @Test
