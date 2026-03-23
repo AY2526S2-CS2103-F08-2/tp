@@ -144,7 +144,7 @@ public class ModelManager implements Model {
      */
     @Override
     public ObservableList<Match> getMatchList() {
-         return matchList;
+        return matchList;
     }
 
     //=========== Filtered Person List Accessors =============================================================
