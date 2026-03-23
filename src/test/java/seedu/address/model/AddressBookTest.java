@@ -22,7 +22,13 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
+import seedu.address.model.person.exceptions.DuplicatePositionException;
+import seedu.address.model.person.exceptions.DuplicateStatusException;
+import seedu.address.model.person.exceptions.DuplicateTeamException;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
+import seedu.address.model.person.exceptions.PositionNotFoundException;
+import seedu.address.model.person.exceptions.StatusNotFoundException;
+import seedu.address.model.person.exceptions.TeamNotFoundException;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddressBookTest {
@@ -84,6 +90,57 @@ public class AddressBookTest {
                 new PersonBuilder(PLAYER_AMY).withAddress(VALID_ADDRESS_PLAYER_BEN).withTags(VALID_TAG_HUSBAND)
                         .build();
         assertTrue(addressBook.hasPerson(editedAmy));
+    }
+
+    @Test
+    public void hasTeam_nullTeam_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> addressBook.hasTeam(null));
+    }
+
+    @Test
+    public void addTeam_teamAlreadyExists_throwsDuplicateTeamException() {
+        Team team = new Team("First Team");
+        addressBook.addTeam(team);
+        assertThrows(DuplicateTeamException.class, () -> addressBook.addTeam(new Team("first team")));
+    }
+
+    @Test
+    public void removeTeam_teamDoesNotExist_throwsTeamNotFoundException() {
+        assertThrows(TeamNotFoundException.class, () -> addressBook.removeTeam(new Team("First Team")));
+    }
+
+    @Test
+    public void hasPosition_nullPosition_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> addressBook.hasPosition(null));
+    }
+
+    @Test
+    public void addPosition_positionAlreadyExists_throwsDuplicatePositionException() {
+        Position position = new Position("Forward");
+        addressBook.addPosition(position);
+        assertThrows(DuplicatePositionException.class, () -> addressBook.addPosition(new Position("forward")));
+    }
+
+    @Test
+    public void removePosition_positionDoesNotExist_throwsPositionNotFoundException() {
+        assertThrows(PositionNotFoundException.class, () -> addressBook.removePosition(new Position("Forward")));
+    }
+
+    @Test
+    public void hasStatus_nullStatus_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> addressBook.hasStatus(null));
+    }
+
+    @Test
+    public void addStatus_statusAlreadyExists_throwsDuplicateStatusException() {
+        Status status = new Status("Unknown");
+        addressBook.addStatus(status);
+        assertThrows(DuplicateStatusException.class, () -> addressBook.addStatus(new Status("unknown")));
+    }
+
+    @Test
+    public void removeStatus_statusDoesNotExist_throwsStatusNotFoundException() {
+        assertThrows(StatusNotFoundException.class, () -> addressBook.removeStatus(new Status("Unknown")));
     }
 
     @Test
