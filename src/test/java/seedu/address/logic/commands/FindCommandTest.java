@@ -8,6 +8,7 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 import static seedu.address.testutil.TypicalPersons.PLAYER_BEN;
 import static seedu.address.testutil.TypicalPersons.PLAYER_CHARLIE;
+import static seedu.address.testutil.TypicalPersons.STAFF_IDA;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -19,6 +20,9 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.PersonHasRolePredicate;
+import seedu.address.model.person.Role;
+import seedu.address.model.person.RoleFilteredNameContainsKeywordsPredicate;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -72,6 +76,32 @@ public class FindCommandTest {
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Arrays.asList(PLAYER_AMY, PLAYER_BEN, PLAYER_CHARLIE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_roleAndKeyword_personFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        RoleFilteredNameContainsKeywordsPredicate predicate =
+                new RoleFilteredNameContainsKeywordsPredicate(Role.STAFF, Arrays.asList("Ida"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(Collections.singletonList(STAFF_IDA), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_afterPreFilter_stillSearchesGlobally() {
+        model.updateFilteredPersonList(new PersonHasRolePredicate(Role.STAFF));
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.STAFF));
+
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        NameContainsKeywordsPredicate predicate = preparePredicate("Bee");
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(Collections.singletonList(PLAYER_AMY), model.getFilteredPersonList());
     }
 
     @Test
