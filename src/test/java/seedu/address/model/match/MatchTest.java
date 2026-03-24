@@ -39,13 +39,13 @@ public class MatchTest {
     @Test
     public void isSameMatch_sameObject_returnsTrue() {
         Match match = new MatchBuilder().build();
-        assertTrue(match.isSameMatch(match));
+        assertTrue(match.isSameEvent(match));
     }
 
     @Test
     public void isSameMatch_null_returnsFalse() {
         Match match = new MatchBuilder().build();
-        assertFalse(match.isSameMatch(null));
+        assertFalse(match.isSameEvent(null));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class MatchTest {
                 .withDate("2026-04-15 1600")
                 .build();
 
-        assertTrue(match1.isSameMatch(match2));
+        assertTrue(match1.isSameEvent(match2));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class MatchTest {
         Match match1 = new MatchBuilder().withOpponentName("Team A").build();
         Match match2 = new MatchBuilder().withOpponentName("Team B").build();
 
-        assertFalse(match1.isSameMatch(match2));
+        assertFalse(match1.isSameEvent(match2));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class MatchTest {
         Match match1 = new MatchBuilder().withDate("2026-04-15 1600").build();
         Match match2 = new MatchBuilder().withDate("2026-04-16 1600").build();
 
-        assertFalse(match1.isSameMatch(match2));
+        assertFalse(match1.isSameEvent(match2));
     }
 
     @Test
@@ -97,8 +97,8 @@ public class MatchTest {
                 .build();
 
         Match differentPlayers = new Match(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 playerListB
         );
 
@@ -133,9 +133,9 @@ public class MatchTest {
         Match match = new MatchBuilder().build();
 
         String expected = new seedu.address.commons.util.ToStringBuilder(match)
-                .add("opponent name", match.getOpponentName())
-                .add("match date", match.getMatchDate())
-                .add("players", match.getMatchPlayerList())
+                .add("opponent name", match.getEventName())
+                .add("match date", match.getEventDate())
+                .add("players", match.getEventPlayerList())
                 .toString();
 
         assertEquals(expected, match.toString());

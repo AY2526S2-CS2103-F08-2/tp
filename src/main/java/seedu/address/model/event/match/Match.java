@@ -1,5 +1,6 @@
 package seedu.address.model.event.match;
 
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.event.Date;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventName;
@@ -17,5 +18,14 @@ public class Match extends Event {
      */
     public Match(EventName opponentName, Date matchDate, EventPlayerList eventPlayerList) {
         super(opponentName, matchDate, EventType.MATCH, eventPlayerList);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("opponent name", eventName)
+                .add("match date", eventDate)
+                .add("players", eventPlayerList)
+                .toString();
     }
 }

@@ -19,33 +19,33 @@ public class MatchBuilder {
     public static final Person DEFAULT_PERSON = new PersonBuilder().withRole(Role.PLAYER).build();
     public static final EventPlayerList DEFAULT_MATCH_PLAYER_LIST = new EventPlayerList(List.of(DEFAULT_PERSON));
 
-    private EventName eventName;
+    private EventName opponentName;
     private Date date;
-    private EventPlayerList eventPlayerList;
+    private EventPlayerList matchPlayerList;
 
     /**
      * Creates a {@code MatchBuilder} with the default details.
      */
     public MatchBuilder() {
-        eventName = new EventName(DEFAULT_OPPONENT_NAME);
+        opponentName = new EventName(DEFAULT_OPPONENT_NAME);
         date = new Date(DEFAULT_DATE);
-        eventPlayerList = DEFAULT_MATCH_PLAYER_LIST;
+        matchPlayerList = DEFAULT_MATCH_PLAYER_LIST;
     }
 
     /**
      * Initializes the MatchBuilder with the data of {@code matchToCopy}.
      */
     public MatchBuilder(Match matchToCopy) {
-        eventName = matchToCopy.getOpponentName();
-        date = matchToCopy.getMatchDate();
-        eventPlayerList = matchToCopy.getMatchPlayerList();
+        opponentName = matchToCopy.getEventName();
+        date = matchToCopy.getEventDate();
+        matchPlayerList = matchToCopy.getEventPlayerList();
     }
 
     /**
      * Sets the {@code EventName} of the {@code Match} that we are building.
      */
     public MatchBuilder withOpponentName(String name) {
-        this.eventName = new EventName(name);
+        this.opponentName = new EventName(name);
         return this;
     }
 
@@ -61,7 +61,7 @@ public class MatchBuilder {
      * Sets the {@code EventPlayerList} of the {@code Match} that we are building.
      */
     public MatchBuilder withPlayers(List<Person> persons) {
-        this.eventPlayerList = new EventPlayerList(persons);
+        this.matchPlayerList = new EventPlayerList(persons);
         return this;
     }
 
@@ -69,6 +69,6 @@ public class MatchBuilder {
      * Builds and returns a {@code Match} with the current attributes.
      */
     public Match build() {
-        return new Match(eventName, date, eventPlayerList);
+        return new Match(opponentName, date, matchPlayerList);
     }
 }

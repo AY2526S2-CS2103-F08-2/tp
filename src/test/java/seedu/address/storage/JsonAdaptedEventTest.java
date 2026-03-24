@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
 import seedu.address.model.event.EventPlayerList;
 import seedu.address.model.event.match.Match;
-import seedu.address.model.event.EventName;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
@@ -35,13 +35,10 @@ public class JsonAdaptedEventTest {
 
     @Test
     public void toModelType_validMatchDetails_returnsMatch() throws Exception {
-        Match match = new MatchBuilder()
-                .withOpponentName("Liverpool")
-                .withDate("2026-05-15 1600")
-                .build();
 
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
+                "MATCH",
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString(), VALID_PLAYER_TWO.getName().toString())
         );
@@ -52,8 +49,8 @@ public class JsonAdaptedEventTest {
                 .build();
 
         expectedMatch = new Match(
-                expectedMatch.getOpponentName(),
-                expectedMatch.getMatchDate(),
+                expectedMatch.getEventName(),
+                expectedMatch.getEventDate(),
                 new EventPlayerList(List.of(VALID_PLAYER, VALID_PLAYER_TWO))
         );
 
@@ -64,6 +61,7 @@ public class JsonAdaptedEventTest {
     public void toModelType_nullOpponentName_throwsIllegalValueException() {
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 null,
+                "MATCH",
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString())
         );
@@ -75,6 +73,7 @@ public class JsonAdaptedEventTest {
     public void toModelType_invalidOpponentName_throwsIllegalValueException() {
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "@@@",
+                "MATCH",
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString())
         );
@@ -88,6 +87,7 @@ public class JsonAdaptedEventTest {
     public void toModelType_nullDate_throwsIllegalValueException() {
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
+                "MATCH",
                 null,
                 List.of(VALID_PLAYER.getName().toString())
         );
@@ -100,6 +100,7 @@ public class JsonAdaptedEventTest {
     public void toModelType_invalidDate_throwsIllegalValueException() {
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
+                "MATCH",
                 "2026/05/15 1600",
                 List.of(VALID_PLAYER.getName().toString())
         );
@@ -113,6 +114,7 @@ public class JsonAdaptedEventTest {
     public void toModelType_missingPlayer_throwsIllegalValueException() {
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
+                "MATCH",
                 "2026-05-15 1600",
                 List.of("Ghost Player")
         );
@@ -131,6 +133,7 @@ public class JsonAdaptedEventTest {
 
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
+                "MATCH",
                 "2026-05-15 1600",
                 List.of(STAFF_PERSON.getName().toString())
         );
@@ -145,6 +148,7 @@ public class JsonAdaptedEventTest {
     public void toModelType_duplicatePlayers_throwsException() {
         JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
+                "MATCH",
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString(), VALID_PLAYER.getName().toString())
         );

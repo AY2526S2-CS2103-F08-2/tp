@@ -1,4 +1,4 @@
-package seedu.address.model.match;
+package seedu.address.model.event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.event.Date;
 import seedu.address.testutil.Assert;
 
 public class DateTest {

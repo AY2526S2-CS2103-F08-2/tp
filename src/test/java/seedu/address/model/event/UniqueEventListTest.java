@@ -1,4 +1,4 @@
-package seedu.address.model.match;
+package seedu.address.model.event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,10 +9,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.event.match.Match;
-import seedu.address.model.event.UniqueEventList;
 import seedu.address.model.event.exceptions.DuplicateEventException;
 import seedu.address.model.event.exceptions.EventNotFoundException;
+import seedu.address.model.event.match.Match;
 import seedu.address.testutil.MatchBuilder;
 
 public class UniqueEventListTest {
@@ -172,7 +171,7 @@ public class UniqueEventListTest {
     @Test
     public void setEvents_nullList_throwsNullPointerException() {
         UniqueEventList uniqueEventList = new UniqueEventList();
-        assertThrows(NullPointerException.class, () -> uniqueEventList.setEvents((List<Match>) null));
+        assertThrows(NullPointerException.class, () -> uniqueEventList.setEvents((List<Event>) null));
     }
 
     @Test
@@ -186,7 +185,7 @@ public class UniqueEventListTest {
     @Test
     public void setMatches_listWithDuplicateEvents_throwsDuplicateEventException() {
         UniqueEventList uniqueEventList = new UniqueEventList();
-        List<Match> duplicateList = List.of(matchA, sameIdentityAsMatchA);
+        List<Event> duplicateList = List.of(matchA, sameIdentityAsMatchA);
 
         assertThrows(DuplicateEventException.class, () -> uniqueEventList.setEvents(duplicateList));
     }
@@ -207,8 +206,8 @@ public class UniqueEventListTest {
         uniqueEventList.add(matchB);
 
         int count = 0;
-        for (Match match : uniqueEventList) {
-            assertTrue(match.equals(matchA) || match.equals(matchB));
+        for (Event event : uniqueEventList) {
+            assertTrue(event.equals(matchA) || event.equals(matchB));
             count++;
         }
 

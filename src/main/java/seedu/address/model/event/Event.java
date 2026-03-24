@@ -13,12 +13,12 @@ import seedu.address.model.event.match.Match;
  */
 public abstract class Event {
     // Identity fields
-    private final EventName eventName;
-    private final Date eventDate;
-    private final EventType eventType;
+    protected final EventName eventName;
+    protected final Date eventDate;
+    protected final EventType eventType;
 
     // Data fields
-    private final EventPlayerList eventPlayerList;
+    protected final EventPlayerList eventPlayerList;
 
     /**
      * Every field must be present and not null.
