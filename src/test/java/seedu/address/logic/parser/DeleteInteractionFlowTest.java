@@ -50,7 +50,7 @@ public class DeleteInteractionFlowTest {
     }
 
     @Test
-    public void preprocessInput_deleteBulk_invalidFollowUp_clearsPendingContext() {
+    public void preprocessInput_deleteBulkInvalidFollowUp_clearsPendingContext() {
         DeleteInteractionFlow flow = new DeleteInteractionFlow();
         flow.updateAfterParse(new DeleteBulkCommand(new Tag("graduated")));
 

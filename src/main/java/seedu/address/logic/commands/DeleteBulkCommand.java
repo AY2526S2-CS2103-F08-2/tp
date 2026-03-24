@@ -51,10 +51,16 @@ public class DeleteBulkCommand extends Command {
         CANCEL
     }
 
+    /**
+     * Creates a {@code DeleteBulkCommand} that requests confirmation.
+     */
     public DeleteBulkCommand(Tag tag) {
         this(tag, BulkDeletionDecision.UNDECIDED);
     }
 
+    /**
+     * Creates a {@code DeleteBulkCommand} with an explicit decision state.
+     */
     public DeleteBulkCommand(Tag tag, BulkDeletionDecision decision) {
         requireNonNull(tag);
         requireNonNull(decision);
@@ -97,10 +103,16 @@ public class DeleteBulkCommand extends Command {
                 YES_KEYWORD.toUpperCase(Locale.ROOT), NO_KEYWORD.toUpperCase(Locale.ROOT)));
     }
 
+    /**
+     * Returns the tag used for bulk matching.
+     */
     public Tag getTag() {
         return tag;
     }
 
+    /**
+     * Returns the current bulk deletion decision state.
+     */
     public BulkDeletionDecision getDecision() {
         return decision;
     }
