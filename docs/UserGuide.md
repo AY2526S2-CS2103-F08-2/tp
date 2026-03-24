@@ -104,8 +104,8 @@ Notes:
 - Variable number of players can be added to the match, and must exist in the address book
 
 Examples:
-- `match n/Mancherster United d/2026-05-15`
-- `match n/Mancherster United d/2026-05-15 pl/John Doe`
+- `match n/Mancherster United d/2026-05-15 1600`
+- `match n/Mancherster United d/2026-05-15 1600 pl/John Doe`
 
 ### Listing persons: `list`
 
