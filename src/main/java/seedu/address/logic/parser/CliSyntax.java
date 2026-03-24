@@ -16,5 +16,4 @@ public class CliSyntax {
     public static final Prefix PREFIX_NEW_TEAM = new Prefix("new/");
     public static final Prefix PREFIX_DATE = new Prefix("d/");
     public static final Prefix PREFIX_PLAYER = new Prefix("pl/");
-
 }
