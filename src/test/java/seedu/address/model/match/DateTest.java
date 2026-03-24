@@ -26,7 +26,7 @@ public class DateTest {
     @Test
     public void constructor_validDate_success() {
         Date date = new Date("2026-04-15 1600");
-        assertEquals("15 April 2026, 4:00 pm", date.toString());
+        assertEquals("15 April 2026, 4:00 PM", date.toString());
     }
 
     @Test

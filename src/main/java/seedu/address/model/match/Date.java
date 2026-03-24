@@ -6,6 +6,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 /**
  * Represents a Match's date in the address book.
@@ -15,8 +16,10 @@ public class Date {
     public static final String MESSAGE_CONSTRAINTS =
             "Date should follow the following format: yyyy-MM-dd HHmm";
 
-    public static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    public static final DateTimeFormatter DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("d MMMM y, h:mm a");
+    public static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm",
+            Locale.ENGLISH);
+    public static final DateTimeFormatter DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("d MMMM y, h:mm a",
+            Locale.ENGLISH);
 
 
     public final LocalDateTime matchDate;
