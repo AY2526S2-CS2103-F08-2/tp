@@ -18,13 +18,13 @@ import seedu.address.model.person.UniquePersonList;
 public class MatchPlayerList implements Iterable<Person> {
     public static final String MESSAGE_CONSTRAINTS = "%s is not a player!";
 
-    public final UniquePersonList uniquePersonList = new UniquePersonList();
+    private final UniquePersonList uniquePersonList = new UniquePersonList();
 
     public MatchPlayerList(List<Person> personList) {
         personList.forEach(this::add);
     }
 
-    public UniquePersonList getUniquePersonList() {
+    private UniquePersonList getUniquePersonList() {
         return uniquePersonList;
     }
 

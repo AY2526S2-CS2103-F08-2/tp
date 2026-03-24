@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.testutil.PersonBuilder;
 
@@ -86,7 +87,10 @@ public class MatchPlayerListTest {
     @Test
     public void toStringMethod() {
         MatchPlayerList matchPlayerList = new MatchPlayerList(List.of(playerA, playerB));
+        UniquePersonList uniquePersonList = new UniquePersonList();
+        uniquePersonList.add(playerA);
+        uniquePersonList.add(playerB);
 
-        assertEquals(matchPlayerList.getUniquePersonList().toString(), matchPlayerList.toString());
+        assertEquals(uniquePersonList.toString(), matchPlayerList.toString());
     }
 }

@@ -48,7 +48,6 @@ public class MatchCard extends UiPart<Region> {
         opponentName.setText("vs " + match.getOpponentName().toString());
 
         String players = match.getMatchPlayerList()
-                .getUniquePersonList()
                 .asUnmodifiableObservableList()
                 .stream()
                 .sorted(Comparator.comparing(person -> person.getName().fullName))
