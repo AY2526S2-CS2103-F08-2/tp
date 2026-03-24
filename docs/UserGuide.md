@@ -165,6 +165,20 @@ Examples:
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
+### Bulk deleting players by tag : `deletebulk`
+
+Deletes all players that share a specified tag.
+
+Format: `deletebulk t/TAG`
+
+* `deletebulk t/TAG` filters and shows matching players in the GUI list and CLI message.
+* To confirm or cancel bulk deletion, type `y`/`Y` or `n`/`N`.
+* Only players are considered. Staff with the same tag are not deleted.
+
+Examples:
+* `deletebulk t/graduated`, then `y` deletes all players tagged `graduated`.
+* `deletebulk t/graduated`, then `n` cancels the bulk deletion.
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -217,6 +231,7 @@ Action | Format, Examples
 **Add** | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear** | `clear`
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
+**Delete Bulk** | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`

@@ -1,0 +1,137 @@
+package seedu.address.logic.commands;
+
+import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.Messages;
+import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.Model;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
+import seedu.address.model.tag.Tag;
+
+/**
+ * Deletes all players that have a given tag with a confirmation flow.
+ */
+public class DeleteBulkCommand extends Command {
+
+    public static final String COMMAND_WORD = "deletebulk";
+    public static final String YES_KEYWORD = "y";
+    public static final String NO_KEYWORD = "n";
+
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Deletes all players with a given tag.\n"
+            + "Format: " + COMMAND_WORD + " " + PREFIX_TAG + "TAG\n"
+            + "After the list is shown, type " + YES_KEYWORD + " to confirm or "
+            + NO_KEYWORD + " to cancel.\n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_TAG + "graduated";
+
+    public static final String MESSAGE_NO_MATCHING_PLAYERS = "No players found with tag: %1$s";
+    public static final String MESSAGE_DELETE_BULK_CONFIRMATION = "%1$d player(s) with tag '%2$s' selected:\n%3$s\n"
+            + "Confirm deletion? (%4$s/%5$s)\n"
+            + "Type '%6$s' to delete or '%7$s' to cancel.";
+    public static final String MESSAGE_DELETE_BULK_SUCCESS = "Deleted %1$d player(s) with tag: %2$s";
+    public static final String MESSAGE_DELETE_BULK_CANCELLED = "Bulk deletion cancelled for tag: %1$s";
+
+    private final Tag tag;
+    private final BulkDeletionDecision decision;
+
+    /**
+     * Describes whether the user confirmed, cancelled, or has not yet decided on bulk deletion.
+     */
+    public enum BulkDeletionDecision {
+        UNDECIDED,
+        CONFIRM,
+        CANCEL
+    }
+
+    public DeleteBulkCommand(Tag tag) {
+        this(tag, BulkDeletionDecision.UNDECIDED);
+    }
+
+    public DeleteBulkCommand(Tag tag, BulkDeletionDecision decision) {
+        requireNonNull(tag);
+        requireNonNull(decision);
+        this.tag = tag;
+        this.decision = decision;
+    }
+
+    @Override
+    public CommandResult execute(Model model) throws CommandException {
+        requireNonNull(model);
+
+        Predicate<Person> predicate = person -> person.getRole() == Role.PLAYER
+                && person.getTags().stream()
+                .anyMatch(existingTag -> existingTag.tagName.equalsIgnoreCase(tag.tagName));
+        List<Person> matches = model.getAddressBook().getPersonList().stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+        if (matches.isEmpty()) {
+            throw new CommandException(String.format(MESSAGE_NO_MATCHING_PLAYERS, tag.tagName));
+        }
+
+        model.updateFilteredPersonList(predicate);
+
+        if (decision == BulkDeletionDecision.CONFIRM) {
+            List<Person> playersToDelete = matches.stream().collect(Collectors.toList());
+            playersToDelete.forEach(model::deletePerson);
+            model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+            return new CommandResult(String.format(MESSAGE_DELETE_BULK_SUCCESS, playersToDelete.size(), tag.tagName));
+        }
+
+        if (decision == BulkDeletionDecision.CANCEL) {
+            return new CommandResult(String.format(MESSAGE_DELETE_BULK_CANCELLED, tag.tagName));
+        }
+
+        String formattedMatches = matches.stream()
+                .map(Messages::format)
+                .collect(Collectors.joining("\n"));
+        return new CommandResult(String.format(MESSAGE_DELETE_BULK_CONFIRMATION,
+                matches.size(), tag.tagName, formattedMatches,
+                YES_KEYWORD.toUpperCase(Locale.ROOT), NO_KEYWORD.toUpperCase(Locale.ROOT),
+                YES_KEYWORD.toUpperCase(Locale.ROOT), NO_KEYWORD.toUpperCase(Locale.ROOT)));
+    }
+
+    public Tag getTag() {
+        return tag;
+    }
+
+    public BulkDeletionDecision getDecision() {
+        return decision;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof DeleteBulkCommand)) {
+            return false;
+        }
+
+        DeleteBulkCommand otherCommand = (DeleteBulkCommand) other;
+        return tag.equals(otherCommand.tag)
+                && decision == otherCommand.decision;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("tag", tag)
+                .add("decision", decision)
+                .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag, decision);
+    }
+}
