@@ -3,7 +3,9 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
@@ -14,7 +16,6 @@ import seedu.address.model.person.Person;
  * Keyword matching is case insensitive.
  */
 public class FindCommand extends Command {
-
     public static final String COMMAND_WORD = "find";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all persons whose names contain any of "
@@ -25,9 +26,15 @@ public class FindCommand extends Command {
             + "  " + COMMAND_WORD + " player alice\n"
             + "  " + COMMAND_WORD + " staff tan";
 
+    private static final Logger logger = LogsCenter.getLogger(FindCommand.class);
+
     private final Predicate<Person> predicate;
 
+    /**
+     * Creates a FindCommand using the given {@code predicate}.
+     */
     public FindCommand(Predicate<Person> predicate) {
+        requireNonNull(predicate);
         this.predicate = predicate;
     }
 
@@ -35,8 +42,11 @@ public class FindCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredPersonList(predicate);
+        int matchCount = model.getFilteredPersonList().size();
+        logger.fine(() -> String.format("find completed with %d matches using %s",
+                matchCount, predicate.getClass().getSimpleName()));
         return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
+                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, matchCount));
     }
 
     @Override

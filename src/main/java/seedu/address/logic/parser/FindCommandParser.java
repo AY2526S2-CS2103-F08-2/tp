@@ -1,11 +1,14 @@
 package seedu.address.logic.parser;
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
@@ -16,6 +19,7 @@ import seedu.address.model.person.RoleFilteredNameContainsKeywordsPredicate;
  * Parses input arguments and creates a new FindCommand object
  */
 public class FindCommandParser implements Parser<FindCommand> {
+    private static final Logger logger = LogsCenter.getLogger(FindCommandParser.class);
     private static final String ROLE_PLAYER = "player";
     private static final String ROLE_PLAYERS = "players";
     private static final String ROLE_STAFF = "staff";
@@ -26,6 +30,7 @@ public class FindCommandParser implements Parser<FindCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public FindCommand parse(String args) throws ParseException {
+        requireNonNull(args);
         String trimmedArgs = args.trim();
         if (trimmedArgs.isEmpty()) {
             throw new ParseException(
@@ -42,12 +47,11 @@ public class FindCommandParser implements Parser<FindCommand> {
             }
             Role role = parseRole(firstToken);
             List<String> nameKeywords = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
+            logger.fine(() -> String.format("Parsed role-aware find: role=%s keywords=%d", role, nameKeywords.size()));
             return new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(role, nameKeywords));
         }
-
-        String[] nameKeywords = tokens;
-
-        return new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList(nameKeywords)));
+        logger.fine(() -> String.format("Parsed global find with %d keywords", tokens.length));
+        return new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList(tokens)));
     }
 
     private boolean isRoleToken(String token) {

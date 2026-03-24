@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -17,12 +19,15 @@ public class RoleFilteredNameContainsKeywordsPredicate implements Predicate<Pers
      * contain at least one of the given {@code keywords}.
      */
     public RoleFilteredNameContainsKeywordsPredicate(Role role, List<String> keywords) {
+        requireNonNull(role);
+        requireNonNull(keywords);
         this.rolePredicate = new PersonHasRolePredicate(role);
         this.namePredicate = new NameContainsKeywordsPredicate(keywords);
     }
 
     @Override
     public boolean test(Person person) {
+        requireNonNull(person);
         return rolePredicate.test(person) && namePredicate.test(person);
     }
 
@@ -50,3 +55,4 @@ public class RoleFilteredNameContainsKeywordsPredicate implements Predicate<Pers
                 .toString();
     }
 }
+
