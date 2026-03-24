@@ -128,6 +128,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void deleteTeam(Team team) {
+        requireNonNull(team);
+        addressBook.removeTeam(team);
+    }
+
+    @Override
     public void setTeam(Team oldTeam, Team newTeam) {
         requireAllNonNull(oldTeam, newTeam);
         addressBook.setTeam(oldTeam, newTeam);

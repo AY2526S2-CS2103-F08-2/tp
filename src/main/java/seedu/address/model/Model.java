@@ -90,6 +90,12 @@ public interface Model {
     void addTeam(Team team);
 
     /**
+     * Deletes the given team from the team catalog.
+     * {@code team} must exist in the team catalog.
+     */
+    void deleteTeam(Team team);
+
+    /**
      * Replaces {@code oldTeam} with {@code newTeam} in the team catalog.
      */
     void setTeam(Team oldTeam, Team newTeam);
