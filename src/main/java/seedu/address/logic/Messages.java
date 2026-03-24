@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.parser.Prefix;
+import seedu.address.model.match.Match;
 import seedu.address.model.person.Person;
 
 /**
@@ -47,6 +48,21 @@ public class Messages {
                 .append(person.getRole())
                 .append("; Tags: ");
         person.getTags().forEach(builder::append);
+        return builder.toString();
+    }
+    /**
+     * Formats the {@code match} for display to the user.
+     */
+    public static String format(Match match) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Opponent: ")
+                .append(match.getOpponentName())
+                .append("; Date: ")
+                .append(match.getMatchDate().toString())
+                .append("; Players: ")
+                .append(match.getMatchPlayerList().asUnmodifiableObservableList().stream()
+                .map(person -> person.getName().toString())
+                .collect(Collectors.joining(", ")));
         return builder.toString();
     }
 

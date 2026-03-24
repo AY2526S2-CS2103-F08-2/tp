@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.match.Match;
 import seedu.address.model.person.Person;
 
 /**
@@ -76,8 +77,36 @@ public interface Model {
      */
     void setPerson(Person target, Person editedPerson);
 
+    /**
+     * Returns true if a match with the same identity as {@code match} exists in the address book.
+     */
+    boolean hasMatch(Match match);
+
+    /**
+     * Deletes the given match.
+     * The match must exist in the address book.
+     */
+    void deleteMatch(Match target);
+
+    /**
+     * Adds the given match.
+     * {@code match} must not already exist in the address book.
+     */
+    void addMatch(Match match);
+
+    /**
+     * Replaces the given match {@code target} with {@code editedMatch}.
+     * {@code target} must exist in the address book.
+     * The match identity of {@code editedMatch} must not be the same as another existing match in the address book.
+     */
+    void setMatch(Match target, Match editedMatch);
+
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
+
+    /** Returns an unmodifiable view of the filtered match list */
+    ObservableList<Match> getMatchList();
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.
