@@ -70,6 +70,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setMatches(List<Match> matches) {
         this.matches.setMatches(matches);
+    }
+    /*
      * Replaces the contents of the team catalog with {@code teams}.
      * {@code teams} must not contain duplicates.
      */
@@ -178,6 +180,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removeMatch(Match key) {
         matches.remove(key);
+    }
+
     //// team-level operations
 
     /**
@@ -277,7 +281,8 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public ObservableList<Match> getMatchList() {
         return matches.asUnmodifiableObservableList();
-      
+    }
+
     public ObservableList<Team> getTeamList() {
         return teams.asUnmodifiableObservableList();
     }

@@ -238,9 +238,10 @@ public class AddressBookTest {
         public ObservableList<Person> getPersonList() {
             return persons;
         }
-      
+
         public ObservableList<Match> getMatchList() {
             return matches;
+        }
 
         @Override
         public ObservableList<Team> getTeamList() {

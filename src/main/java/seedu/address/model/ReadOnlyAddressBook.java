@@ -23,6 +23,8 @@ public interface ReadOnlyAddressBook {
      * This list will not contain any duplicate matches.
      */
     ObservableList<Match> getMatchList();
+
+    /**
      * Returns an unmodifiable view of the teams catalog.
      */
     ObservableList<Team> getTeamList();

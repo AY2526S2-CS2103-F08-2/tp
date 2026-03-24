@@ -33,7 +33,6 @@ class JsonSerializableAddressBook {
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedMatch> matches = new ArrayList<>();
-    private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedTeam> teams = new ArrayList<>();
     private final List<JsonAdaptedPosition> positions = new ArrayList<>();
     private final List<JsonAdaptedStatus> statuses = new ArrayList<>();
@@ -43,7 +42,7 @@ class JsonSerializableAddressBook {
      */
     @JsonCreator
     public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons,
-            @JsonProperty("matches") List<JsonAdaptedMatch> matches,                 
+            @JsonProperty("matches") List<JsonAdaptedMatch> matches,
             @JsonProperty("teams") List<JsonAdaptedTeam> teams,
             @JsonProperty("positions") List<JsonAdaptedPosition> positions,
             @JsonProperty("statuses") List<JsonAdaptedStatus> statuses) {
@@ -118,7 +117,7 @@ class JsonSerializableAddressBook {
             addressBook.addPerson(person);
             personMap.put(person.getName().toString(), person);
         }
-      
+
         for (JsonAdaptedMatch jsonAdaptedMatch : matches) {
             Match match = jsonAdaptedMatch.toModelType(personMap);
             if (addressBook.hasMatch(match)) {
