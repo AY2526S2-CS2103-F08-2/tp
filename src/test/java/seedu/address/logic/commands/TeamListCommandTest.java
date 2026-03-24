@@ -26,7 +26,11 @@ public class TeamListCommandTest {
 
     @Test
     public void execute_nonEmptyCatalog_success() {
-        String expectedMessage = "Teams:\n1. Unassigned Team\n2. First Team\n3. Second Team";
+        String expectedMessage = String.join(System.lineSeparator(),
+                "Teams:",
+                "1. Unassigned Team",
+                "2. First Team",
+                "3. Second Team");
         assertCommandSuccess(new TeamListCommand(), model, expectedMessage, expectedModel);
     }
 
