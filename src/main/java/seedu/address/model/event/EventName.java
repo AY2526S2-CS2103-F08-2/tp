@@ -1,16 +1,16 @@
-package seedu.address.model.match;
+package seedu.address.model.event;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
 /**
- * Represents a Match's opponent name in the address book.
+ * Represents an Event name in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidName(String)}
  */
-public class OpponentName {
+public class EventName {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Opponent team names should only contain alphanumeric characters and spaces, and it should not be blank";
+            "Event name should only contain alphanumeric characters and spaces, and it should not be blank";
 
     /*
      * The first character of the name must not be a whitespace,
@@ -21,11 +21,11 @@ public class OpponentName {
     public final String fullName;
 
     /**
-     * Constructs an {@code OpponentName}.
+     * Constructs an {@code EventName}.
      *
      * @param opponentName A valid name.
      */
-    public OpponentName(String opponentName) {
+    public EventName(String opponentName) {
         requireNonNull(opponentName);
         checkArgument(isValidName(opponentName), MESSAGE_CONSTRAINTS);
         fullName = opponentName;
@@ -51,11 +51,11 @@ public class OpponentName {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof OpponentName)) {
+        if (!(other instanceof EventName)) {
             return false;
         }
 
-        OpponentName otherName = (OpponentName) other;
+        EventName otherName = (EventName) other;
         return fullName.equals(otherName.fullName);
     }
 

@@ -22,7 +22,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
@@ -151,22 +151,22 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean hasMatch(Match match) {
+        public boolean hasEvent(Event event) {
             throw new AssertionError("This method should not be called.");
         };
 
         @Override
-        public void deleteMatch(Match target) {
+        public void deleteEvent(Event target) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void addMatch(Match match) {
+        public void addEvent(Event event) {
             throw new AssertionError("This method should not be called.");
         };
 
         @Override
-        public void setMatch(Match target, Match editedMatch) {
+        public void setEvent(Event target, Event editedEvent) {
             throw new AssertionError("This method should not be called.");
         };
 
@@ -176,7 +176,7 @@ public class AddCommandTest {
         }
 
         @Override
-        public ObservableList<Match> getMatchList() {
+        public ObservableList<Event> getEventList() {
             throw new AssertionError("This method should not be called.");
         }
 

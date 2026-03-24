@@ -9,14 +9,17 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventPlayerList;
+import seedu.address.model.event.match.Match;
+import seedu.address.model.event.EventName;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.testutil.MatchBuilder;
 import seedu.address.testutil.PersonBuilder;
 
-public class JsonAdaptedMatchTest {
+public class JsonAdaptedEventTest {
 
     private static final Person VALID_PLAYER =
             new PersonBuilder().withName("Alice").withRole(Role.PLAYER).build();
@@ -37,7 +40,7 @@ public class JsonAdaptedMatchTest {
                 .withDate("2026-05-15 1600")
                 .build();
 
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString(), VALID_PLAYER_TWO.getName().toString())
@@ -51,72 +54,72 @@ public class JsonAdaptedMatchTest {
         expectedMatch = new Match(
                 expectedMatch.getOpponentName(),
                 expectedMatch.getMatchDate(),
-                new seedu.address.model.match.MatchPlayerList(List.of(VALID_PLAYER, VALID_PLAYER_TWO))
+                new EventPlayerList(List.of(VALID_PLAYER, VALID_PLAYER_TWO))
         );
 
-        assertEquals(expectedMatch, jsonAdaptedMatch.toModelType(VALID_PERSON_MAP));
+        assertEquals(expectedMatch, jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
     }
 
     @Test
     public void toModelType_nullOpponentName_throwsIllegalValueException() {
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 null,
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString())
         );
 
-        assertThrows(IllegalValueException.class, () -> jsonAdaptedMatch.toModelType(VALID_PERSON_MAP));
+        assertThrows(IllegalValueException.class, () -> jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
     }
 
     @Test
     public void toModelType_invalidOpponentName_throwsIllegalValueException() {
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "@@@",
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString())
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->
-                jsonAdaptedMatch.toModelType(VALID_PERSON_MAP));
-        assertEquals(seedu.address.model.match.OpponentName.MESSAGE_CONSTRAINTS, e.getMessage());
+                jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
+        assertEquals(EventName.MESSAGE_CONSTRAINTS, e.getMessage());
     }
 
     @Test
     public void toModelType_nullDate_throwsIllegalValueException() {
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
                 null,
                 List.of(VALID_PLAYER.getName().toString())
         );
 
         assertThrows(IllegalValueException.class, () ->
-                jsonAdaptedMatch.toModelType(VALID_PERSON_MAP));
+                jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
     }
 
     @Test
     public void toModelType_invalidDate_throwsIllegalValueException() {
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
                 "2026/05/15 1600",
                 List.of(VALID_PLAYER.getName().toString())
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->
-                jsonAdaptedMatch.toModelType(VALID_PERSON_MAP));
-        assertEquals(seedu.address.model.match.Date.MESSAGE_CONSTRAINTS, e.getMessage());
+                jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
+        assertEquals(Date.MESSAGE_CONSTRAINTS, e.getMessage());
     }
 
     @Test
     public void toModelType_missingPlayer_throwsIllegalValueException() {
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
                 "2026-05-15 1600",
                 List.of("Ghost Player")
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->
-                jsonAdaptedMatch.toModelType(VALID_PERSON_MAP));
-        assertEquals(String.format(JsonAdaptedMatch.MISSING_PLAYER_MESSAGE_FORMAT, "Ghost Player"),
+                jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
+        assertEquals(String.format(JsonAdaptedEvent.MISSING_PLAYER_MESSAGE_FORMAT, "Ghost Player"),
                 e.getMessage());
     }
 
@@ -126,26 +129,26 @@ public class JsonAdaptedMatchTest {
                 STAFF_PERSON.getName().toString(), STAFF_PERSON
         );
 
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
                 "2026-05-15 1600",
                 List.of(STAFF_PERSON.getName().toString())
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->
-                        jsonAdaptedMatch.toModelType(personMapWithStaff));
-        assertEquals(String.format(JsonAdaptedMatch.NOT_A_PLAYER_MESSAGE_FORMAT,
+                        jsonAdaptedEvent.toModelType(personMapWithStaff));
+        assertEquals(String.format(JsonAdaptedEvent.NOT_A_PLAYER_MESSAGE_FORMAT,
                 STAFF_PERSON.getName().toString()), e.getMessage());
     }
 
     @Test
     public void toModelType_duplicatePlayers_throwsException() {
-        JsonAdaptedMatch jsonAdaptedMatch = new JsonAdaptedMatch(
+        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
                 "Liverpool",
                 "2026-05-15 1600",
                 List.of(VALID_PLAYER.getName().toString(), VALID_PLAYER.getName().toString())
         );
 
-        assertThrows(DuplicatePersonException.class, () -> jsonAdaptedMatch.toModelType(VALID_PERSON_MAP));
+        assertThrows(DuplicatePersonException.class, () -> jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
     }
 }

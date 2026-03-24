@@ -1,7 +1,7 @@
 package seedu.address.testutil;
 
 import seedu.address.model.AddressBook;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Person;
 
 /**
@@ -33,7 +33,7 @@ public class AddressBookBuilder {
      * Adds a new {@code Match} to the {@code AddressBook} that we are building.
      */
     public AddressBookBuilder withMatch(Match match) {
-        addressBook.addMatch(match);
+        addressBook.addEvent(match);
         return this;
     }
 

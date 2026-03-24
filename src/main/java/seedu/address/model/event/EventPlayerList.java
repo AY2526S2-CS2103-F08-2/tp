@@ -1,4 +1,4 @@
-package seedu.address.model.match;
+package seedu.address.model.event;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,12 +15,12 @@ import seedu.address.model.person.UniquePersonList;
  * a UniquePersonList to ensure all Players are unique.
  * Guarantees: all Persons are Players
  */
-public class MatchPlayerList implements Iterable<Person> {
+public class EventPlayerList implements Iterable<Person> {
     public static final String MESSAGE_CONSTRAINTS = "%s is not a player!";
 
     private final UniquePersonList uniquePersonList = new UniquePersonList();
 
-    public MatchPlayerList(List<Person> personList) {
+    public EventPlayerList(List<Person> personList) {
         personList.forEach(this::add);
     }
 
@@ -58,12 +58,12 @@ public class MatchPlayerList implements Iterable<Person> {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof MatchPlayerList)) {
+        if (!(other instanceof EventPlayerList)) {
             return false;
         }
 
-        MatchPlayerList otherMatchPlayerList = (MatchPlayerList) other;
-        return uniquePersonList.equals(otherMatchPlayerList.uniquePersonList);
+        EventPlayerList otherEventPlayerList = (EventPlayerList) other;
+        return uniquePersonList.equals(otherEventPlayerList.uniquePersonList);
     }
 
     @Override

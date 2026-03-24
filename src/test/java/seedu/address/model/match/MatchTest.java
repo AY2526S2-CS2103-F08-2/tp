@@ -9,6 +9,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventPlayerList;
+import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 import seedu.address.testutil.MatchBuilder;
@@ -19,12 +23,12 @@ public class MatchTest {
     private final Person playerA = new PersonBuilder().withName("Alice").withRole(Role.PLAYER).build();
     private final Person playerB = new PersonBuilder().withName("Bob").withRole(Role.PLAYER).build();
 
-    private final MatchPlayerList playerListA = new MatchPlayerList(List.of(playerA));
-    private final MatchPlayerList playerListB = new MatchPlayerList(List.of(playerB));
+    private final EventPlayerList playerListA = new EventPlayerList(List.of(playerA));
+    private final EventPlayerList playerListB = new EventPlayerList(List.of(playerB));
 
     @Test
     public void constructor_nullFields_throwsNullPointerException() {
-        OpponentName name = new OpponentName("Team A");
+        EventName name = new EventName("Team A");
         Date date = new Date("2026-04-15 1600");
 
         assertThrows(NullPointerException.class, () -> new Match(null, date, playerListA));

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
@@ -26,13 +26,13 @@ import seedu.address.model.person.Team;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
-    public static final String MESSAGE_DUPLICATE_MATCH = "Matches list contains duplicate match(es).";
+    public static final String MESSAGE_DUPLICATE_EVENT = "Event list contains duplicate event(s).";
     public static final String MESSAGE_DUPLICATE_TEAM = "Teams list contains duplicate team(s).";
     public static final String MESSAGE_DUPLICATE_POSITION = "Positions list contains duplicate position(s).";
     public static final String MESSAGE_DUPLICATE_STATUS = "Statuses list contains duplicate status(es).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
-    private final List<JsonAdaptedMatch> matches = new ArrayList<>();
+    private final List<JsonAdaptedEvent> events = new ArrayList<>();
     private final List<JsonAdaptedTeam> teams = new ArrayList<>();
     private final List<JsonAdaptedPosition> positions = new ArrayList<>();
     private final List<JsonAdaptedStatus> statuses = new ArrayList<>();
@@ -42,15 +42,15 @@ class JsonSerializableAddressBook {
      */
     @JsonCreator
     public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons,
-            @JsonProperty("matches") List<JsonAdaptedMatch> matches,
+            @JsonProperty("events") List<JsonAdaptedEvent> events,
             @JsonProperty("teams") List<JsonAdaptedTeam> teams,
             @JsonProperty("positions") List<JsonAdaptedPosition> positions,
             @JsonProperty("statuses") List<JsonAdaptedStatus> statuses) {
         if (persons != null) {
             this.persons.addAll(persons);
         }
-        if (matches != null) {
-            this.matches.addAll(matches);
+        if (events != null) {
+            this.events.addAll(events);
         }
         if (teams != null) {
             this.teams.addAll(teams);
@@ -70,7 +70,7 @@ class JsonSerializableAddressBook {
      */
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
         persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
-        matches.addAll(source.getMatchList().stream().map(JsonAdaptedMatch::new).collect(Collectors.toList()));
+        events.addAll(source.getEventList().stream().map(JsonAdaptedEvent::new).collect(Collectors.toList()));
         teams.addAll(source.getTeamList().stream().map(JsonAdaptedTeam::new).collect(Collectors.toList()));
         positions.addAll(source.getPositionList().stream().map(JsonAdaptedPosition::new).collect(Collectors.toList()));
         statuses.addAll(source.getStatusList().stream().map(JsonAdaptedStatus::new).collect(Collectors.toList()));
@@ -118,12 +118,12 @@ class JsonSerializableAddressBook {
             personMap.put(person.getName().toString(), person);
         }
 
-        for (JsonAdaptedMatch jsonAdaptedMatch : matches) {
-            Match match = jsonAdaptedMatch.toModelType(personMap);
-            if (addressBook.hasMatch(match)) {
-                throw new IllegalValueException((MESSAGE_DUPLICATE_MATCH));
+        for (JsonAdaptedEvent jsonAdaptedEvent : events) {
+            Event event = jsonAdaptedEvent.toModelType(personMap);
+            if (addressBook.hasEvent(event)) {
+                throw new IllegalValueException((MESSAGE_DUPLICATE_EVENT));
             }
-            addressBook.addMatch(match);
+            addressBook.addEvent(event);
         }
         return addressBook;
     }

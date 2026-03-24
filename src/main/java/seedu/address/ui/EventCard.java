@@ -7,14 +7,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.Event;
 
 /**
  * An UI component that displays information of a {@code Match}.
  */
-public class MatchCard extends UiPart<Region> {
+public class EventCard extends UiPart<Region> {
 
-    private static final String FXML = "MatchListCard.fxml";
+    private static final String FXML = "EventListCard.fxml";
 
     /**
      * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
@@ -24,30 +24,33 @@ public class MatchCard extends UiPart<Region> {
      * @see <a href="https://github.com/se-edu/addressbook-level4/issues/336">The issue on AddressBook level 4</a>
      */
 
-    public final Match match;
+    public final Event event;
 
     @FXML
     private Label id;
     @FXML
     private HBox cardPane;
     @FXML
-    private Label opponentName;
+    private Label eventName;
     @FXML
     private Label date;
     @FXML
     private Label playerList;
 
     /**
-     * Creates a {@code MatchCard} with the given {@code Match} and index to display.
+     * Creates a {@code EventCard} with the given {@code Event} and index to display.
      */
-    public MatchCard(Match match, int displayedIndex) {
+    public EventCard(Event event, int displayedIndex) {
         super(FXML);
-        this.match = match;
+        this.event = event;
         id.setText(displayedIndex + ". ");
-        date.setText("Match Date: " + match.getMatchDate().toString());
-        opponentName.setText("vs " + match.getOpponentName().toString());
+        date.setText("Match Date: " + event.getEventDate().toString());
+        switch (event.getEventType()) {
+        case MATCH -> eventName.setText("vs " + event.getEventName().toString());
+        default -> eventName.setText("Event Name: " + event.getEventName().toString());
+        }
 
-        String players = match.getMatchPlayerList()
+        String players = event.getEventPlayerList()
                 .asUnmodifiableObservableList()
                 .stream()
                 .sorted(Comparator.comparing(person -> person.getName().fullName))
