@@ -346,6 +346,11 @@ public class AddCommandParserTest {
         }
 
         @Override
+        public void deleteTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setTeam(Team oldTeam, Team newTeam) {
             throw new AssertionError("This method should not be called.");
         }

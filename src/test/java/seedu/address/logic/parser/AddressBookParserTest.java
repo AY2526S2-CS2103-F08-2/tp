@@ -24,6 +24,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
 import seedu.address.logic.commands.TeamAddCommand;
+import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
 import seedu.address.logic.commands.TeamListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -145,6 +146,12 @@ public class AddressBookParserTest {
     public void parseCommand_teamEdit() throws Exception {
         assertTrue(parser.parseCommand(TeamEditCommand.COMMAND_WORD + " old/First Team new/Reserve Team")
                 instanceof TeamEditCommand);
+    }
+
+    @Test
+    public void parseCommand_teamDelete() throws Exception {
+        assertTrue(parser.parseCommand(TeamDeleteCommand.COMMAND_WORD + " First Team")
+                instanceof TeamDeleteCommand);
     }
 
     @Test
