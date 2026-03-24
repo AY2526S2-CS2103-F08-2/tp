@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
@@ -212,6 +213,7 @@ public class AddressBookTest {
     public void toStringMethod() {
         String expected = AddressBook.class.getCanonicalName()
                 + "{persons=" + addressBook.getPersonList()
+                + ", matches=" + addressBook.getMatchList()
                 + ", teams=" + addressBook.getTeamList()
                 + ", positions=" + addressBook.getPositionList()
                 + ", statuses=" + addressBook.getStatusList() + "}";
@@ -223,6 +225,7 @@ public class AddressBookTest {
      */
     private static class AddressBookStub implements ReadOnlyAddressBook {
         private final ObservableList<Person> persons = FXCollections.observableArrayList();
+        private final ObservableList<Match> matches = FXCollections.observableArrayList();
         private final ObservableList<Team> teams = FXCollections.observableArrayList();
         private final ObservableList<Position> positions = FXCollections.observableArrayList();
         private final ObservableList<Status> statuses = FXCollections.observableArrayList();
@@ -234,6 +237,10 @@ public class AddressBookTest {
         @Override
         public ObservableList<Person> getPersonList() {
             return persons;
+        }
+
+        public ObservableList<Match> getMatchList() {
+            return matches;
         }
 
         @Override
@@ -251,5 +258,4 @@ public class AddressBookTest {
             return statuses;
         }
     }
-
 }

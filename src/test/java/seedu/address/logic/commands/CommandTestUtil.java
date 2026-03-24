@@ -3,9 +3,11 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -40,6 +42,8 @@ public class CommandTestUtil {
     public static final String VALID_TAG_FRIEND = "friend";
     public static final String VALID_ROLE_PLAYER = "PLAYER";
     public static final String VALID_ROLE_STAFF = "STAFF";
+    public static final String VALID_OPPONENT_NAME = "Manchester United";
+    public static final String VALID_DATE = "2025-05-15 1600";
 
     public static final String NAME_DESC_PLAYER_BEN = " " + PREFIX_NAME + VALID_NAME_PLAYER_BEN;
     public static final String PHONE_DESC_PLAYER_BEN = " " + PREFIX_PHONE + VALID_PHONE_PLAYER_BEN;
@@ -52,6 +56,9 @@ public class CommandTestUtil {
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
     public static final String ROLE_DESC_PLAYER = " " + PREFIX_ROLE + VALID_ROLE_PLAYER;
+    public static final String DATE_DESC_MATCH = " " + PREFIX_DATE + VALID_DATE;
+    public static final String OPPONENT_NAME_DESC_MATCH = " " + PREFIX_NAME + VALID_OPPONENT_NAME;
+    public static final String MATCH_NAME_DESC_PLAYER_BEN = " " + PREFIX_PLAYER + VALID_NAME_PLAYER_BEN;
 
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
@@ -59,6 +66,8 @@ public class CommandTestUtil {
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
     public static final String INVALID_ROLE_DESC = " " + PREFIX_ROLE + "invalidRole";
+    public static final String INVALID_OPPONENT_NAME_DESC = " " + PREFIX_NAME + "M@nchester";
+    public static final String INVALID_DATE_DESC = " " + PREFIX_DATE + "2026-15-40 1500";
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";

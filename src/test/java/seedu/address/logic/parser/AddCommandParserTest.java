@@ -53,6 +53,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.match.Match;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -360,9 +361,35 @@ public class AddCommandParserTest {
         }
 
         @Override
+        public ObservableList<Match> getMatchList() {
+            throw new AssertionError("This method should not be called.");
+
+        }
+
+        @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public boolean hasMatch(Match match) {
+            throw new AssertionError("This method should not be called.");
+        };
+
+        @Override
+        public void deleteMatch(Match target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addMatch(Match match) {
+            throw new AssertionError("This method should not be called.");
+        };
+
+        @Override
+        public void setMatch(Match target, Match editedMatch) {
+            throw new AssertionError("This method should not be called.");
+        };
 
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();

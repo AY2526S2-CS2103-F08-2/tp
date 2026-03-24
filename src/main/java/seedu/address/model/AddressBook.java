@@ -6,6 +6,8 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.match.Match;
+import seedu.address.model.match.UniqueMatchList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
@@ -22,6 +24,7 @@ import seedu.address.model.person.UniqueTeamList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons;
+    private final UniqueMatchList matches;
     private final UniqueTeamList teams;
     private final UniquePositionList positions;
     private final UniqueStatusList statuses;
@@ -35,6 +38,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         persons = new UniquePersonList();
+        matches = new UniqueMatchList();
         teams = new UniqueTeamList();
         positions = new UniquePositionList();
         statuses = new UniqueStatusList();
@@ -43,7 +47,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public AddressBook() {}
 
     /**
-     * Creates an AddressBook using the Persons in the {@code toBeCopied}
+     * Creates an AddressBook using the Persons and Matches in the {@code toBeCopied}
      */
     public AddressBook(ReadOnlyAddressBook toBeCopied) {
         this();
@@ -61,6 +65,13 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces the contents of the match list with {@code matches}.
+     * {@code matches} must not contain duplicate matches.
+     */
+    public void setMatches(List<Match> matches) {
+        this.matches.setMatches(matches);
+    }
+    /*
      * Replaces the contents of the team catalog with {@code teams}.
      * {@code teams} must not contain duplicates.
      */
@@ -91,6 +102,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
+        setMatches(newData.getMatchList());
         setTeams(newData.getTeamList());
         setPositions(newData.getPositionList());
         setStatuses(newData.getStatusList());
@@ -131,6 +143,43 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removePerson(Person key) {
         persons.remove(key);
+    }
+
+    //// match-level operations
+
+    /**
+     * Returns true if a match with the same identity as {@code match} exists in the address book.
+     */
+    public boolean hasMatch(Match match) {
+        requireNonNull(match);
+        return matches.contains(match);
+    }
+
+    /**
+     * Adds a match to the address book.
+     * The match must not already exist in the address book.
+     */
+    public void addMatch(Match m) {
+        matches.add(m);
+    }
+
+    /**
+     * Replaces the given match {@code target} in the list with {@code editedMatch}.
+     * {@code target} must exist in the address book.
+     * The match identity of {@code editedMatch} must not be the same as another existing match in the address book.
+     */
+    public void setMatch(Match target, Match editedMatch) {
+        requireNonNull(editedMatch);
+
+        matches.setMatch(target, editedMatch);
+    }
+
+    /**
+     * Removes {@code key} from this {@code AddressBook}.
+     * {@code key} must exist in the address book.
+     */
+    public void removeMatch(Match key) {
+        matches.remove(key);
     }
 
     //// team-level operations
@@ -227,6 +276,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public String toString() {
         return new ToStringBuilder(this)
                 .add("persons", persons)
+                .add("matches", matches)
                 .add("teams", teams)
                 .add("positions", positions)
                 .add("statuses", statuses)
@@ -239,6 +289,10 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
+    public ObservableList<Match> getMatchList() {
+        return matches.asUnmodifiableObservableList();
+    }
+
     public ObservableList<Team> getTeamList() {
         return teams.asUnmodifiableObservableList();
     }

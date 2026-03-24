@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Team;
 
@@ -23,6 +24,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final FilteredList<Match> matchList;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -35,6 +37,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        matchList = new FilteredList<>(this.addressBook.getMatchList());
     }
 
     public ModelManager() {
@@ -128,6 +131,39 @@ public class ModelManager implements Model {
     public void setTeam(Team oldTeam, Team newTeam) {
         requireAllNonNull(oldTeam, newTeam);
         addressBook.setTeam(oldTeam, newTeam);
+    }
+
+    @Override
+    public boolean hasMatch(Match match) {
+        requireNonNull(match);
+        return addressBook.hasMatch(match);
+    }
+
+    @Override
+    public void deleteMatch(Match target) {
+        addressBook.removeMatch(target);
+    }
+
+    @Override
+    public void addMatch(Match match) {
+        addressBook.addMatch(match);
+    }
+
+    @Override
+    public void setMatch(Match target, Match editedMatch) {
+        requireAllNonNull(target, editedMatch);
+
+        addressBook.setMatch(target, editedMatch);
+    }
+    //=========== Match List Accessors =======================================================================
+
+    /**
+     * Returns an unmodifiable view of the list of {@code Match} backed by the internal list of
+     * {@code versionedAddressBook}
+     */
+    @Override
+    public ObservableList<Match> getMatchList() {
+        return matchList;
     }
 
     //=========== Filtered Person List Accessors =============================================================

@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import javafx.collections.ObservableList;
+import seedu.address.model.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
@@ -16,6 +17,12 @@ public interface ReadOnlyAddressBook {
      * This list will not contain any duplicate persons.
      */
     ObservableList<Person> getPersonList();
+
+    /**
+     * Returns an unmodifiable view of the matches list.
+     * This list will not contain any duplicate matches.
+     */
+    ObservableList<Match> getMatchList();
 
     /**
      * Returns an unmodifiable view of the teams catalog.
