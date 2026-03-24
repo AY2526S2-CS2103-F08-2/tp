@@ -88,6 +88,11 @@ public interface Model {
      */
     void addTeam(Team team);
 
+    /**
+     * Replaces {@code oldTeam} with {@code newTeam} in the team catalog.
+     */
+    void setTeam(Team oldTeam, Team newTeam);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 

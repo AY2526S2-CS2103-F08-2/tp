@@ -152,6 +152,16 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces {@code oldTeam} in the catalog with {@code newTeam}.
+     * {@code oldTeam} must exist in the catalog.
+     * {@code newTeam} must not duplicate an existing team.
+     */
+    public void setTeam(Team oldTeam, Team newTeam) {
+        requireNonNull(newTeam);
+        teams.setTeam(oldTeam, newTeam);
+    }
+
+    /**
      * Removes {@code team} from the address book catalog.
      * {@code team} must exist in the catalog.
      */
