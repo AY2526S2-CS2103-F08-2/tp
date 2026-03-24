@@ -32,8 +32,7 @@ public class DeleteBulkCommandTest {
         DeleteBulkCommand command = new DeleteBulkCommand(graduatedTag, BulkDeletionDecision.UNDECIDED);
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(person -> person.getRole() == Role.PLAYER
-                && person.getTags().stream()
+        expectedModel.updateFilteredPersonList(person -> person.getTags().stream()
                 .anyMatch(existingTag -> existingTag.tagName.equalsIgnoreCase(graduatedTag.tagName)));
         String expectedMatches = expectedModel.getFilteredPersonList().stream()
                 .map(seedu.address.logic.Messages::format)
@@ -49,7 +48,7 @@ public class DeleteBulkCommandTest {
     }
 
     @Test
-    public void execute_confirm_successDeletesOnlyMatchingPlayers() {
+    public void execute_confirm_successDeletesAllMatchingPersons() {
         Model model = new ModelManager(buildAddressBookWithGraduatedPlayers(), new UserPrefs());
         DeleteBulkCommand command = new DeleteBulkCommand(graduatedTag, BulkDeletionDecision.CONFIRM);
 
@@ -60,7 +59,6 @@ public class DeleteBulkCommandTest {
                 .withEmail("gradone@example.com")
                 .withAddress("Alpha Street")
                 .withTags("graduated")
-                .withRole(Role.PLAYER)
                 .build();
         Person gradTwo = new PersonBuilder()
                 .withName("Grad Two")
@@ -68,13 +66,21 @@ public class DeleteBulkCommandTest {
                 .withEmail("gradtwo@example.com")
                 .withAddress("Beta Street")
                 .withTags("graduated")
-                .withRole(Role.PLAYER)
+                .build();
+        Person gradStaff = new PersonBuilder()
+                .withName("Grad Staff")
+                .withPhone("93456789")
+                .withEmail("gradstaff@example.com")
+                .withAddress("Gamma Street")
+                .withTags("graduated")
+                .withRole(Role.STAFF)
                 .build();
         expectedModel.deletePerson(gradOne);
         expectedModel.deletePerson(gradTwo);
+        expectedModel.deletePerson(gradStaff);
         expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
-        String expectedMessage = String.format(DeleteBulkCommand.MESSAGE_DELETE_BULK_SUCCESS, 2, graduatedTag.tagName);
+        String expectedMessage = String.format(DeleteBulkCommand.MESSAGE_DELETE_BULK_SUCCESS, 3, graduatedTag.tagName);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
@@ -84,8 +90,7 @@ public class DeleteBulkCommandTest {
         DeleteBulkCommand command = new DeleteBulkCommand(graduatedTag, BulkDeletionDecision.CANCEL);
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(person -> person.getRole() == Role.PLAYER
-                && person.getTags().stream()
+        expectedModel.updateFilteredPersonList(person -> person.getTags().stream()
                 .anyMatch(existingTag -> existingTag.tagName.equalsIgnoreCase(graduatedTag.tagName)));
         String expectedMessage = String.format(DeleteBulkCommand.MESSAGE_DELETE_BULK_CANCELLED, graduatedTag.tagName);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -97,7 +102,7 @@ public class DeleteBulkCommandTest {
         DeleteBulkCommand command = new DeleteBulkCommand(graduatedTag);
 
         assertCommandFailure(command, model,
-                String.format(DeleteBulkCommand.MESSAGE_NO_MATCHING_PLAYERS, graduatedTag.tagName));
+                String.format(DeleteBulkCommand.MESSAGE_NO_MATCHING_PERSONS, graduatedTag.tagName));
     }
 
     @Test
@@ -132,7 +137,6 @@ public class DeleteBulkCommandTest {
                 .withEmail("gradone@example.com")
                 .withAddress("Alpha Street")
                 .withTags("graduated")
-                .withRole(Role.PLAYER)
                 .build());
         addressBook.addPerson(new PersonBuilder()
                 .withName("Grad Two")
@@ -140,7 +144,6 @@ public class DeleteBulkCommandTest {
                 .withEmail("gradtwo@example.com")
                 .withAddress("Beta Street")
                 .withTags("graduated")
-                .withRole(Role.PLAYER)
                 .build());
         addressBook.addPerson(new PersonBuilder()
                 .withName("Grad Staff")

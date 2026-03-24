@@ -165,18 +165,18 @@ Examples:
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
-### Bulk deleting players by tag : `deletebulk`
+### Bulk deleting persons by tag : `deletebulk`
 
-Deletes all players that share a specified tag.
+Deletes all persons that share a specified tag.
 
 Format: `deletebulk t/TAG`
 
-* `deletebulk t/TAG` filters and shows matching players in the GUI list and CLI message.
+* `deletebulk t/TAG` filters and shows matching persons in the GUI list and CLI message.
 * To confirm or cancel bulk deletion, type `y`/`Y` or `n`/`N`.
-* Only players are considered. Staff with the same tag are not deleted.
+* Both players and staff with the specified tag are considered.
 
 Examples:
-* `deletebulk t/graduated`, then `y` deletes all players tagged `graduated`.
+* `deletebulk t/graduated`, then `y` deletes all persons tagged `graduated`.
 * `deletebulk t/graduated`, then `n` cancels the bulk deletion.
 
 ### Clearing all entries : `clear`
