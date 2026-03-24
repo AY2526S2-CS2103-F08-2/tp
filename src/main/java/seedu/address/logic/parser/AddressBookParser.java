@@ -17,6 +17,7 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.TeamListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -82,6 +83,13 @@ public class AddressBookParser {
             } else {
                 command = new ListRoleCommandParser().parse(arguments);
             }
+            break;
+
+        case TeamListCommand.COMMAND_WORD:
+            if (!arguments.isBlank()) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE));
+            }
+            command = new TeamListCommand();
             break;
 
         case ExitCommand.COMMAND_WORD:
