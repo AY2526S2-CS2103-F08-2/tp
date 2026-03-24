@@ -46,7 +46,7 @@ class JsonAdaptedMatch {
      */
     public JsonAdaptedMatch(Match source) {
         opponentName = source.getOpponentName().toString();
-        date = source.getMatchDate().toString();
+        date = source.getMatchDate().getDateWithInputFormat();
         players.addAll(source.getMatchPlayerList().asUnmodifiableObservableList().stream()
                 .map(person -> person.getName().toString())
                 .toList());

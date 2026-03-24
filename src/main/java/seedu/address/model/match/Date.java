@@ -51,6 +51,13 @@ public class Date {
         return LocalDateTime.parse(date, INPUT_FORMATTER);
     }
 
+    /**
+     * Returns the date with input format, used for storage in JSON file.
+     */
+    public String getDateWithInputFormat() {
+        return matchDate.format(INPUT_FORMATTER);
+    }
+
     @Override
     public String toString() {
         return matchDate.format(DISPLAY_FORMATTER);
