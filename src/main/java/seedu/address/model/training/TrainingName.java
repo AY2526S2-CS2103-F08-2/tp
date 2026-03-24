@@ -21,14 +21,14 @@ public class TrainingName {
     public final String fullName;
 
     /**
-     * Constructs an {@code OpponentName}.
+     * Constructs an {@code trainingName}.
      *
-     * @param opponentName A valid name.
+     * @param trainingName A valid name.
      */
-    public OpponentName(String opponentName) {
-        requireNonNull(opponentName);
-        checkArgument(isValidName(opponentName), MESSAGE_CONSTRAINTS);
-        fullName = opponentName;
+    public TrainingName(String trainingName) {
+        requireNonNull(trainingName);
+        checkArgument(isValidName(trainingName), MESSAGE_CONSTRAINTS);
+        fullName = trainingName;
     }
 
     /**
@@ -51,11 +51,11 @@ public class TrainingName {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof OpponentName)) {
+        if (!(other instanceof TrainingName)) {
             return false;
         }
 
-        OpponentName otherName = (OpponentName) other;
+        TrainingName otherName = (TrainingName) other;
         return fullName.equals(otherName.fullName);
     }
 
