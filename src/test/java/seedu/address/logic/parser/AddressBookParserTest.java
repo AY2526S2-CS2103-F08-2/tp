@@ -118,6 +118,16 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_teamListUppercase_throwsParseException() {
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("TEAMLIST"));
+    }
+
+    @Test
+    public void parseCommand_teamListMixedCase_throwsParseException() {
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("TeamList"));
+    }
+
+    @Test
     public void parseCommand_teamListWithArguments_throwsParseException() {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE), () -> parser

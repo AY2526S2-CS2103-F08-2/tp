@@ -20,7 +20,7 @@ public class TeamListCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        ObservableList<Team> teams = model.getAddressBook().getTeamList();
+        ObservableList<Team> teams = model.getTeamList();
 
         if (teams.isEmpty()) {
             return new CommandResult(MESSAGE_EMPTY);
