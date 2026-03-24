@@ -77,6 +77,17 @@ public interface Model {
      */
     void setPerson(Person target, Person editedPerson);
 
+    /**
+     * Returns true if a team with the same identity as {@code team} exists in the team catalog.
+     */
+    boolean hasTeam(Team team);
+
+    /**
+     * Adds the given team to the team catalog.
+     * {@code team} must not already exist in the team catalog.
+     */
+    void addTeam(Team team);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 

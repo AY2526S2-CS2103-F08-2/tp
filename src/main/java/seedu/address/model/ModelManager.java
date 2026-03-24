@@ -112,6 +112,18 @@ public class ModelManager implements Model {
         addressBook.setPerson(target, editedPerson);
     }
 
+    @Override
+    public boolean hasTeam(Team team) {
+        requireNonNull(team);
+        return addressBook.hasTeam(team);
+    }
+
+    @Override
+    public void addTeam(Team team) {
+        requireNonNull(team);
+        addressBook.addTeam(team);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
