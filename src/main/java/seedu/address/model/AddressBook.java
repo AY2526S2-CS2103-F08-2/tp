@@ -16,6 +16,8 @@ import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.person.UniquePositionList;
 import seedu.address.model.person.UniqueStatusList;
 import seedu.address.model.person.UniqueTeamList;
+import seedu.address.model.training.Training;
+import seedu.address.model.training.UniqueTrainingList;
 
 /**
  * Wraps all data at the address-book level
@@ -28,6 +30,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     private final UniqueTeamList teams;
     private final UniquePositionList positions;
     private final UniqueStatusList statuses;
+    private final UniqueTrainingList trainings;
 
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
@@ -42,6 +45,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         teams = new UniqueTeamList();
         positions = new UniquePositionList();
         statuses = new UniqueStatusList();
+        trainings = new UniqueTrainingList();
     }
 
     public AddressBook() {}
@@ -116,6 +120,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     public boolean hasPerson(Person person) {
         requireNonNull(person);
         return persons.contains(person);
+    }
+
+    /**
+     * Replaces the contents of the training list with {@code trainings}.
+     * {@code trainings} must not contain duplicate trainings.
+     */
+    public void setTrainings(List<Training> trainings) {
+        this.trainings.setTrainings(trainings);
     }
 
     /**
