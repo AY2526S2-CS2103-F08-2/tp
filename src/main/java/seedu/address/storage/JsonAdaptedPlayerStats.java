@@ -1,25 +1,29 @@
 package seedu.address.storage;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.PlayerStats;
 import seedu.address.model.person.StatField;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Jackson-friendly version of {@link PlayerStats}.
  */
 public class JsonAdaptedPlayerStats {
+    @JsonIgnore
     private final Map<String, Integer> stats;
 
     /**
      * Constructs a {@code JsonAdaptedPlayerStats} with the given stats mapping.
      */
     @JsonCreator
-    public JsonAdaptedPlayerStats(@JsonProperty("stats") Map<String, Integer> stats) {
+    public JsonAdaptedPlayerStats(Map<String, Integer> stats) {
         this.stats = stats != null ? stats : new HashMap<>();
     }
 
@@ -31,6 +35,16 @@ public class JsonAdaptedPlayerStats {
         for (StatField field : StatField.values()) {
             stats.put(field.name(), field.getValue(source));
         }
+    }
+
+    @JsonAnySetter
+    public void addStat(String key, int value) {
+        stats.put(key, value);
+    }
+
+    @JsonAnyGetter
+    public Map<String, Integer> getStats() {
+        return stats;
     }
 
     /**

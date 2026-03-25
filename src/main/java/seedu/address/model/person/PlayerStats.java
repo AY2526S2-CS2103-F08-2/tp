@@ -38,4 +38,30 @@ public class PlayerStats {
     public void setMatchesLost(int matchesLost) {
         this.matchesLost = matchesLost;
     }
+
+
+    @Override
+    public String toString() {
+        return "{ goalsScored = " + goalsScored
+                + ", matchesWon = " + matchesWon
+                + ", matchesLost = " + matchesLost + " }";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        // instanceof handles nulls
+        if (!(other instanceof PlayerStats)) {
+            return false;
+        }
+
+        // temp hardcode equals for now
+        PlayerStats otherPlayerStats = (PlayerStats) other;
+        return otherPlayerStats.getGoalsScored() == goalsScored
+                && otherPlayerStats.getMatchesWon() == matchesWon
+                && otherPlayerStats.getMatchesLost() == matchesLost;
+    }
 }
