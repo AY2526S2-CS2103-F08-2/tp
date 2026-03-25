@@ -1,11 +1,11 @@
 package seedu.address.testutil;
 
-import java.util.List;
+import java.util.Set;
 
-import seedu.address.model.match.Date;
-import seedu.address.model.match.Match;
-import seedu.address.model.match.MatchPlayerList;
-import seedu.address.model.match.OpponentName;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventPlayerList;
+import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 
@@ -17,17 +17,17 @@ public class MatchBuilder {
     public static final String DEFAULT_OPPONENT_NAME = "Manchester City";
     public static final String DEFAULT_DATE = "2026-05-15 1600";
     public static final Person DEFAULT_PERSON = new PersonBuilder().withRole(Role.PLAYER).build();
-    public static final MatchPlayerList DEFAULT_MATCH_PLAYER_LIST = new MatchPlayerList(List.of(DEFAULT_PERSON));
+    public static final EventPlayerList DEFAULT_MATCH_PLAYER_LIST = new EventPlayerList(Set.of(DEFAULT_PERSON));
 
-    private OpponentName opponentName;
+    private EventName opponentName;
     private Date date;
-    private MatchPlayerList matchPlayerList;
+    private EventPlayerList matchPlayerList;
 
     /**
      * Creates a {@code MatchBuilder} with the default details.
      */
     public MatchBuilder() {
-        opponentName = new OpponentName(DEFAULT_OPPONENT_NAME);
+        opponentName = new EventName(DEFAULT_OPPONENT_NAME);
         date = new Date(DEFAULT_DATE);
         matchPlayerList = DEFAULT_MATCH_PLAYER_LIST;
     }
@@ -36,16 +36,16 @@ public class MatchBuilder {
      * Initializes the MatchBuilder with the data of {@code matchToCopy}.
      */
     public MatchBuilder(Match matchToCopy) {
-        opponentName = matchToCopy.getOpponentName();
-        date = matchToCopy.getMatchDate();
-        matchPlayerList = matchToCopy.getMatchPlayerList();
+        opponentName = matchToCopy.getEventName();
+        date = matchToCopy.getEventDate();
+        matchPlayerList = matchToCopy.getEventPlayerList();
     }
 
     /**
-     * Sets the {@code OpponentName} of the {@code Match} that we are building.
+     * Sets the {@code EventName} of the {@code Match} that we are building.
      */
     public MatchBuilder withOpponentName(String name) {
-        this.opponentName = new OpponentName(name);
+        this.opponentName = new EventName(name);
         return this;
     }
 
@@ -58,10 +58,10 @@ public class MatchBuilder {
     }
 
     /**
-     * Sets the {@code MatchPlayerList} of the {@code Match} that we are building.
+     * Sets the {@code EventPlayerList} of the {@code Match} that we are building.
      */
-    public MatchBuilder withPlayers(List<Person> persons) {
-        this.matchPlayerList = new MatchPlayerList(persons);
+    public MatchBuilder withPlayers(Set<Person> persons) {
+        this.matchPlayerList = new EventPlayerList(persons);
         return this;
     }
 

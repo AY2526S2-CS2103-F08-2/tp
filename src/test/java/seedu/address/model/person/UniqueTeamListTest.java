@@ -42,6 +42,31 @@ public class UniqueTeamListTest {
     }
 
     @Test
+    public void setTeam_teamNotInList_throwsTeamNotFoundException() {
+        assertThrows(TeamNotFoundException.class, () -> uniqueTeamList
+                .setTeam(new Team("First Team"), new Team("Reserve Team")));
+    }
+
+    @Test
+    public void setTeam_editedTeamDuplicatesOtherTeam_throwsDuplicateTeamException() {
+        uniqueTeamList.add(new Team("First Team"));
+        uniqueTeamList.add(new Team("Second Team"));
+
+        assertThrows(DuplicateTeamException.class, () -> uniqueTeamList
+                .setTeam(new Team("First Team"), new Team("second team")));
+    }
+
+    @Test
+    public void setTeam_validRename_success() {
+        uniqueTeamList.add(new Team("First Team"));
+
+        uniqueTeamList.setTeam(new Team("First Team"), new Team("Reserve Team"));
+
+        assertFalse(uniqueTeamList.contains(new Team("First Team")));
+        assertTrue(uniqueTeamList.contains(new Team("Reserve Team")));
+    }
+
+    @Test
     public void remove_teamDoesNotExist_throwsTeamNotFoundException() {
         assertThrows(TeamNotFoundException.class, () -> uniqueTeamList.remove(new Team("First Team")));
     }

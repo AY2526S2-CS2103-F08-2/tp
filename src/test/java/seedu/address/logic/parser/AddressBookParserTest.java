@@ -24,9 +24,23 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
 import seedu.address.logic.commands.SortCommand;
+import seedu.address.logic.commands.PositionAddCommand;
+import seedu.address.logic.commands.PositionDeleteCommand;
+import seedu.address.logic.commands.PositionEditCommand;
+import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.StatusAddCommand;
+import seedu.address.logic.commands.StatusDeleteCommand;
+import seedu.address.logic.commands.StatusEditCommand;
+import seedu.address.logic.commands.StatusListCommand;
+import seedu.address.logic.commands.TeamAddCommand;
+import seedu.address.logic.commands.TeamDeleteCommand;
+import seedu.address.logic.commands.TeamEditCommand;
+import seedu.address.logic.commands.TeamListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
+import seedu.address.model.person.RoleFilteredNameContainsKeywordsPredicate;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -87,6 +101,13 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_findWithRole() throws Exception {
+        FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " r/player amy");
+        assertEquals(new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(
+                Role.PLAYER, Arrays.asList("amy"))), command);
+    }
+
+    @Test
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
@@ -117,12 +138,108 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/name") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email desc") instanceof SortCommand);
+    public void parseCommand_teamList() throws Exception {
+        assertTrue(parser.parseCommand(TeamListCommand.COMMAND_WORD) instanceof TeamListCommand);
+    }
+
+    @Test
+    public void parseCommand_teamListUppercase_throwsParseException() {
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("TEAMLIST"));
+    }
+
+    @Test
+    public void parseCommand_teamListMixedCase_throwsParseException() {
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("TeamList"));
+    }
+
+    @Test
+    public void parseCommand_teamListWithArguments_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE), () -> parser
+                        .parseCommand(TeamListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_statusList() throws Exception {
+        assertTrue(parser.parseCommand(StatusListCommand.COMMAND_WORD) instanceof StatusListCommand);
+    }
+
+    @Test
+    public void parseCommand_statusListWithArguments_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatusListCommand.MESSAGE_USAGE), () -> parser
+                        .parseCommand(StatusListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_positionList() throws Exception {
+        assertTrue(parser.parseCommand(PositionListCommand.COMMAND_WORD) instanceof PositionListCommand);
+    }
+
+    @Test
+    public void parseCommand_positionListWithArguments_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionListCommand.MESSAGE_USAGE), () -> parser
+                        .parseCommand(PositionListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_positionAdd() throws Exception {
+        assertTrue(parser.parseCommand(PositionAddCommand.COMMAND_WORD + " Winger")
+                instanceof PositionAddCommand);
+    }
+
+    @Test
+    public void parseCommand_positionEdit() throws Exception {
+        assertTrue(parser.parseCommand(PositionEditCommand.COMMAND_WORD + " old/Defender new/Center Back")
+                instanceof PositionEditCommand);
+    }
+
+    @Test
+    public void parseCommand_positionDelete() throws Exception {
+        assertTrue(parser.parseCommand(PositionDeleteCommand.COMMAND_WORD + " Defender")
+                instanceof PositionDeleteCommand);
+    }
+
+    @Test
+    public void parseCommand_statusAdd() throws Exception {
+        assertTrue(parser.parseCommand(StatusAddCommand.COMMAND_WORD + " Rehab") instanceof StatusAddCommand);
+    }
+
+    @Test
+    public void parseCommand_statusEdit() throws Exception {
+        assertTrue(parser.parseCommand(StatusEditCommand.COMMAND_WORD + " old/Active new/Rehab")
+                instanceof StatusEditCommand);
+    }
+
+    @Test
+    public void parseCommand_statusDelete() throws Exception {
+        assertTrue(parser.parseCommand(StatusDeleteCommand.COMMAND_WORD + " Active")
+                instanceof StatusDeleteCommand);
+    }
+
+    @Test
+    public void parseCommand_teamAdd() throws Exception {
+        assertTrue(parser.parseCommand(TeamAddCommand.COMMAND_WORD + " Reserve Team") instanceof TeamAddCommand);
+    }
+
+    @Test
+    public void parseCommand_teamEdit() throws Exception {
+        assertTrue(parser.parseCommand(TeamEditCommand.COMMAND_WORD + " old/First Team new/Reserve Team")
+                instanceof TeamEditCommand);
+    }
+
+    @Test
+    public void parseCommand_teamDelete() throws Exception {
+        assertTrue(parser.parseCommand(TeamDeleteCommand.COMMAND_WORD + " First Team")
+                instanceof TeamDeleteCommand);
     }
 
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
-            -> parser.parseCommand(""));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), () -> parser
+                        .parseCommand(""));
     }
 
     @Test

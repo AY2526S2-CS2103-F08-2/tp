@@ -5,18 +5,19 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.match.Date;
-import seedu.address.model.match.Match;
-import seedu.address.model.match.MatchPlayerList;
-import seedu.address.model.match.OpponentName;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventPlayerList;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 
@@ -43,18 +44,18 @@ public class MatchCommand extends Command {
     public static final String MESSAGE_NOT_A_PLAYER = "%s is not a player!";
     public static final String MESSAGE_ADD_DUPLICATE_PLAYER = "Cannot add same player twice!";
 
-    private final OpponentName opponentName;
+    private final EventName eventName;
     private final Date date;
     private final List<String> playerNames;
 
     /**
      * Creates a MatchCommand. {@code Match} is not created yet as {@code playerNames} has not been validated.
      */
-    public MatchCommand(OpponentName opponentName, Date date, List<String> playerNames) {
-        requireNonNull(opponentName);
+    public MatchCommand(EventName eventName, Date date, List<String> playerNames) {
+        requireNonNull(eventName);
         requireNonNull(date);
         requireNonNull(playerNames);
-        this.opponentName = opponentName;
+        this.eventName = eventName;
         this.date = date;
         this.playerNames = playerNames;
     }
@@ -63,7 +64,7 @@ public class MatchCommand extends Command {
     public CommandResult execute(Model model) throws CommandException, RuntimeException {
         requireNonNull(model);
 
-        List<Person> playerList = new ArrayList<>();
+        Set<Person> playerList = new HashSet<>();
 
         for (String playerName : playerNames) {
             Person person = model.getAddressBook().getPersonList().stream()
@@ -78,18 +79,14 @@ public class MatchCommand extends Command {
             playerList.add(person);
         }
 
-        if (playerList.size() != new HashSet<>(playerList).size()) {
-            throw new CommandException(MESSAGE_ADD_DUPLICATE_PLAYER);
-        }
+        EventPlayerList eventPlayerList = new EventPlayerList(playerList);
+        Event toAdd = Event.createEvent(eventName, date, EventType.MATCH, eventPlayerList);
 
-        MatchPlayerList matchPlayerList = new MatchPlayerList(playerList);
-        Match toAdd = new Match(opponentName, date, matchPlayerList);
-
-        if (model.hasMatch(toAdd)) {
+        if (model.hasEvent(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_MATCH);
         }
 
-        model.addMatch(toAdd);
+        model.addEvent(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 
@@ -105,7 +102,7 @@ public class MatchCommand extends Command {
         }
 
         MatchCommand otherMatchCommand = (MatchCommand) other;
-        return opponentName.equals(otherMatchCommand.opponentName)
+        return eventName.equals(otherMatchCommand.eventName)
                 && date.equals(otherMatchCommand.date)
                 && playerNames.equals(otherMatchCommand.playerNames);
     }
@@ -113,7 +110,7 @@ public class MatchCommand extends Command {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("Opponent Name: ", opponentName)
+                .add("Opponent Name: ", eventName)
                 .add("Date: ", date)
                 .add("Player Names: ", playerNames)
                 .toString();
