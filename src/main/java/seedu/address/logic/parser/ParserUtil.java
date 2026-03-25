@@ -203,7 +203,7 @@ public class ParserUtil {
      *
      * @throws ParseException if the given {@code eventType} is invalid.
      */
-    public static EventType parseEventType(String eventType)  throws ParseException {
+    public static EventType parseEventType(String eventType) throws ParseException {
         requireNonNull(eventType);
         String trimmedEventType = eventType.trim().toUpperCase();
         if (!EventType.isValidEventType(trimmedEventType)) {

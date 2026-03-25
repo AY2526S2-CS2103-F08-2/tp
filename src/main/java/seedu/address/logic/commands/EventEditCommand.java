@@ -221,8 +221,8 @@ public class EventEditCommand extends Command {
          * Returns {@code Optional#empty()} if {@code eventPlayerNames} is null.
          */
         public Optional<Set<String>> getEventPlayerNames() {
-            return (eventPlayerNames != null) ?
-                    Optional.of(Collections.unmodifiableSet(eventPlayerNames)) : Optional.empty();
+            return (eventPlayerNames != null) ? Optional.of(
+                    Collections.unmodifiableSet(eventPlayerNames)) : Optional.empty();
         }
 
         @Override

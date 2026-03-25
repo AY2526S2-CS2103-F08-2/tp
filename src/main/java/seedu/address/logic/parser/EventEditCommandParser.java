@@ -55,7 +55,8 @@ public class EventEditCommandParser implements Parser<EventEditCommand> {
             editEventDescriptor.setEventDate(ParserUtil.parseDate(argMultimap.getValue(PREFIX_DATE).get()));
         }
 
-        parseEventPlayerNamesForEdit(argMultimap.getAllValues(PREFIX_PLAYER)).ifPresent(editEventDescriptor::setEventPlayerNames);
+        parseEventPlayerNamesForEdit(argMultimap.getAllValues(PREFIX_PLAYER))
+                .ifPresent(editEventDescriptor::setEventPlayerNames);
         if (!editEventDescriptor.isAnyFieldEdited()) {
             throw new ParseException(EventEditCommand.MESSAGE_NOT_EDITED);
         }
