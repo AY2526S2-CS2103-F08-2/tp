@@ -23,6 +23,7 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
+import seedu.address.logic.commands.PositionAddCommand;
 import seedu.address.logic.commands.PositionListCommand;
 import seedu.address.logic.commands.StatusAddCommand;
 import seedu.address.logic.commands.StatusDeleteCommand;
@@ -164,6 +165,12 @@ public class AddressBookParserTest {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionListCommand.MESSAGE_USAGE), () -> parser
                         .parseCommand(PositionListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_positionAdd() throws Exception {
+        assertTrue(parser.parseCommand(PositionAddCommand.COMMAND_WORD + " Winger")
+                instanceof PositionAddCommand);
     }
 
     @Test

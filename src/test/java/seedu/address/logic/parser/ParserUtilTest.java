@@ -18,6 +18,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
@@ -30,6 +31,7 @@ public class ParserUtilTest {
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
     private static final String INVALID_ROLE = "invalidRole";
+    private static final String INVALID_POSITION = "#Forward";
     private static final String INVALID_STATUS = "#Active";
     private static final String INVALID_TEAM = "#First";
 
@@ -42,6 +44,7 @@ public class ParserUtilTest {
     private static final String VALID_TAG_2 = "neighbour";
     private static final String VALID_ROLE_1 = "PLAYER";
     private static final String VALID_ROLE_2 = "STAFF";
+    private static final String VALID_POSITION = "Forward";
     private static final String VALID_STATUS = "Active";
     private static final String VALID_TEAM = "First Team";
 
@@ -278,4 +281,28 @@ public class ParserUtilTest {
         Status expectedStatus = new Status(VALID_STATUS);
         assertEquals(expectedStatus, ParserUtil.parseStatus(statusWithWhitespace));
     }
+
+    @Test
+    public void parsePosition_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parsePosition(null));
+    }
+
+    @Test
+    public void parsePosition_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parsePosition(INVALID_POSITION));
+    }
+
+    @Test
+    public void parsePosition_validValueWithoutWhitespace_returnsPosition() throws Exception {
+        Position expectedPosition = new Position(VALID_POSITION);
+        assertEquals(expectedPosition, ParserUtil.parsePosition(VALID_POSITION));
+    }
+
+    @Test
+    public void parsePosition_validValueWithWhitespace_returnsTrimmedPosition() throws Exception {
+        String positionWithWhitespace = WHITESPACE + VALID_POSITION + WHITESPACE;
+        Position expectedPosition = new Position(VALID_POSITION);
+        assertEquals(expectedPosition, ParserUtil.parsePosition(positionWithWhitespace));
+    }
 }
+
