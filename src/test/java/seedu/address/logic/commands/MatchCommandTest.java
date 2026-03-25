@@ -15,7 +15,7 @@ import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 import seedu.address.testutil.MatchBuilder;
@@ -34,14 +34,14 @@ public class MatchCommandTest {
         Match match = new MatchBuilder().build();
 
         MatchCommand command = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of(player.getName().toString())
         );
 
         Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         expectedModel.addPerson(player);
-        expectedModel.addMatch(match);
+        expectedModel.addEvent(match);
 
         String expectedMessage = String.format(
                 MatchCommand.MESSAGE_SUCCESS,
@@ -57,11 +57,11 @@ public class MatchCommandTest {
         model.addPerson(player);
 
         Match match = new MatchBuilder().build();
-        model.addMatch(match);
+        model.addEvent(match);
 
         MatchCommand command = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of(player.getName().toString())
         );
 
@@ -74,11 +74,11 @@ public class MatchCommandTest {
         model.addPerson(player);
 
         Match match = new MatchBuilder().build();
-        model.addMatch(match);
+        model.addEvent(match);
 
         MatchCommand command = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of(player.getName().toString(), player.getName().toString())
         );
 
@@ -90,8 +90,8 @@ public class MatchCommandTest {
         Match match = new MatchBuilder().build();
 
         MatchCommand command = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of("Fake Player")
         );
 
@@ -107,8 +107,8 @@ public class MatchCommandTest {
         Match match = new MatchBuilder().build();
 
         MatchCommand command = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of("Staff Person")
         );
 
@@ -121,20 +121,20 @@ public class MatchCommandTest {
         Match match = new MatchBuilder().build();
 
         MatchCommand command = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of("Player A")
         );
 
         MatchCommand sameCommand = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of("Player A")
         );
 
         MatchCommand differentCommand = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of("Player B")
         );
 
@@ -150,14 +150,14 @@ public class MatchCommandTest {
         Match match = new MatchBuilder().build();
 
         MatchCommand command = new MatchCommand(
-                match.getOpponentName(),
-                match.getMatchDate(),
+                match.getEventName(),
+                match.getEventDate(),
                 List.of("Player A", "Player B")
         );
 
         String expected = MatchCommand.class.getCanonicalName()
-                + "{Opponent Name: =" + match.getOpponentName()
-                + ", Date: =" + match.getMatchDate()
+                + "{Opponent Name: =" + match.getEventName()
+                + ", Date: =" + match.getEventDate()
                 + ", Player Names: =" + List.of("Player A", "Player B") + "}";
 
         assertEquals(expected, command.toString());
