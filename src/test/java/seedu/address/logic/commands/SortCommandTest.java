@@ -1,0 +1,103 @@
+package seedu.address.logic.commands;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import seedu.address.model.AddressBook;
+import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
+import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonHasRolePredicate;
+import seedu.address.model.person.PersonSortAttribute;
+import seedu.address.model.person.Role;
+import seedu.address.testutil.PersonBuilder;
+
+/**
+ * Contains integration tests (interaction with the Model) and unit tests for SortCommand.
+ */
+public class SortCommandTest {
+
+    private static final Person PLAYER_ZOE = new PersonBuilder()
+            .withName("Zoe Yap")
+            .withEmail("zoe@example.com")
+            .withRole(Role.PLAYER)
+            .build();
+    private static final Person STAFF_ADAM = new PersonBuilder()
+            .withName("Adam Lim")
+            .withEmail("adam@example.com")
+            .withRole(Role.STAFF)
+            .build();
+    private static final Person PLAYER_BETH = new PersonBuilder()
+            .withName("Beth Ong")
+            .withEmail("beth@example.com")
+            .withRole(Role.PLAYER)
+            .build();
+    private static final Person STAFF_MIA = new PersonBuilder()
+            .withName("Mia Koh")
+            .withEmail("mia@example.com")
+            .withRole(Role.STAFF)
+            .build();
+
+    private Model model;
+    private Model expectedModel;
+
+    @BeforeEach
+    public void setUp() {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(PLAYER_ZOE);
+        addressBook.addPerson(STAFF_MIA);
+        addressBook.addPerson(PLAYER_BETH);
+        addressBook.addPerson(STAFF_ADAM);
+
+        model = new ModelManager(addressBook, new UserPrefs());
+        expectedModel = new ModelManager(addressBook, new UserPrefs());
+    }
+
+    @Test
+    public void execute_sortAllPersonsByName_success() {
+        SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons");
+
+        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.NAME.getComparator());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "persons", "name"), expectedModel);
+        assertEquals(List.of(STAFF_ADAM, PLAYER_BETH, STAFF_MIA, PLAYER_ZOE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_sortPlayersByEmail_success() {
+        SortCommand command = new SortCommand(
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players");
+
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.PLAYER));
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.EMAIL.getComparator());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "players", "email"), expectedModel);
+        assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void equals() {
+        SortCommand sortByName = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons");
+        SortCommand sortByNameCopy =
+                new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons");
+        SortCommand sortPlayersByEmail =
+                new SortCommand(new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players");
+
+        assertTrue(sortByName.equals(sortByName));
+        assertTrue(sortByName.equals(sortByNameCopy));
+        assertFalse(sortByName.equals(1));
+        assertFalse(sortByName.equals(null));
+        assertFalse(sortByName.equals(sortPlayersByEmail));
+    }
+}
