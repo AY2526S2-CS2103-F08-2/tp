@@ -79,7 +79,8 @@ public class DeleteInteractionFlowTest {
     @Test
     public void updateAfterParse_deleteBulkDecisionMade_clearsPendingBulkContext() {
         DeleteInteractionFlow flow = new DeleteInteractionFlow();
-        flow.updateAfterParse(new DeleteBulkCommand(new Tag("graduated"), DeleteBulkCommand.BulkDeletionDecision.CONFIRM));
+        flow.updateAfterParse(new DeleteBulkCommand(
+                new Tag("graduated"), DeleteBulkCommand.BulkDeletionDecision.CONFIRM));
 
         assertEquals("y", flow.preprocessInput("y"));
     }
