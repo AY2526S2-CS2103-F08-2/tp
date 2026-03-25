@@ -60,6 +60,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -335,7 +336,32 @@ public class AddCommandParserTest {
         }
 
         @Override
+        public boolean hasTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setTeam(Team oldTeam, Team newTeam) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public ObservableList<Person> getFilteredPersonList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Team> getTeamList() {
             throw new AssertionError("This method should not be called.");
         }
 
