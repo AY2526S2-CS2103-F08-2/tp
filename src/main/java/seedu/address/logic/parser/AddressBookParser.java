@@ -18,6 +18,7 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.MatchCommand;
+import seedu.address.logic.commands.StatusListCommand;
 import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
@@ -91,9 +92,18 @@ public class AddressBookParser {
 
         case TeamListCommand.COMMAND_WORD:
             if (!arguments.isBlank()) {
-                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE));
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE));
             }
             command = new TeamListCommand();
+            break;
+
+        case StatusListCommand.COMMAND_WORD:
+            if (!arguments.isBlank()) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatusListCommand.MESSAGE_USAGE));
+            }
+            command = new StatusListCommand();
             break;
 
         case TeamAddCommand.COMMAND_WORD:
