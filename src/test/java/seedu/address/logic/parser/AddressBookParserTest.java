@@ -23,11 +23,11 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
-import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.PositionAddCommand;
 import seedu.address.logic.commands.PositionDeleteCommand;
 import seedu.address.logic.commands.PositionEditCommand;
 import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.StatusAddCommand;
 import seedu.address.logic.commands.StatusDeleteCommand;
 import seedu.address.logic.commands.StatusEditCommand;
@@ -138,6 +138,9 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/name") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email desc") instanceof SortCommand);
+    }
+
+    @Test
     public void parseCommand_teamList() throws Exception {
         assertTrue(parser.parseCommand(TeamListCommand.COMMAND_WORD) instanceof TeamListCommand);
     }

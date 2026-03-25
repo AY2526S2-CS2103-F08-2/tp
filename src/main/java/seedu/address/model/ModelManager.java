@@ -29,7 +29,6 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
     private final SortedList<Person> sortedPersons;
-    private final FilteredList<Match> matchList;
     private final FilteredList<Event> eventList;
 
     /**
@@ -44,7 +43,6 @@ public class ModelManager implements Model {
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         sortedPersons = new SortedList<>(filteredPersons);
-        matchList = new FilteredList<>(this.addressBook.getMatchList());
         eventList = new FilteredList<>(this.addressBook.getEventList());
     }
 
@@ -169,10 +167,10 @@ public class ModelManager implements Model {
 
         addressBook.setEvent(target, editedEvent);
     }
-    //=========== Match List Accessors =======================================================================
+    //=========== Event List Accessors =======================================================================
 
     /**
-     * Returns an unmodifiable view of the list of {@code Match} backed by the internal list of
+     * Returns an unmodifiable view of the list of {@code Event} backed by the internal list of
      * {@code versionedAddressBook}
      */
     @Override
