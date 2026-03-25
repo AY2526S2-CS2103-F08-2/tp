@@ -397,6 +397,16 @@ public class AddCommandParserTest {
         }
 
         @Override
+        public void deletePosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setPosition(Position oldPosition, Position newPosition) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public ObservableList<Position> getPositionList() {
             throw new AssertionError("This method should not be called.");
         }
