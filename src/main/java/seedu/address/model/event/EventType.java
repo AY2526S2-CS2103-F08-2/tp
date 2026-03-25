@@ -7,7 +7,7 @@ public enum EventType {
     MATCH,
     TRAINING;
 
-    public static final String MESSAGE_CONSTRAINTS = "EventType must be MATCH";
+    public static final String MESSAGE_CONSTRAINTS = "EventType must be MATCH or TRAINING";
 
     /**
      * Returns if a given string is a valid event type.
