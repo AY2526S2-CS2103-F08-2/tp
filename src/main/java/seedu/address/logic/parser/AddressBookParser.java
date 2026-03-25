@@ -192,6 +192,7 @@ public class AddressBookParser {
 
         case SortCommand.COMMAND_WORD:
             command = new SortCommandParser().parse(arguments);
+            break;
         case TrainingCommand.COMMAND_WORD:
             command = new TrainingCommandParser().parse(arguments);
             break;

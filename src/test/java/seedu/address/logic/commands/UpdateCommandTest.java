@@ -306,6 +306,10 @@ public class UpdateCommandTest {
 
         @Override
         public void updateSortedPersonListComparator(Comparator<Person> comparator) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public String getAttendanceReport() {
             throw new AssertionError("This method should not be called.");
         }
