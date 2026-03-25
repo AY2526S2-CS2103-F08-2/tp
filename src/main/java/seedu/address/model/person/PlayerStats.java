@@ -5,16 +5,15 @@ package seedu.address.model.person;
  * Stats are performance data of players based on their games.
  */
 public class PlayerStats {
-    private int goalsScored;
-    private int matchesWon;
-    private int matchesLost;
-    private int fouls;
+    private int goalsScored; // total number of goals scored
+    private int matchesWon; // total matches won
+    private int matchesLost; // total matches lost
 
     /**
      * Constructs a {@code PlayerStats} with a fresh default state. (all 0s)
      */
     public PlayerStats() {
-        this(0, 0, 0, 0);
+        this(0, 0, 0);
     }
 
     /**
@@ -23,13 +22,11 @@ public class PlayerStats {
      * @param goalsScored the goals scored
      * @param matchesWon  the matches won
      * @param matchesLost the matches lost
-     * @param fouls       the fouls
      */
-    public PlayerStats(int goalsScored, int matchesWon, int matchesLost, int fouls) {
+    public PlayerStats(int goalsScored, int matchesWon, int matchesLost) {
         this.goalsScored = goalsScored;
         this.matchesWon = matchesWon;
         this.matchesLost = matchesLost;
-        this.fouls = fouls;
     }
 
     public int getGoalsScored() {
@@ -54,13 +51,5 @@ public class PlayerStats {
 
     public void setMatchesLost(int matchesLost) {
         this.matchesLost = matchesLost;
-    }
-
-    public int getFouls() {
-        return fouls;
-    }
-
-    public void setFouls(int fouls) {
-        this.fouls = fouls;
     }
 }
