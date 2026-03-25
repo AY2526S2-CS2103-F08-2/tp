@@ -38,6 +38,7 @@ import seedu.address.logic.commands.TrainingCommand;
 import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
+
 /**
  * Parses user input.
  */
