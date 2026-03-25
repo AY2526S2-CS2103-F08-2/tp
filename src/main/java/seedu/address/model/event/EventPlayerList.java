@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javafx.collections.ObservableList;
@@ -22,8 +21,8 @@ public class EventPlayerList implements Iterable<Person> {
 
     private final UniquePersonList uniquePersonList = new UniquePersonList();
 
-    public EventPlayerList(Set<Person> personList) {
-        personList.forEach(this::add);
+    public EventPlayerList(Set<Person> personSet) {
+        personSet.forEach(this::add);
     }
 
     private UniquePersonList getUniquePersonList() {

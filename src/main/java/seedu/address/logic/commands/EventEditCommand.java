@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.commands.MatchCommand.MESSAGE_ADD_DUPLICATE_PLAYER;
 import static seedu.address.logic.commands.MatchCommand.MESSAGE_NOT_A_PLAYER;
 import static seedu.address.logic.commands.MatchCommand.MESSAGE_PERSON_DOES_NOT_EXIST;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
@@ -9,7 +8,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EVENT_TYPE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
