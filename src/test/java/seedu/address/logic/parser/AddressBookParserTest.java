@@ -24,6 +24,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
 import seedu.address.logic.commands.StatusAddCommand;
+import seedu.address.logic.commands.StatusEditCommand;
 import seedu.address.logic.commands.StatusListCommand;
 import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
@@ -154,6 +155,12 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_statusAdd() throws Exception {
         assertTrue(parser.parseCommand(StatusAddCommand.COMMAND_WORD + " Rehab") instanceof StatusAddCommand);
+    }
+
+    @Test
+    public void parseCommand_statusEdit() throws Exception {
+        assertTrue(parser.parseCommand(StatusEditCommand.COMMAND_WORD + " old/Active new/Rehab")
+                instanceof StatusEditCommand);
     }
 
     @Test

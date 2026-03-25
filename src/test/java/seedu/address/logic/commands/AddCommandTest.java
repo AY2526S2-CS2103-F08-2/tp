@@ -182,6 +182,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public void setStatus(Status oldStatus, Status newStatus) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public boolean hasEvent(Event event) {
             throw new AssertionError("This method should not be called.");
         }
