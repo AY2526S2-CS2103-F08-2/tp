@@ -62,6 +62,7 @@ public class SortCommandParserTest {
         assertParseFailure(parser, "players name", expectedMessage);
         assertParseFailure(parser, "players by/goals", expectedMessage);
         assertParseFailure(parser, "players by/name by/email", expectedMessage);
+        assertParseFailure(parser, "players by/name desc extra", expectedMessage);
         assertParseFailure(parser, "by/name asc", expectedMessage);
         assertParseFailure(parser, "players by/name descending", expectedMessage);
         assertParseFailure(parser, "players desc by/name", expectedMessage);

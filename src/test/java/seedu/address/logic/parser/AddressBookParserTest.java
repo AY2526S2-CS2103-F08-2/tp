@@ -18,15 +18,19 @@ import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.commands.EventDeleteCommand;
+import seedu.address.logic.commands.EventEditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
+import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.commands.PositionAddCommand;
 import seedu.address.logic.commands.PositionDeleteCommand;
 import seedu.address.logic.commands.PositionEditCommand;
 import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.SetCommand;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.StatusAddCommand;
 import seedu.address.logic.commands.StatusDeleteCommand;
@@ -36,6 +40,7 @@ import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
 import seedu.address.logic.commands.TeamListCommand;
+import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -138,6 +143,33 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/name") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email desc") instanceof SortCommand);
+    }
+
+    @Test
+    public void parseCommand_set() throws Exception {
+        assertTrue(parser.parseCommand(SetCommand.COMMAND_WORD + " 1 goals 10") instanceof SetCommand);
+    }
+
+    @Test
+    public void parseCommand_update() throws Exception {
+        assertTrue(parser.parseCommand(UpdateCommand.COMMAND_WORD + " 1 wins 2") instanceof UpdateCommand);
+    }
+
+    @Test
+    public void parseCommand_match() throws Exception {
+        assertTrue(parser.parseCommand(MatchCommand.COMMAND_WORD + " n/Manchester United d/2026-05-15 1600")
+                instanceof MatchCommand);
+    }
+
+    @Test
+    public void parseCommand_eventDelete() throws Exception {
+        assertTrue(parser.parseCommand(EventDeleteCommand.COMMAND_WORD + " 1") instanceof EventDeleteCommand);
+    }
+
+    @Test
+    public void parseCommand_eventEdit() throws Exception {
+        assertTrue(parser.parseCommand(EventEditCommand.COMMAND_WORD + " 1 n/Manchester United")
+                instanceof EventEditCommand);
     }
 
     @Test

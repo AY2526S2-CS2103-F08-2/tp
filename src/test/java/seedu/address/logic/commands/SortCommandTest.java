@@ -121,4 +121,15 @@ public class SortCommandTest {
         assertFalse(sortByName.equals(sortPlayersByEmail));
         assertFalse(sortByName.equals(sortByNameDescending));
     }
+
+    @Test
+    public void toStringMethod() {
+        SortCommand sortCommand = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.NAME, "persons", true);
+        String expected = SortCommand.class.getCanonicalName()
+                + "{predicate=" + Model.PREDICATE_SHOW_ALL_PERSONS
+                + ", attribute=" + PersonSortAttribute.NAME
+                + ", scopeDescription=persons, isDescending=true}";
+        assertEquals(expected, sortCommand.toString());
+    }
 }
