@@ -262,5 +262,5 @@ Action | Format, Examples
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
-**Sort** | `sort by/ATTRIBUTE` / `sort players by/ATTRIBUTE` / `sort staff by/ATTRIBUTE`<br> e.g., `sort by/name`
+**Sort** | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`
 **Help** | `help`

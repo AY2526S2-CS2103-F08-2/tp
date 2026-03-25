@@ -18,10 +18,10 @@ import seedu.address.model.person.Role;
  */
 public class SortCommandParser implements Parser<SortCommand> {
 
-    public static final String ARGUMENT_PLAYERS = "players";
-    public static final String ARGUMENT_STAFF = "staff";
     public static final String SCOPE_ALL_PERSONS = "persons";
     public static final String ARGUMENT_DESC = "desc";
+    private static final String ARGUMENT_PLAYERS = "players";
+    private static final String ARGUMENT_STAFF = "staff";
 
     @Override
     public SortCommand parse(String args) throws ParseException {
@@ -54,14 +54,11 @@ public class SortCommandParser implements Parser<SortCommand> {
     }
 
     private Predicate<Person> parseScope(String scope) {
-        switch (scope.toLowerCase()) {
-        case ARGUMENT_PLAYERS:
-            return new PersonHasRolePredicate(Role.PLAYER);
-        case ARGUMENT_STAFF:
-            return new PersonHasRolePredicate(Role.STAFF);
-        default:
+        Role role = parseRoleScope(scope);
+        if (role == null) {
             return PREDICATE_SHOW_ALL_PERSONS;
         }
+        return new PersonHasRolePredicate(role);
     }
 
     private PersonSortAttribute parseAttribute(String attribute) throws ParseException {
@@ -73,9 +70,7 @@ public class SortCommandParser implements Parser<SortCommand> {
     }
 
     private boolean isValidScope(String scope) {
-        return scope.isEmpty()
-                || ARGUMENT_PLAYERS.equalsIgnoreCase(scope)
-                || ARGUMENT_STAFF.equalsIgnoreCase(scope);
+        return scope.isEmpty() || parseRoleScope(scope) != null;
     }
 
     private String getScopeDescription(String scope) {
@@ -83,6 +78,16 @@ public class SortCommandParser implements Parser<SortCommand> {
             return SCOPE_ALL_PERSONS;
         }
         return scope.toLowerCase();
+    }
+
+    private Role parseRoleScope(String scope) {
+        if (ARGUMENT_PLAYERS.equalsIgnoreCase(scope)) {
+            return Role.PLAYER;
+        }
+        if (ARGUMENT_STAFF.equalsIgnoreCase(scope)) {
+            return Role.STAFF;
+        }
+        return null;
     }
 
     private boolean parseSortOrder(String[] sortTokens) throws ParseException {

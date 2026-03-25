@@ -28,7 +28,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
-    private final SortedList<Person> sortedPersons;
+    private final SortedList<Person> sortedAndFilteredPersons;
     private final FilteredList<Event> eventList;
 
     /**
@@ -42,7 +42,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
-        sortedPersons = new SortedList<>(filteredPersons);
+        sortedAndFilteredPersons = new SortedList<>(filteredPersons);
         eventList = new FilteredList<>(this.addressBook.getEventList());
     }
 
@@ -186,7 +186,7 @@ public class ModelManager implements Model {
      */
     @Override
     public ObservableList<Person> getFilteredPersonList() {
-        return sortedPersons;
+        return sortedAndFilteredPersons;
     }
 
     @Override
@@ -261,7 +261,7 @@ public class ModelManager implements Model {
     @Override
     public void updateSortedPersonListComparator(Comparator<Person> comparator) {
         requireNonNull(comparator);
-        sortedPersons.setComparator(comparator);
+        sortedAndFilteredPersons.setComparator(comparator);
     }
 
     @Override
