@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
@@ -38,6 +39,7 @@ public class AddressBookTest {
     @Test
     public void constructor() {
         assertEquals(Collections.emptyList(), addressBook.getPersonList());
+        assertEquals(Collections.emptyList(), addressBook.getEventList());
         assertEquals(Collections.emptyList(), addressBook.getTeamList());
         assertEquals(Collections.emptyList(), addressBook.getPositionList());
         assertEquals(Collections.emptyList(), addressBook.getStatusList());
@@ -212,6 +214,7 @@ public class AddressBookTest {
     public void toStringMethod() {
         String expected = AddressBook.class.getCanonicalName()
                 + "{persons=" + addressBook.getPersonList()
+                + ", events=" + addressBook.getEventList()
                 + ", teams=" + addressBook.getTeamList()
                 + ", positions=" + addressBook.getPositionList()
                 + ", statuses=" + addressBook.getStatusList() + "}";
@@ -223,6 +226,7 @@ public class AddressBookTest {
      */
     private static class AddressBookStub implements ReadOnlyAddressBook {
         private final ObservableList<Person> persons = FXCollections.observableArrayList();
+        private final ObservableList<Event> events = FXCollections.observableArrayList();
         private final ObservableList<Team> teams = FXCollections.observableArrayList();
         private final ObservableList<Position> positions = FXCollections.observableArrayList();
         private final ObservableList<Status> statuses = FXCollections.observableArrayList();
@@ -234,6 +238,10 @@ public class AddressBookTest {
         @Override
         public ObservableList<Person> getPersonList() {
             return persons;
+        }
+
+        public ObservableList<Event> getEventList() {
+            return events;
         }
 
         @Override
@@ -251,5 +259,4 @@ public class AddressBookTest {
             return statuses;
         }
     }
-
 }

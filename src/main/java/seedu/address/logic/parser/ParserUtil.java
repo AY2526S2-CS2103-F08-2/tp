@@ -2,18 +2,26 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -127,6 +135,51 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String team} into a {@code Team}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code team} is invalid.
+     */
+    public static Team parseTeam(String team) throws ParseException {
+        requireNonNull(team);
+        String trimmedTeam = team.trim();
+        if (!Team.isValidTeamName(trimmedTeam)) {
+            throw new ParseException(Team.MESSAGE_CONSTRAINTS);
+        }
+        return new Team(trimmedTeam);
+    }
+
+    /**
+     * Parses a {@code String status} into a {@code Status}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code status} is invalid.
+     */
+    public static Status parseStatus(String status) throws ParseException {
+        requireNonNull(status);
+        String trimmedStatus = status.trim();
+        if (!Status.isValidStatusName(trimmedStatus)) {
+            throw new ParseException(Status.MESSAGE_CONSTRAINTS);
+        }
+        return new Status(trimmedStatus);
+    }
+
+    /**
+     * Parses a {@code String position} into a {@code Position}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code position} is invalid.
+     */
+    public static Position parsePosition(String position) throws ParseException {
+        requireNonNull(position);
+        String trimmedPosition = position.trim();
+        if (!Position.isValidPositionName(trimmedPosition)) {
+            throw new ParseException(Position.MESSAGE_CONSTRAINTS);
+        }
+        return new Position(trimmedPosition);
+    }
+
+    /**
      * Parses {@code Collection<String> tags} into a {@code Set<Tag>}.
      */
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
@@ -136,5 +189,58 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+    /**
+     * Parses a {@code String name} into an {@code EventName}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code eventName} is invalid.
+     */
+    public static EventName parseEventName(String eventName) throws ParseException {
+        requireNonNull(eventName);
+        String trimmedName = eventName.trim();
+        if (!EventName.isValidName(trimmedName)) {
+            throw new ParseException(EventName.MESSAGE_CONSTRAINTS);
+        }
+        return new EventName(trimmedName);
+    }
+
+    /**
+     * Parses a {@code String date} into a {@code Date}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code date} is invalid.
+     */
+    public static Date parseDate(String date) throws ParseException {
+        requireNonNull(date);
+        String trimmedDate = date.trim();
+        if (!Date.isValidDate(trimmedDate)) {
+            throw new ParseException(Date.MESSAGE_CONSTRAINTS);
+        }
+        return new Date(trimmedDate);
+    }
+
+    /**
+     * Parses {@code Collection<String> tags} into a {@code List<String>}.
+     */
+    public static List<String> parsePlayers(Collection<String> players) throws ParseException {
+        requireNonNull(players);
+        return new ArrayList<>(players);
+    }
+
+    /**
+     * Parses a {@code String eventType} into a {@code EventType}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code eventType} is invalid.
+     */
+    public static EventType parseEventType(String eventType) throws ParseException {
+        requireNonNull(eventType);
+        String trimmedEventType = eventType.trim().toUpperCase();
+        if (!EventType.isValidEventType(trimmedEventType)) {
+            throw new ParseException(EventType.MESSAGE_CONSTRAINTS);
+        }
+        return EventType.valueOf(trimmedEventType);
     }
 }

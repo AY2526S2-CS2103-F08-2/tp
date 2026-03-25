@@ -1,0 +1,44 @@
+package seedu.address.logic.commands;
+
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.model.util.SampleDataUtil.getSampleAddressBook;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
+import seedu.address.model.UserPrefs;
+
+/**
+ * Contains integration tests for {@link TeamListCommand}.
+ */
+public class TeamListCommandTest {
+
+    private Model model;
+    private Model expectedModel;
+
+    @BeforeEach
+    public void setUp() {
+        model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+    }
+
+    @Test
+    public void execute_nonEmptyCatalog_success() {
+        String expectedMessage = String.join(System.lineSeparator(),
+                "Teams:",
+                "1. Unassigned Team",
+                "2. First Team",
+                "3. Second Team");
+        assertCommandSuccess(new TeamListCommand(), model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_emptyCatalog_returnsEmptyMessage() {
+        Model emptyModel = new ModelManager();
+        Model expectedEmptyModel = new ModelManager(emptyModel.getAddressBook(), new UserPrefs());
+
+        assertCommandSuccess(new TeamListCommand(), emptyModel, TeamListCommand.MESSAGE_EMPTY, expectedEmptyModel);
+    }
+}

@@ -41,6 +41,26 @@ public class UniqueTeamList implements Iterable<Team> {
     }
 
     /**
+     * Replaces the team {@code target} in the list with {@code editedTeam}.
+     * {@code target} must exist in the list.
+     * The team identity of {@code editedTeam} must not duplicate another existing team.
+     */
+    public void setTeam(Team target, Team editedTeam) {
+        requireAllNonNull(target, editedTeam);
+
+        int index = internalList.indexOf(target);
+        if (index == -1) {
+            throw new TeamNotFoundException();
+        }
+
+        if (!target.equals(editedTeam) && contains(editedTeam)) {
+            throw new DuplicateTeamException();
+        }
+
+        internalList.set(index, editedTeam);
+    }
+
+    /**
      * Removes the equivalent team from the list.
      * The team must exist in the list.
      */

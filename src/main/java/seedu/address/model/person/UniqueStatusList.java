@@ -41,6 +41,26 @@ public class UniqueStatusList implements Iterable<Status> {
     }
 
     /**
+     * Replaces the status {@code target} in the list with {@code editedStatus}.
+     * {@code target} must exist in the list.
+     * The status identity of {@code editedStatus} must not duplicate another existing status.
+     */
+    public void setStatus(Status target, Status editedStatus) {
+        requireAllNonNull(target, editedStatus);
+
+        int index = internalList.indexOf(target);
+        if (index == -1) {
+            throw new StatusNotFoundException();
+        }
+
+        if (!target.equals(editedStatus) && contains(editedStatus)) {
+            throw new DuplicateStatusException();
+        }
+
+        internalList.set(index, editedStatus);
+    }
+
+    /**
      * Removes the equivalent status from the list.
      * The status must exist in the list.
      */

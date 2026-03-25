@@ -6,6 +6,8 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.UniqueEventList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
@@ -22,6 +24,7 @@ import seedu.address.model.person.UniqueTeamList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons;
+    private final UniqueEventList events;
     private final UniqueTeamList teams;
     private final UniquePositionList positions;
     private final UniqueStatusList statuses;
@@ -35,6 +38,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         persons = new UniquePersonList();
+        events = new UniqueEventList();
         teams = new UniqueTeamList();
         positions = new UniquePositionList();
         statuses = new UniqueStatusList();
@@ -43,7 +47,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public AddressBook() {}
 
     /**
-     * Creates an AddressBook using the Persons in the {@code toBeCopied}
+     * Creates an AddressBook using the data in the {@code toBeCopied}
      */
     public AddressBook(ReadOnlyAddressBook toBeCopied) {
         this();
@@ -61,6 +65,13 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces the contents of the event list with {@code events}.
+     * {@code events} must not contain duplicate events.
+     */
+    public void setEvents(List<Event> events) {
+        this.events.setEvents(events);
+    }
+    /*
      * Replaces the contents of the team catalog with {@code teams}.
      * {@code teams} must not contain duplicates.
      */
@@ -91,6 +102,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
+        setEvents(newData.getEventList());
         setTeams(newData.getTeamList());
         setPositions(newData.getPositionList());
         setStatuses(newData.getStatusList());
@@ -133,6 +145,43 @@ public class AddressBook implements ReadOnlyAddressBook {
         persons.remove(key);
     }
 
+    //// match-level operations
+
+    /**
+     * Returns true if a match with the same identity as {@code match} exists in the address book.
+     */
+    public boolean hasEvent(Event event) {
+        requireNonNull(event);
+        return events.contains(event);
+    }
+
+    /**
+     * Adds an event to the address book.
+     * The event must not already exist in the address book.
+     */
+    public void addEvent(Event e) {
+        events.add(e);
+    }
+
+    /**
+     * Replaces the given event {@code target} in the list with {@code editedEvent}.
+     * {@code target} must exist in the address book.
+     * The event identity of {@code editedEvent} must not be the same as another existing event in the address book.
+     */
+    public void setEvent(Event target, Event editedEvent) {
+        requireNonNull(editedEvent);
+
+        events.setEvent(target, editedEvent);
+    }
+
+    /**
+     * Removes {@code key} from this {@code AddressBook}.
+     * {@code key} must exist in the address book.
+     */
+    public void removeEvent(Event key) {
+        events.remove(key);
+    }
+
     //// team-level operations
 
     /**
@@ -149,6 +198,16 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addTeam(Team team) {
         teams.add(team);
+    }
+
+    /**
+     * Replaces {@code oldTeam} in the catalog with {@code newTeam}.
+     * {@code oldTeam} must exist in the catalog.
+     * {@code newTeam} must not duplicate an existing team.
+     */
+    public void setTeam(Team oldTeam, Team newTeam) {
+        requireNonNull(newTeam);
+        teams.setTeam(oldTeam, newTeam);
     }
 
     /**
@@ -178,6 +237,16 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces {@code oldPosition} in the catalog with {@code newPosition}.
+     * {@code oldPosition} must exist in the catalog.
+     * {@code newPosition} must not duplicate an existing position.
+     */
+    public void setPosition(Position oldPosition, Position newPosition) {
+        requireNonNull(newPosition);
+        positions.setPosition(oldPosition, newPosition);
+    }
+
+    /**
      * Removes {@code position} from the address book catalog.
      * {@code position} must exist in the catalog.
      */
@@ -204,6 +273,16 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces {@code oldStatus} in the catalog with {@code newStatus}.
+     * {@code oldStatus} must exist in the catalog.
+     * {@code newStatus} must not duplicate an existing status.
+     */
+    public void setStatus(Status oldStatus, Status newStatus) {
+        requireNonNull(newStatus);
+        statuses.setStatus(oldStatus, newStatus);
+    }
+
+    /**
      * Removes {@code status} from the address book catalog.
      * {@code status} must exist in the catalog.
      */
@@ -217,6 +296,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public String toString() {
         return new ToStringBuilder(this)
                 .add("persons", persons)
+                .add("events", events)
                 .add("teams", teams)
                 .add("positions", positions)
                 .add("statuses", statuses)
@@ -229,6 +309,10 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
+    public ObservableList<Event> getEventList() {
+        return events.asUnmodifiableObservableList();
+    }
+
     public ObservableList<Team> getTeamList() {
         return teams.asUnmodifiableObservableList();
     }
@@ -256,6 +340,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         AddressBook otherAddressBook = (AddressBook) other;
         return persons.equals(otherAddressBook.persons)
+                && events.equals(otherAddressBook.events)
                 && teams.equals(otherAddressBook.teams)
                 && positions.equals(otherAddressBook.positions)
                 && statuses.equals(otherAddressBook.statuses);
@@ -263,6 +348,6 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(persons, teams, positions, statuses);
+        return java.util.Objects.hash(persons, events, teams, positions, statuses);
     }
 }
