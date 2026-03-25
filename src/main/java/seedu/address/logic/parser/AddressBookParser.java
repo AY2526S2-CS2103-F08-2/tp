@@ -35,9 +35,6 @@ import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
 import seedu.address.logic.commands.TeamListCommand;
 import seedu.address.logic.commands.TrainingCommand;
-import seedu.address.logic.commands.TrainingCommand;
-import seedu.address.logic.commands.SetCommand;
-import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
