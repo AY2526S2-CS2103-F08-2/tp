@@ -137,6 +137,15 @@ public interface Model {
     /** Returns an unmodifiable view of the team catalog list. */
     ObservableList<Team> getTeamList();
 
+    /** Returns true if a position with the same identity as {@code position} exists in the position catalog. */
+    boolean hasPosition(Position position);
+
+    /**
+     * Adds the given position to the position catalog.
+     * {@code position} must not already exist in the position catalog.
+     */
+    void addPosition(Position position);
+
     /** Returns an unmodifiable view of the position catalog list. */
     ObservableList<Position> getPositionList();
 

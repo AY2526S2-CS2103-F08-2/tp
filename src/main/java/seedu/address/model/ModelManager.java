@@ -191,6 +191,18 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasPosition(Position position) {
+        requireNonNull(position);
+        return addressBook.hasPosition(position);
+    }
+
+    @Override
+    public void addPosition(Position position) {
+        requireNonNull(position);
+        addressBook.addPosition(position);
+    }
+
+    @Override
     public ObservableList<Position> getPositionList() {
         return addressBook.getPositionList();
     }
