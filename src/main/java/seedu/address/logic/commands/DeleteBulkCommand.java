@@ -81,7 +81,9 @@ public class DeleteBulkCommand extends Command {
         }
 
         if (decision == BulkDeletionDecision.CONFIRM) {
-            personsToDelete.forEach(model::deletePerson);
+            for (Person person : personsToDelete) {
+                model.deletePerson(person);
+            }
             model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
             return new CommandResult(String.format(MESSAGE_DELETE_BULK_SUCCESS, personsToDelete.size(), tag.tagName));
         }
