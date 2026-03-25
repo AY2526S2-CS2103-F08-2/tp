@@ -58,6 +58,27 @@ public abstract class Person {
         };
     }
 
+    /**
+     * Factory method for creating a person with player stats.
+     * Expects the person to be a {@code Player}, but will ignore {@code stats} if declared as staff.
+     *
+     * @param name
+     * @param phone
+     * @param email
+     * @param address
+     * @param tags
+     * @param role
+     * @param stats
+     * @return {@code Person}
+     */
+    public static Person createPerson(Name name, Phone phone, Email email,
+                                      Address address, Set<Tag> tags, Role role, PlayerStats stats) {
+        return switch (role) {
+            case PLAYER -> new Player(name, phone, email, address, tags, stats);
+            case STAFF -> new Staff(name, phone, email, address, tags);
+        };
+    }
+
     public Name getName() {
         return name;
     }
