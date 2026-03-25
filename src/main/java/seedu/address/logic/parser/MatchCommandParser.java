@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.match.Date;
-import seedu.address.model.match.OpponentName;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
 
 /**
  * Parses input arguments and creates a new MatchCommand object
@@ -35,11 +35,11 @@ public class MatchCommandParser implements Parser<Command> {
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_DATE);
-        OpponentName opponentName = ParserUtil.parseOpponentName(argMultimap.getValue(PREFIX_NAME).get());
+        EventName eventName = ParserUtil.parseEventName(argMultimap.getValue(PREFIX_NAME).get());
         Date date = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DATE).get());
         List<String> playerNames = ParserUtil.parsePlayers(argMultimap.getAllValues(PREFIX_PLAYER));
 
-        return new MatchCommand(opponentName, date, playerNames);
+        return new MatchCommand(eventName, date, playerNames);
     }
 
     /**

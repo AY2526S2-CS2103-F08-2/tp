@@ -1,4 +1,4 @@
-package seedu.address.model.match;
+package seedu.address.model.event;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
@@ -9,7 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 /**
- * Represents a Match's date in the address book.
+ * Represents an Event date in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidDate(String)}
  */
 public class Date {
@@ -22,7 +22,7 @@ public class Date {
             Locale.ENGLISH);
 
 
-    public final LocalDateTime matchDate;
+    public final LocalDateTime eventDate;
 
     /**
      * Constructs a {@code Date}.
@@ -32,7 +32,7 @@ public class Date {
     public Date(String date) {
         requireNonNull(date);
         checkArgument(isValidDate(date), MESSAGE_CONSTRAINTS);
-        matchDate = parse(date);
+        eventDate = parse(date);
     }
     /**
      * Returns true if a given string is a valid date.
@@ -58,12 +58,12 @@ public class Date {
      * Returns the date with input format, used for storage in JSON file.
      */
     public String getDateWithInputFormat() {
-        return matchDate.format(INPUT_FORMATTER);
+        return eventDate.format(INPUT_FORMATTER);
     }
 
     @Override
     public String toString() {
-        return matchDate.format(DISPLAY_FORMATTER);
+        return eventDate.format(DISPLAY_FORMATTER);
     }
 
     @Override
@@ -78,12 +78,12 @@ public class Date {
         }
 
         Date otherDate = (Date) other;
-        return matchDate.equals(otherDate.matchDate);
+        return eventDate.equals(otherDate.eventDate);
     }
 
     @Override
     public int hashCode() {
-        return matchDate.hashCode();
+        return eventDate.hashCode();
     }
 
 }

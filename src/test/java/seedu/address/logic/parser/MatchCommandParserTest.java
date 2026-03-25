@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.MatchCommand;
-import seedu.address.model.match.Date;
-import seedu.address.model.match.OpponentName;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
 
 
 public class MatchCommandParserTest {
@@ -32,7 +32,7 @@ public class MatchCommandParserTest {
         String userInput = OPPONENT_NAME_DESC_MATCH + DATE_DESC_MATCH + MATCH_NAME_DESC_PLAYER_BEN;
 
         MatchCommand expectedCommand = new MatchCommand(
-                new OpponentName(VALID_OPPONENT_NAME),
+                new EventName(VALID_OPPONENT_NAME),
                 new Date(VALID_DATE),
                 List.of(VALID_NAME_PLAYER_BEN)
         );
@@ -45,7 +45,7 @@ public class MatchCommandParserTest {
         String userInput = OPPONENT_NAME_DESC_MATCH + DATE_DESC_MATCH;
 
         MatchCommand expectedCommand = new MatchCommand(
-                new OpponentName(VALID_OPPONENT_NAME),
+                new EventName(VALID_OPPONENT_NAME),
                 new Date(VALID_DATE),
                 List.of()
         );
@@ -65,7 +65,7 @@ public class MatchCommandParserTest {
     @Test
     public void parse_invalidOpponentName_failure() {
         assertParseFailure(parser, INVALID_OPPONENT_NAME_DESC + DATE_DESC_MATCH,
-                OpponentName.MESSAGE_CONSTRAINTS);
+                EventName.MESSAGE_CONSTRAINTS);
     }
 
     @Test

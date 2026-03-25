@@ -11,8 +11,8 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.match.Date;
-import seedu.address.model.match.OpponentName;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -159,18 +159,18 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String name} into an {@code OpponentName}.
+     * Parses a {@code String name} into an {@code EventName}.
      * Leading and trailing whitespaces will be trimmed.
      *
-     * @throws ParseException if the given {@code opponentName} is invalid.
+     * @throws ParseException if the given {@code eventName} is invalid.
      */
-    public static OpponentName parseOpponentName(String opponentName) throws ParseException {
-        requireNonNull(opponentName);
-        String trimmedName = opponentName.trim();
-        if (!OpponentName.isValidName(trimmedName)) {
-            throw new ParseException(OpponentName.MESSAGE_CONSTRAINTS);
+    public static EventName parseEventName(String eventName) throws ParseException {
+        requireNonNull(eventName);
+        String trimmedName = eventName.trim();
+        if (!EventName.isValidName(trimmedName)) {
+            throw new ParseException(EventName.MESSAGE_CONSTRAINTS);
         }
-        return new OpponentName(trimmedName);
+        return new EventName(trimmedName);
     }
 
     /**

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.parser.Prefix;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 
 /**
@@ -51,16 +51,19 @@ public class Messages {
         return builder.toString();
     }
     /**
-     * Formats the {@code match} for display to the user.
+     * Formats the {@code Event} for display to the user.
      */
-    public static String format(Match match) {
+    public static String format(Event event) {
         final StringBuilder builder = new StringBuilder();
-        builder.append("Opponent: ")
-                .append(match.getOpponentName())
-                .append("; Date: ")
-                .append(match.getMatchDate().toString())
+        switch (event.getEventType()) {
+        case MATCH -> builder.append("Opponent: ")
+                .append(event.getEventName());
+        default -> builder.append("Event: ").append(event.getEventName());
+        }
+        builder.append("; Date: ")
+                .append(event.getEventDate().toString())
                 .append("; Players: ")
-                .append(match.getMatchPlayerList().asUnmodifiableObservableList().stream()
+                .append(event.getEventPlayerList().asUnmodifiableObservableList().stream()
                 .map(person -> person.getName().toString())
                 .collect(Collectors.joining(", ")));
         return builder.toString();

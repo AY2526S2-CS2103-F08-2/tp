@@ -11,7 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.model.match.Match;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Team;
 
@@ -24,7 +24,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
-    private final FilteredList<Match> matchList;
+    private final FilteredList<Event> eventList;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -37,7 +37,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
-        matchList = new FilteredList<>(this.addressBook.getMatchList());
+        eventList = new FilteredList<>(this.addressBook.getEventList());
     }
 
     public ModelManager() {
@@ -116,6 +116,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasEvent(Event event) {
+        requireNonNull(event);
+        return addressBook.hasEvent(event);
+    }
+
+    @Override
     public boolean hasTeam(Team team) {
         requireNonNull(team);
         return addressBook.hasTeam(team);
@@ -140,26 +146,20 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean hasMatch(Match match) {
-        requireNonNull(match);
-        return addressBook.hasMatch(match);
+    public void deleteEvent(Event target) {
+        addressBook.removeEvent(target);
     }
 
     @Override
-    public void deleteMatch(Match target) {
-        addressBook.removeMatch(target);
+    public void addEvent(Event event) {
+        addressBook.addEvent(event);
     }
 
     @Override
-    public void addMatch(Match match) {
-        addressBook.addMatch(match);
-    }
+    public void setEvent(Event target, Event editedEvent) {
+        requireAllNonNull(target, editedEvent);
 
-    @Override
-    public void setMatch(Match target, Match editedMatch) {
-        requireAllNonNull(target, editedMatch);
-
-        addressBook.setMatch(target, editedMatch);
+        addressBook.setEvent(target, editedEvent);
     }
     //=========== Match List Accessors =======================================================================
 
@@ -168,8 +168,8 @@ public class ModelManager implements Model {
      * {@code versionedAddressBook}
      */
     @Override
-    public ObservableList<Match> getMatchList() {
-        return matchList;
+    public ObservableList<Event> getEventList() {
+        return eventList;
     }
 
     //=========== Filtered Person List Accessors =============================================================

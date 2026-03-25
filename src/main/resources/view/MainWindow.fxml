@@ -55,12 +55,12 @@
           <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
         </VBox>
 
-        <VBox fx:id="matchList" styleClass="pane-with-border" minWidth="340" prefWidth="340" VBox.vgrow="ALWAYS">
+        <VBox fx:id="eventList" styleClass="pane-with-border" minWidth="340" prefWidth="340" VBox.vgrow="ALWAYS">
           <padding>
             <Insets top="10" right="10" bottom="10" left="10" />
           </padding>
-          <Label text="Matches" styleClass="label-header" />
-          <StackPane fx:id="matchListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+          <Label text="Events" styleClass="label-header" />
+          <StackPane fx:id="eventListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
         </VBox>
 
         <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
