@@ -70,7 +70,7 @@ public class UpdateCommand extends Command {
 
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_SET_PLAYER_SUCCESS,
-                Messages.format(player), this.stat, old, this.value));
+                Messages.format(player), this.stat, old, old + this.value, this.value));
     }
 
     /**
