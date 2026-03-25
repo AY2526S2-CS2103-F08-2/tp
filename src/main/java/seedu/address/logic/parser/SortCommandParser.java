@@ -5,7 +5,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SORT_BY;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
@@ -22,6 +24,7 @@ public class SortCommandParser implements Parser<SortCommand> {
     public static final String ARGUMENT_DESC = "desc";
     private static final String ARGUMENT_PLAYERS = "players";
     private static final String ARGUMENT_STAFF = "staff";
+    private static final Logger logger = LogsCenter.getLogger(SortCommandParser.class);
 
     @Override
     public SortCommand parse(String args) throws ParseException {
@@ -49,6 +52,9 @@ public class SortCommandParser implements Parser<SortCommand> {
 
         String attributeKeyword = sortTokens[0];
         boolean isDescending = parseSortOrder(sortTokens);
+        logger.fine(() -> String.format("Parsed sort command: scope=%s attribute=%s order=%s",
+                getScopeDescription(scope), attributeKeyword, isDescending ? SortCommand.ORDER_DESCENDING
+                        : SortCommand.ORDER_ASCENDING));
         return new SortCommand(parseScope(scope), parseAttribute(attributeKeyword),
                 getScopeDescription(scope), isDescending);
     }

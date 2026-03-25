@@ -4,7 +4,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -25,6 +27,7 @@ public class SortCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Sorted %s by %s in %s order";
     public static final String ORDER_ASCENDING = "ascending";
     public static final String ORDER_DESCENDING = "descending";
+    private static final Logger logger = LogsCenter.getLogger(SortCommand.class);
 
     private final Predicate<Person> predicate;
     private final Comparator<Person> comparator;
@@ -37,6 +40,9 @@ public class SortCommand extends Command {
      */
     public SortCommand(Predicate<Person> predicate, PersonSortAttribute attribute,
                        String scopeDescription, boolean isDescending) {
+        assert predicate != null;
+        assert attribute != null;
+        assert scopeDescription != null;
         this.predicate = predicate;
         this.attribute = attribute;
         this.comparator = isDescending ? attribute.getComparator().reversed() : attribute.getComparator();
@@ -49,6 +55,8 @@ public class SortCommand extends Command {
         requireNonNull(model);
         model.updateFilteredPersonList(predicate);
         model.updateSortedPersonListComparator(comparator);
+        logger.fine(() -> String.format("Sorted %s by %s in %s order",
+                scopeDescription, attribute.getKeyword(), isDescending ? ORDER_DESCENDING : ORDER_ASCENDING));
         return new CommandResult(String.format(MESSAGE_SUCCESS, scopeDescription, attribute.getKeyword(),
                 isDescending ? ORDER_DESCENDING : ORDER_ASCENDING));
     }
