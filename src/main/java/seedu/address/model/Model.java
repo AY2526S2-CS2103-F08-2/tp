@@ -135,6 +135,8 @@ public interface Model {
      * The returned list is a snapshot and is independent of the model's filtered list state.
      */
     List<Person> getPersonsMatching(Predicate<Person> predicate);
+
+    /**
      * Returns an unmodifiable view of the event list
      */
     ObservableList<Event> getEventList();

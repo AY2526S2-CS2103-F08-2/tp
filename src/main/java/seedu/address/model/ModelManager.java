@@ -193,6 +193,9 @@ public class ModelManager implements Model {
         return addressBook.getPersonList().stream()
                 .filter(predicate)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
     public ObservableList<Team> getTeamList() {
         return addressBook.getTeamList();
     }
