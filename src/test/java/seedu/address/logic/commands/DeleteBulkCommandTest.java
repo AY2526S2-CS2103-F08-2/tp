@@ -128,6 +128,16 @@ public class DeleteBulkCommandTest {
         assertEquals(expected, command.toString());
     }
 
+    @Test
+    public void hashCode_sameValues_sameHashCode() {
+        DeleteBulkCommand first = new DeleteBulkCommand(graduatedTag, BulkDeletionDecision.UNDECIDED);
+        DeleteBulkCommand second = new DeleteBulkCommand(new Tag("graduated"), BulkDeletionDecision.UNDECIDED);
+        DeleteBulkCommand different = new DeleteBulkCommand(graduatedTag, BulkDeletionDecision.CONFIRM);
+
+        assertEquals(first.hashCode(), second.hashCode());
+        assertFalse(first.hashCode() == different.hashCode());
+    }
+
     private seedu.address.model.AddressBook buildAddressBookWithGraduatedPlayers() {
         seedu.address.model.AddressBook addressBook = getTypicalAddressBook();
         addressBook.addPerson(new PersonBuilder()
