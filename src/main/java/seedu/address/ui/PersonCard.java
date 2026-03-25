@@ -7,8 +7,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Player;
+import seedu.address.model.person.PlayerStats;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.StatField;
 
 /**
  * An UI component that displays information of a {@code Person}.
@@ -43,6 +47,14 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane tags;
     @FXML
     private FlowPane staff;
+    @FXML
+    private VBox statsBox;
+    @FXML
+    private Label statGoals;
+    @FXML
+    private Label statWins;
+    @FXML
+    private Label statLosses;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -62,6 +74,19 @@ public class PersonCard extends UiPart<Region> {
         Role role = person.getRole();
         if (role != null && role.equals(Role.STAFF)) {
             staff.getChildren().add(new Label("staff"));
+        }
+
+        // stats for players
+        if (person instanceof Player) {
+            Player player = (Player) person;
+            PlayerStats stats = player.getStats();
+
+            statGoals.setText("Goals: " + StatField.GOALS.getValue(stats));
+            statWins.setText("Wins: " + StatField.WINS.getValue(stats));
+            statLosses.setText("Losses: " + StatField.LOSSES.getValue(stats));
+
+            statsBox.setManaged(true);
+            statsBox.setVisible(true);
         }
     }
 }
