@@ -139,8 +139,6 @@ public interface Model {
     /** Returns an unmodifiable view of the status catalog list. */
     ObservableList<Status> getStatusList();
 
-    /** Returns an unmodifiable view of the filtered match list */
-    ObservableList<Match> getMatchList();
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.
