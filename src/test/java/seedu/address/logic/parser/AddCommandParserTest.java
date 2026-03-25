@@ -357,6 +357,16 @@ public class AddCommandParserTest {
         }
 
         @Override
+        public boolean hasStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
         }

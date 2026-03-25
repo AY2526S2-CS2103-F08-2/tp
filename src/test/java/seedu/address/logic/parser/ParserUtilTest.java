@@ -19,6 +19,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
@@ -29,6 +30,7 @@ public class ParserUtilTest {
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
     private static final String INVALID_ROLE = "invalidRole";
+    private static final String INVALID_STATUS = "#Active";
     private static final String INVALID_TEAM = "#First";
 
 
@@ -40,6 +42,7 @@ public class ParserUtilTest {
     private static final String VALID_TAG_2 = "neighbour";
     private static final String VALID_ROLE_1 = "PLAYER";
     private static final String VALID_ROLE_2 = "STAFF";
+    private static final String VALID_STATUS = "Active";
     private static final String VALID_TEAM = "First Team";
 
     private static final String WHITESPACE = " \t\r\n";
@@ -251,5 +254,28 @@ public class ParserUtilTest {
         String teamWithWhitespace = WHITESPACE + VALID_TEAM + WHITESPACE;
         Team expectedTeam = new Team(VALID_TEAM);
         assertEquals(expectedTeam, ParserUtil.parseTeam(teamWithWhitespace));
+    }
+
+    @Test
+    public void parseStatus_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseStatus(null));
+    }
+
+    @Test
+    public void parseStatus_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseStatus(INVALID_STATUS));
+    }
+
+    @Test
+    public void parseStatus_validValueWithoutWhitespace_returnsStatus() throws Exception {
+        Status expectedStatus = new Status(VALID_STATUS);
+        assertEquals(expectedStatus, ParserUtil.parseStatus(VALID_STATUS));
+    }
+
+    @Test
+    public void parseStatus_validValueWithWhitespace_returnsTrimmedStatus() throws Exception {
+        String statusWithWhitespace = WHITESPACE + VALID_STATUS + WHITESPACE;
+        Status expectedStatus = new Status(VALID_STATUS);
+        assertEquals(expectedStatus, ParserUtil.parseStatus(statusWithWhitespace));
     }
 }
