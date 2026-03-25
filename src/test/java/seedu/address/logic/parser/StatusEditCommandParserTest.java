@@ -35,7 +35,7 @@ public class StatusEditCommandParserTest {
     @Test
     public void parse_duplicatePrefixes_throwsParseException() {
         assertParseFailure(parser, " old/Active old/Unavailable new/Rehab",
-                Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_OLD_STATUS));
+                Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_OLD_ATTRIBUTE));
     }
 
     @Test
