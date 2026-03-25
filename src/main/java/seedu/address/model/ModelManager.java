@@ -195,6 +195,18 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasStatus(Status status) {
+        requireNonNull(status);
+        return addressBook.hasStatus(status);
+    }
+
+    @Override
+    public void addStatus(Status status) {
+        requireNonNull(status);
+        addressBook.addStatus(status);
+    }
+
+    @Override
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
         filteredPersons.setPredicate(predicate);

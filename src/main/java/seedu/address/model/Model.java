@@ -139,6 +139,15 @@ public interface Model {
     /** Returns an unmodifiable view of the status catalog list. */
     ObservableList<Status> getStatusList();
 
+    /** Returns true if a status with the same identity as {@code status} exists in the status catalog. */
+    boolean hasStatus(Status status);
+
+    /**
+     * Adds the given status to the status catalog.
+     * {@code status} must not already exist in the status catalog.
+     */
+    void addStatus(Status status);
+
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.
