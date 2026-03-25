@@ -90,7 +90,7 @@ public abstract class Event {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof Match)) {
+        if (!(other instanceof Event)) {
             return false;
         }
 

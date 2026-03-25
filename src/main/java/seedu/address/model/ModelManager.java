@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -11,6 +13,9 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.logic.commands.EventEditCommand;
+import seedu.address.logic.commands.EventEditCommand.EditEventDescriptor;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
@@ -101,8 +106,22 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void deletePerson(Person target) {
+    public void deletePerson(Person target) throws CommandException {
         addressBook.removePerson(target);
+        for (Event e : addressBook.getEventList()) {
+            if (e.getEventPlayerList().contains((Player) target)) {
+                EditEventDescriptor descriptor = new EditEventDescriptor();
+                descriptor.setEventType(e.getEventType());
+                descriptor.setEventName(e.getEventName());
+                descriptor.setEventDate(e.getEventDate());
+                Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
+                updatedPlayerNames.remove(target.getName().toString());
+                descriptor.setEventPlayerNames(updatedPlayerNames);
+                Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
+                this.setEvent(e, editedEvent);
+            }
+        }
+
     }
 
     @Override
