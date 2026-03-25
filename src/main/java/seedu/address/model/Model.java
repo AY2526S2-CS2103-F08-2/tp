@@ -140,4 +140,9 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Returns the attendance rate of all players.
+     */
+    String getAttendanceReport();
 }

@@ -12,7 +12,10 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.event.Event;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Player;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Team;
 
 /**
@@ -161,6 +164,20 @@ public class ModelManager implements Model {
 
         addressBook.setEvent(target, editedEvent);
     }
+
+    @Override
+    public String getAttendanceReport() {
+        StringBuilder sb = new StringBuilder();
+        ObservableList<Event> trainingList =
+                addressBook.getEventList().filtered(e -> e.getEventType() == EventType.TRAINING);
+
+        for (Person p : addressBook.getPersonList().filtered(p -> p.getRole() == Role.PLAYER)) {
+            long appearances = trainingList.stream().filter(e -> e.getEventPlayerList().contains((Player) p)).count();
+            double rate = (double) appearances / trainingList.size() * 100;
+            sb.append(String.format("%s: %.1f%%\n", p.getName(), rate));
+        }
+        return sb.toString();
+    }
     //=========== Match List Accessors =======================================================================
 
     /**
@@ -206,9 +223,8 @@ public class ModelManager implements Model {
         }
 
         ModelManager otherModelManager = (ModelManager) other;
-        return addressBook.equals(otherModelManager.addressBook)
-                && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+        return addressBook.equals(otherModelManager.addressBook) && userPrefs.equals(otherModelManager.userPrefs)
+               && filteredPersons.equals(otherModelManager.filteredPersons);
     }
 
 }
