@@ -207,6 +207,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void deleteStatus(Status status) {
+        requireNonNull(status);
+        addressBook.removeStatus(status);
+    }
+
+    @Override
     public void setStatus(Status oldStatus, Status newStatus) {
         requireAllNonNull(oldStatus, newStatus);
         addressBook.setStatus(oldStatus, newStatus);

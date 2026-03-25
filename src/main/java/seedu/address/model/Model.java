@@ -149,6 +149,12 @@ public interface Model {
     void addStatus(Status status);
 
     /**
+     * Deletes the given status from the status catalog.
+     * {@code status} must exist in the status catalog.
+     */
+    void deleteStatus(Status status);
+
+    /**
      * Replaces {@code oldStatus} with {@code newStatus} in the status catalog.
      */
     void setStatus(Status oldStatus, Status newStatus);
