@@ -74,31 +74,29 @@ public class DeleteBulkCommand extends Command {
 
         Predicate<Person> predicate = person -> person.getTags().stream()
                 .anyMatch(existingTag -> existingTag.tagName.equalsIgnoreCase(tag.tagName));
-        List<Person> matches = model.getAddressBook().getPersonList().stream()
-                .filter(predicate)
-                .collect(Collectors.toList());
-        if (matches.isEmpty()) {
+        List<Person> personsToDelete = model.getPersonsMatching(predicate);
+        if (personsToDelete.isEmpty()) {
+            model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
             throw new CommandException(String.format(MESSAGE_NO_MATCHING_PERSONS, tag.tagName));
         }
 
-        model.updateFilteredPersonList(predicate);
-
         if (decision == BulkDeletionDecision.CONFIRM) {
-            List<Person> playersToDelete = matches.stream().collect(Collectors.toList());
-            playersToDelete.forEach(model::deletePerson);
+            personsToDelete.forEach(model::deletePerson);
             model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
-            return new CommandResult(String.format(MESSAGE_DELETE_BULK_SUCCESS, playersToDelete.size(), tag.tagName));
+            return new CommandResult(String.format(MESSAGE_DELETE_BULK_SUCCESS, personsToDelete.size(), tag.tagName));
         }
 
         if (decision == BulkDeletionDecision.CANCEL) {
+            model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
             return new CommandResult(String.format(MESSAGE_DELETE_BULK_CANCELLED, tag.tagName));
         }
 
-        String formattedMatches = matches.stream()
+        model.updateFilteredPersonList(predicate);
+        String formattedMatches = personsToDelete.stream()
                 .map(Messages::format)
                 .collect(Collectors.joining("\n"));
         return new CommandResult(String.format(MESSAGE_DELETE_BULK_CONFIRMATION,
-                matches.size(), tag.tagName, formattedMatches,
+                personsToDelete.size(), tag.tagName, formattedMatches,
                 YES_KEYWORD.toUpperCase(Locale.ROOT), NO_KEYWORD.toUpperCase(Locale.ROOT),
                 YES_KEYWORD.toUpperCase(Locale.ROOT), NO_KEYWORD.toUpperCase(Locale.ROOT)));
     }

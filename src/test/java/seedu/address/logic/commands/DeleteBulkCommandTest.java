@@ -90,8 +90,7 @@ public class DeleteBulkCommandTest {
         DeleteBulkCommand command = new DeleteBulkCommand(graduatedTag, BulkDeletionDecision.CANCEL);
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(person -> person.getTags().stream()
-                .anyMatch(existingTag -> existingTag.tagName.equalsIgnoreCase(graduatedTag.tagName)));
+        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
         String expectedMessage = String.format(DeleteBulkCommand.MESSAGE_DELETE_BULK_CANCELLED, graduatedTag.tagName);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
