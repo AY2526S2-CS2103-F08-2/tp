@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -45,7 +46,7 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void executeConfirmedDelete_unfilteredList_success() {
+    public void executeConfirmedDelete_unfilteredList_success() throws CommandException {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON, true);
 
@@ -107,7 +108,7 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void executeCriteriaClashWithIndexAndConfirmDeletesSelectedSuccess() {
+    public void executeCriteriaClashWithIndexAndConfirmDeletesSelectedSuccess() throws CommandException {
         DeleteCommand deleteCommand = new DeleteCommand(KEYWORD_MATCHING_MEIER, INDEX_SECOND_PERSON,
                 DeletionDecision.CONFIRM);
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());

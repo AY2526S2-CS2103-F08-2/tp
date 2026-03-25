@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -11,9 +13,15 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.logic.commands.EventEditCommand;
+import seedu.address.logic.commands.EventEditCommand.EditEventDescriptor;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Event;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Player;
 import seedu.address.model.person.Position;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
@@ -100,8 +108,22 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void deletePerson(Person target) {
+    public void deletePerson(Person target) throws CommandException {
         addressBook.removePerson(target);
+        for (Event e : addressBook.getEventList()) {
+            if (e.getEventPlayerList().contains((Player) target)) {
+                EditEventDescriptor descriptor = new EditEventDescriptor();
+                descriptor.setEventType(e.getEventType());
+                descriptor.setEventName(e.getEventName());
+                descriptor.setEventDate(e.getEventDate());
+                Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
+                updatedPlayerNames.remove(target.getName().toString());
+                descriptor.setEventPlayerNames(updatedPlayerNames);
+                Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
+                this.setEvent(e, editedEvent);
+            }
+        }
+
     }
 
     @Override
@@ -162,6 +184,20 @@ public class ModelManager implements Model {
         requireAllNonNull(target, editedEvent);
 
         addressBook.setEvent(target, editedEvent);
+    }
+
+    @Override
+    public String getAttendanceReport() {
+        StringBuilder sb = new StringBuilder();
+        ObservableList<Event> trainingList =
+                addressBook.getEventList().filtered(e -> e.getEventType() == EventType.TRAINING);
+
+        for (Person p : addressBook.getPersonList().filtered(p -> p.getRole() == Role.PLAYER)) {
+            long appearances = trainingList.stream().filter(e -> e.getEventPlayerList().contains((Player) p)).count();
+            double rate = (double) appearances / trainingList.size() * 100;
+            sb.append(String.format("%s: %.1f%%\n", p.getName(), rate));
+        }
+        return sb.toString();
     }
     //=========== Match List Accessors =======================================================================
 
@@ -266,9 +302,8 @@ public class ModelManager implements Model {
         }
 
         ModelManager otherModelManager = (ModelManager) other;
-        return addressBook.equals(otherModelManager.addressBook)
-                && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+        return addressBook.equals(otherModelManager.addressBook) && userPrefs.equals(otherModelManager.userPrefs)
+               && filteredPersons.equals(otherModelManager.filteredPersons);
     }
 
 }
