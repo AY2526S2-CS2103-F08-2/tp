@@ -24,6 +24,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Team;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -149,11 +150,30 @@ public class AddCommandTest {
         public void setPerson(Person target, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
+          
+        public boolean hasTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setTeam(Team oldTeam, Team newTeam) {
+            throw new AssertionError("This method should not be called.");
+        }
 
         @Override
         public boolean hasEvent(Event event) {
-            throw new AssertionError("This method should not be called.");
-        };
+          throw new AssertionError("This method should not be called.");
+        }
 
         @Override
         public void deleteEvent(Event target) {
@@ -172,6 +192,10 @@ public class AddCommandTest {
 
         @Override
         public ObservableList<Person> getFilteredPersonList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        public ObservableList<Team> getTeamList() {
             throw new AssertionError("This method should not be called.");
         }
 

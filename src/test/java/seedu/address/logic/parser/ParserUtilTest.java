@@ -19,6 +19,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
@@ -28,6 +29,7 @@ public class ParserUtilTest {
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
     private static final String INVALID_ROLE = "invalidRole";
+    private static final String INVALID_TEAM = "#First";
 
 
     private static final String VALID_NAME = "Rachel Walker";
@@ -38,6 +40,7 @@ public class ParserUtilTest {
     private static final String VALID_TAG_2 = "neighbour";
     private static final String VALID_ROLE_1 = "PLAYER";
     private static final String VALID_ROLE_2 = "STAFF";
+    private static final String VALID_TEAM = "First Team";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -225,5 +228,28 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = new HashSet<Tag>(Arrays.asList(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2)));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parseTeam_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseTeam(null));
+    }
+
+    @Test
+    public void parseTeam_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseTeam(INVALID_TEAM));
+    }
+
+    @Test
+    public void parseTeam_validValueWithoutWhitespace_returnsTeam() throws Exception {
+        Team expectedTeam = new Team(VALID_TEAM);
+        assertEquals(expectedTeam, ParserUtil.parseTeam(VALID_TEAM));
+    }
+
+    @Test
+    public void parseTeam_validValueWithWhitespace_returnsTrimmedTeam() throws Exception {
+        String teamWithWhitespace = WHITESPACE + VALID_TEAM + WHITESPACE;
+        Team expectedTeam = new Team(VALID_TEAM);
+        assertEquals(expectedTeam, ParserUtil.parseTeam(teamWithWhitespace));
     }
 }
