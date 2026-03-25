@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Player;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.UniquePersonList;
 
@@ -30,8 +29,13 @@ public class EventPlayerList implements Iterable<Person> {
     /**
      * Returns true if the player list contains an equivalent player as the given argument.
      */
-    public boolean contains(Player toCheck) {
+    public boolean contains(Person toCheck) {
         requireNonNull(toCheck);
+
+        if (toCheck.getRole() != Role.PLAYER) {
+            throw new IllegalArgumentException(String.format(MESSAGE_CONSTRAINTS, toCheck));
+        }
+
         return uniquePersonList.contains(toCheck);
     }
 

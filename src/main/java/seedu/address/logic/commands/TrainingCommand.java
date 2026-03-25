@@ -79,10 +79,6 @@ public class TrainingCommand extends Command {
             playerList.add(person);
         }
 
-        if (playerList.size() != new HashSet<>(playerList).size()) {
-            throw new CommandException(MESSAGE_ADD_DUPLICATE_PLAYER);
-        }
-
         EventPlayerList eventPlayerList = new EventPlayerList(playerList);
         Event toAdd = Event.createEvent(eventName, date, EventType.TRAINING, eventPlayerList);
 

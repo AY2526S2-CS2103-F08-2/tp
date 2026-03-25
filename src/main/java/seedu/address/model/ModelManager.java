@@ -111,7 +111,7 @@ public class ModelManager implements Model {
     public void deletePerson(Person target) throws CommandException {
         addressBook.removePerson(target);
         for (Event e : addressBook.getEventList()) {
-            if (e.getEventPlayerList().contains((Player) target)) {
+            if (e.getEventPlayerList().contains(target)) {
                 EditEventDescriptor descriptor = new EditEventDescriptor();
                 descriptor.setEventType(e.getEventType());
                 descriptor.setEventName(e.getEventName());
