@@ -8,6 +8,8 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
+import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
 /**
@@ -135,6 +137,53 @@ public interface Model {
 
     /** Returns an unmodifiable view of the team catalog list. */
     ObservableList<Team> getTeamList();
+
+    /** Returns true if a position with the same identity as {@code position} exists in the position catalog. */
+    boolean hasPosition(Position position);
+
+    /**
+     * Adds the given position to the position catalog.
+     * {@code position} must not already exist in the position catalog.
+     */
+    void addPosition(Position position);
+
+    /**
+     * Deletes the given position from the position catalog.
+     * {@code position} must exist in the position catalog.
+     */
+    void deletePosition(Position position);
+
+    /**
+     * Replaces {@code oldPosition} with {@code newPosition} in the position catalog.
+     */
+    void setPosition(Position oldPosition, Position newPosition);
+
+    /** Returns an unmodifiable view of the position catalog list. */
+    ObservableList<Position> getPositionList();
+
+    /** Returns an unmodifiable view of the status catalog list. */
+    ObservableList<Status> getStatusList();
+
+    /** Returns true if a status with the same identity as {@code status} exists in the status catalog. */
+    boolean hasStatus(Status status);
+
+    /**
+     * Adds the given status to the status catalog.
+     * {@code status} must not already exist in the status catalog.
+     */
+    void addStatus(Status status);
+
+    /**
+     * Deletes the given status from the status catalog.
+     * {@code status} must exist in the status catalog.
+     */
+    void deleteStatus(Status status);
+
+    /**
+     * Replaces {@code oldStatus} with {@code newStatus} in the status catalog.
+     */
+    void setStatus(Status oldStatus, Status newStatus);
+
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.

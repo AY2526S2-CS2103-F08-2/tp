@@ -35,7 +35,7 @@ public class TeamEditCommandParserTest {
     @Test
     public void parse_duplicatePrefixes_throwsParseException() {
         assertParseFailure(parser, " old/First Team old/Second Team new/Reserve Team",
-                Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_OLD_TEAM));
+                Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_OLD_ATTRIBUTE));
     }
 
     @Test

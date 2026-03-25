@@ -21,6 +21,14 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.MatchCommand;
+import seedu.address.logic.commands.PositionAddCommand;
+import seedu.address.logic.commands.PositionDeleteCommand;
+import seedu.address.logic.commands.PositionEditCommand;
+import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.StatusAddCommand;
+import seedu.address.logic.commands.StatusDeleteCommand;
+import seedu.address.logic.commands.StatusEditCommand;
+import seedu.address.logic.commands.StatusListCommand;
 import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
@@ -95,9 +103,50 @@ public class AddressBookParser {
 
         case TeamListCommand.COMMAND_WORD:
             if (!arguments.isBlank()) {
-                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE));
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE));
             }
             command = new TeamListCommand();
+            break;
+
+        case StatusListCommand.COMMAND_WORD:
+            if (!arguments.isBlank()) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatusListCommand.MESSAGE_USAGE));
+            }
+            command = new StatusListCommand();
+            break;
+
+        case PositionListCommand.COMMAND_WORD:
+            if (!arguments.isBlank()) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionListCommand.MESSAGE_USAGE));
+            }
+            command = new PositionListCommand();
+            break;
+
+        case PositionAddCommand.COMMAND_WORD:
+            command = new PositionAddCommandParser().parse(arguments);
+            break;
+
+        case PositionEditCommand.COMMAND_WORD:
+            command = new PositionEditCommandParser().parse(arguments);
+            break;
+
+        case PositionDeleteCommand.COMMAND_WORD:
+            command = new PositionDeleteCommandParser().parse(arguments);
+            break;
+
+        case StatusAddCommand.COMMAND_WORD:
+            command = new StatusAddCommandParser().parse(arguments);
+            break;
+
+        case StatusEditCommand.COMMAND_WORD:
+            command = new StatusEditCommandParser().parse(arguments);
+            break;
+
+        case StatusDeleteCommand.COMMAND_WORD:
+            command = new StatusDeleteCommandParser().parse(arguments);
             break;
 
         case TeamAddCommand.COMMAND_WORD:

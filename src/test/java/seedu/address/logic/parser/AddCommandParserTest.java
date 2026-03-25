@@ -59,7 +59,9 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
@@ -356,11 +358,61 @@ public class AddCommandParserTest {
         }
 
         @Override
+        public boolean hasStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setStatus(Status oldStatus, Status newStatus) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
         }
 
         public ObservableList<Team> getTeamList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasPosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addPosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deletePosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setPosition(Position oldPosition, Position newPosition) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Position> getPositionList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Status> getStatusList() {
             throw new AssertionError("This method should not be called.");
         }
 
