@@ -59,6 +59,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
@@ -382,6 +383,31 @@ public class AddCommandParserTest {
         }
 
         public ObservableList<Team> getTeamList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasPosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addPosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deletePosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setPosition(Position oldPosition, Position newPosition) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Position> getPositionList() {
             throw new AssertionError("This method should not be called.");
         }
 

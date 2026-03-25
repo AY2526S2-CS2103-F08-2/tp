@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
@@ -135,6 +136,29 @@ public interface Model {
 
     /** Returns an unmodifiable view of the team catalog list. */
     ObservableList<Team> getTeamList();
+
+    /** Returns true if a position with the same identity as {@code position} exists in the position catalog. */
+    boolean hasPosition(Position position);
+
+    /**
+     * Adds the given position to the position catalog.
+     * {@code position} must not already exist in the position catalog.
+     */
+    void addPosition(Position position);
+
+    /**
+     * Deletes the given position from the position catalog.
+     * {@code position} must exist in the position catalog.
+     */
+    void deletePosition(Position position);
+
+    /**
+     * Replaces {@code oldPosition} with {@code newPosition} in the position catalog.
+     */
+    void setPosition(Position oldPosition, Position newPosition);
+
+    /** Returns an unmodifiable view of the position catalog list. */
+    ObservableList<Position> getPositionList();
 
     /** Returns an unmodifiable view of the status catalog list. */
     ObservableList<Status> getStatusList();
