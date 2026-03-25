@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -20,7 +22,6 @@ import seedu.address.model.tag.Tag;
  * Deletes all persons that have a given tag with a confirmation flow.
  */
 public class DeleteBulkCommand extends Command {
-
     public static final String COMMAND_WORD = "deletebulk";
     public static final String YES_KEYWORD = "y";
     public static final String NO_KEYWORD = "n";
@@ -38,6 +39,7 @@ public class DeleteBulkCommand extends Command {
             + "Type '%6$s' to delete or '%7$s' to cancel.";
     public static final String MESSAGE_DELETE_BULK_SUCCESS = "Deleted %1$d person(s) with tag: %2$s";
     public static final String MESSAGE_DELETE_BULK_CANCELLED = "Bulk deletion cancelled for tag: %1$s";
+    private static final Logger logger = LogsCenter.getLogger(DeleteBulkCommand.class);
 
     private final Tag tag;
     private final BulkDeletionDecision decision;
@@ -64,6 +66,7 @@ public class DeleteBulkCommand extends Command {
     public DeleteBulkCommand(Tag tag, BulkDeletionDecision decision) {
         requireNonNull(tag);
         requireNonNull(decision);
+        assert !tag.tagName.isBlank() : "DeleteBulk tag must not be blank";
         this.tag = tag;
         this.decision = decision;
     }
@@ -75,12 +78,17 @@ public class DeleteBulkCommand extends Command {
         Predicate<Person> predicate = person -> person.getTags().stream()
                 .anyMatch(existingTag -> existingTag.tagName.equalsIgnoreCase(tag.tagName));
         List<Person> personsToDelete = model.getPersonsMatching(predicate);
+        assert personsToDelete != null : "Model returned null matching list";
+
+        logger.fine(() -> String.format("deletebulk decision=%s tag=%s matches=%d",
+                decision, tag.tagName, personsToDelete.size()));
         if (personsToDelete.isEmpty()) {
             model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
             throw new CommandException(String.format(MESSAGE_NO_MATCHING_PERSONS, tag.tagName));
         }
 
         if (decision == BulkDeletionDecision.CONFIRM) {
+            assert !personsToDelete.isEmpty() : "Confirm decision requires non-empty matches";
             for (Person person : personsToDelete) {
                 model.deletePerson(person);
             }
