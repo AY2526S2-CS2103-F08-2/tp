@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +23,8 @@ public class MatchTest {
     private final Person playerA = new PersonBuilder().withName("Alice").withRole(Role.PLAYER).build();
     private final Person playerB = new PersonBuilder().withName("Bob").withRole(Role.PLAYER).build();
 
-    private final EventPlayerList playerListA = new EventPlayerList(List.of(playerA));
-    private final EventPlayerList playerListB = new EventPlayerList(List.of(playerB));
+    private final EventPlayerList playerListA = new EventPlayerList(Set.of(playerA));
+    private final EventPlayerList playerListB = new EventPlayerList(Set.of(playerB));
 
     @Test
     public void constructor_nullFields_throwsNullPointerException() {

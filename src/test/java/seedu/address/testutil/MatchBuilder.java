@@ -1,6 +1,6 @@
 package seedu.address.testutil;
 
-import java.util.List;
+import java.util.Set;
 
 import seedu.address.model.event.Date;
 import seedu.address.model.event.EventName;
@@ -17,7 +17,7 @@ public class MatchBuilder {
     public static final String DEFAULT_OPPONENT_NAME = "Manchester City";
     public static final String DEFAULT_DATE = "2026-05-15 1600";
     public static final Person DEFAULT_PERSON = new PersonBuilder().withRole(Role.PLAYER).build();
-    public static final EventPlayerList DEFAULT_MATCH_PLAYER_LIST = new EventPlayerList(List.of(DEFAULT_PERSON));
+    public static final EventPlayerList DEFAULT_MATCH_PLAYER_LIST = new EventPlayerList(Set.of(DEFAULT_PERSON));
 
     private EventName opponentName;
     private Date date;
@@ -60,7 +60,7 @@ public class MatchBuilder {
     /**
      * Sets the {@code EventPlayerList} of the {@code Match} that we are building.
      */
-    public MatchBuilder withPlayers(List<Person> persons) {
+    public MatchBuilder withPlayers(Set<Person> persons) {
         this.matchPlayerList = new EventPlayerList(persons);
         return this;
     }

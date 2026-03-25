@@ -69,23 +69,6 @@ public class MatchCommandTest {
     }
 
     @Test
-    public void execute_addDuplicatePlayer_throwsCommandException() {
-        Person player = new PersonBuilder().withRole(Role.PLAYER).build();
-        model.addPerson(player);
-
-        Match match = new MatchBuilder().build();
-        model.addEvent(match);
-
-        MatchCommand command = new MatchCommand(
-                match.getEventName(),
-                match.getEventDate(),
-                List.of(player.getName().toString(), player.getName().toString())
-        );
-
-        assertCommandFailure(command, model, MatchCommand.MESSAGE_ADD_DUPLICATE_PLAYER);
-    }
-
-    @Test
     public void execute_personDoesNotExist_throwsCommandException() {
         Match match = new MatchBuilder().build();
 

@@ -13,6 +13,7 @@ import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.event.Date;
 import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -194,5 +195,20 @@ public class ParserUtil {
     public static List<String> parsePlayers(Collection<String> players) throws ParseException {
         requireNonNull(players);
         return new ArrayList<>(players);
+    }
+
+    /**
+     * Parses a {@code String eventType} into a {@code EventType}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code eventType} is invalid.
+     */
+    public static EventType parseEventType(String eventType) throws ParseException {
+        requireNonNull(eventType);
+        String trimmedEventType = eventType.trim().toUpperCase();
+        if (!EventType.isValidEventType(trimmedEventType)) {
+            throw new ParseException(EventType.MESSAGE_CONSTRAINTS);
+        }
+        return EventType.valueOf(trimmedEventType);
     }
 }

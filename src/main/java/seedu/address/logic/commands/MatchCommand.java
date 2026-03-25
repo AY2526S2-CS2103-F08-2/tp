@@ -5,9 +5,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -64,7 +64,7 @@ public class MatchCommand extends Command {
     public CommandResult execute(Model model) throws CommandException, RuntimeException {
         requireNonNull(model);
 
-        List<Person> playerList = new ArrayList<>();
+        Set<Person> playerList = new HashSet<>();
 
         for (String playerName : playerNames) {
             Person person = model.getAddressBook().getPersonList().stream()
@@ -77,10 +77,6 @@ public class MatchCommand extends Command {
             }
 
             playerList.add(person);
-        }
-
-        if (playerList.size() != new HashSet<>(playerList).size()) {
-            throw new CommandException(MESSAGE_ADD_DUPLICATE_PLAYER);
         }
 
         EventPlayerList eventPlayerList = new EventPlayerList(playerList);

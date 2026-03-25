@@ -22,6 +22,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.EditEventDescriptorBuilder;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
@@ -44,6 +45,7 @@ public class CommandTestUtil {
     public static final String VALID_ROLE_STAFF = "STAFF";
     public static final String VALID_OPPONENT_NAME = "Manchester United";
     public static final String VALID_DATE = "2025-05-15 1600";
+    public static final String VALID_EVENT_TYPE_MATCH = "MATCH";
 
     public static final String NAME_DESC_PLAYER_BEN = " " + PREFIX_NAME + VALID_NAME_PLAYER_BEN;
     public static final String PHONE_DESC_PLAYER_BEN = " " + PREFIX_PHONE + VALID_PHONE_PLAYER_BEN;
@@ -74,6 +76,7 @@ public class CommandTestUtil {
 
     public static final EditCommand.EditPersonDescriptor DESC_PLAYER_AMY;
     public static final EditCommand.EditPersonDescriptor DESC_PLAYER_BEN;
+    public static final EventEditCommand.EditEventDescriptor DESC_MATCH;
 
     static {
         DESC_PLAYER_AMY =
@@ -84,6 +87,9 @@ public class CommandTestUtil {
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_PLAYER_BEN).withPhone(VALID_PHONE_PLAYER_BEN)
                         .withEmail(VALID_EMAIL_PLAYER_BEN).withAddress(VALID_ADDRESS_PLAYER_BEN)
                         .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).withRole(VALID_ROLE_PLAYER).build();
+        DESC_MATCH =
+                new EditEventDescriptorBuilder().withEventName(VALID_OPPONENT_NAME).withEventDate(VALID_DATE)
+                        .withEventType(VALID_EVENT_TYPE_MATCH).build();
     }
 
     /**
