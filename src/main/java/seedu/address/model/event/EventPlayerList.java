@@ -7,6 +7,7 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Player;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.UniquePersonList;
 
@@ -24,8 +25,12 @@ public class EventPlayerList implements Iterable<Person> {
         personList.forEach(this::add);
     }
 
-    private UniquePersonList getUniquePersonList() {
-        return uniquePersonList;
+    /**
+     * Returns true if the player list contains an equivalent player as the given argument.
+     */
+    public boolean contains(Player toCheck) {
+        requireNonNull(toCheck);
+        return uniquePersonList.contains(toCheck);
     }
 
     /**
