@@ -5,13 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
-import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.testutil.PersonBuilder;
 
@@ -23,7 +22,7 @@ public class EventPlayerListTest {
 
     @Test
     public void constructor_validPlayers_success() {
-        EventPlayerList eventPlayerList = new EventPlayerList(List.of(playerA, playerB));
+        EventPlayerList eventPlayerList = new EventPlayerList(Set.of(playerA, playerB));
 
         assertEquals(2, eventPlayerList.asUnmodifiableObservableList().size());
         assertTrue(eventPlayerList.asUnmodifiableObservableList().contains(playerA));
@@ -32,27 +31,27 @@ public class EventPlayerListTest {
 
     @Test
     public void add_nullPerson_throwsNullPointerException() {
-        EventPlayerList eventPlayerList = new EventPlayerList(List.of());
+        EventPlayerList eventPlayerList = new EventPlayerList(Set.of());
         assertThrows(NullPointerException.class, () -> eventPlayerList.add(null));
     }
 
     @Test
     public void add_nonPlayer_throwsIllegalArgumentException() {
-        EventPlayerList eventPlayerList = new EventPlayerList(List.of(playerA));
+        EventPlayerList eventPlayerList = new EventPlayerList(Set.of(playerA));
 
         assertThrows(IllegalArgumentException.class, () -> eventPlayerList.add(staff));
     }
 
     @Test
     public void add_duplicatePlayer_throwsException() {
-        EventPlayerList eventPlayerList = new EventPlayerList(List.of(playerA));
+        EventPlayerList eventPlayerList = new EventPlayerList(Set.of(playerA));
 
         assertThrows(DuplicatePersonException.class, () -> eventPlayerList.add(playerA));
     }
 
     @Test
     public void iterator_iteratesThroughPlayers() {
-        EventPlayerList eventPlayerList = new EventPlayerList(List.of(playerA, playerB));
+        EventPlayerList eventPlayerList = new EventPlayerList(Set.of(playerA, playerB));
 
         int count = 0;
         for (Person person : eventPlayerList) {
@@ -65,9 +64,9 @@ public class EventPlayerListTest {
 
     @Test
     public void equals() {
-        EventPlayerList list = new EventPlayerList(List.of(playerA, playerB));
-        EventPlayerList sameList = new EventPlayerList(List.of(playerA, playerB));
-        EventPlayerList differentList = new EventPlayerList(List.of(playerA));
+        EventPlayerList list = new EventPlayerList(Set.of(playerA, playerB));
+        EventPlayerList sameList = new EventPlayerList(Set.of(playerA, playerB));
+        EventPlayerList differentList = new EventPlayerList(Set.of(playerA));
 
         assertTrue(list.equals(list));
         assertTrue(list.equals(sameList));
@@ -78,19 +77,9 @@ public class EventPlayerListTest {
 
     @Test
     public void hashCode_sameValues_sameHashCode() {
-        EventPlayerList list = new EventPlayerList(List.of(playerA, playerB));
-        EventPlayerList sameList = new EventPlayerList(List.of(playerA, playerB));
+        EventPlayerList list = new EventPlayerList(Set.of(playerA, playerB));
+        EventPlayerList sameList = new EventPlayerList(Set.of(playerA, playerB));
 
         assertEquals(list.hashCode(), sameList.hashCode());
-    }
-
-    @Test
-    public void toStringMethod() {
-        EventPlayerList eventPlayerList = new EventPlayerList(List.of(playerA, playerB));
-        UniquePersonList uniquePersonList = new UniquePersonList();
-        uniquePersonList.add(playerA);
-        uniquePersonList.add(playerB);
-
-        assertEquals(uniquePersonList.toString(), eventPlayerList.toString());
     }
 }

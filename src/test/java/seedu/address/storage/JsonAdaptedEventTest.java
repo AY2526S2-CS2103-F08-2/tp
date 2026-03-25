@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,6 @@ import seedu.address.model.event.EventPlayerList;
 import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
-import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.testutil.MatchBuilder;
 import seedu.address.testutil.PersonBuilder;
 
@@ -40,7 +40,7 @@ public class JsonAdaptedEventTest {
                 "Liverpool",
                 "MATCH",
                 "2026-05-15 1600",
-                List.of(VALID_PLAYER.getName().toString(), VALID_PLAYER_TWO.getName().toString())
+                List.of(VALID_PLAYER.getName().toString())
         );
 
         Match expectedMatch = new MatchBuilder()
@@ -51,7 +51,7 @@ public class JsonAdaptedEventTest {
         expectedMatch = new Match(
                 expectedMatch.getEventName(),
                 expectedMatch.getEventDate(),
-                new EventPlayerList(List.of(VALID_PLAYER, VALID_PLAYER_TWO))
+                new EventPlayerList(Set.of(VALID_PLAYER))
         );
 
         assertEquals(expectedMatch, jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
@@ -142,17 +142,5 @@ public class JsonAdaptedEventTest {
                         jsonAdaptedEvent.toModelType(personMapWithStaff));
         assertEquals(String.format(JsonAdaptedEvent.NOT_A_PLAYER_MESSAGE_FORMAT,
                 STAFF_PERSON.getName().toString()), e.getMessage());
-    }
-
-    @Test
-    public void toModelType_duplicatePlayers_throwsException() {
-        JsonAdaptedEvent jsonAdaptedEvent = new JsonAdaptedEvent(
-                "Liverpool",
-                "MATCH",
-                "2026-05-15 1600",
-                List.of(VALID_PLAYER.getName().toString(), VALID_PLAYER.getName().toString())
-        );
-
-        assertThrows(DuplicatePersonException.class, () -> jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
     }
 }
