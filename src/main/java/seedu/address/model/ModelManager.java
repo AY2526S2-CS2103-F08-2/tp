@@ -20,8 +20,8 @@ import seedu.address.model.event.Event;
 import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
-import seedu.address.model.person.Role;
 import seedu.address.model.person.Position;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
