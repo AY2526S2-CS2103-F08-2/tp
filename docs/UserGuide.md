@@ -132,20 +132,21 @@ Examples:
 
 Finds persons whose names contain any of the given keywords, optionally limited by role.
 
-Format: `find [player, players, staff] KEYWORD [MORE_KEYWORDS]`
+Format: `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`
 
 * The search is case-insensitive. e.g `hans` will match `Hans`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
-* Prefixing with `player`/`players` or `staff` limits the results to that role.
+* Prefixing with `r/player` or `r/staff` limits the results to that role.
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 
 Examples:
 * `find John` returns `john` and `John Doe`
-* `find player John` returns players whose names match `John`
-* `find staff alex david` returns staff whose names match `alex` OR `david`
+* `find r/player John` returns players whose names match `John`
+* `find r/staff alex david` returns staff whose names match `alex` OR `david`
+* `find staff ben` treats `staff` as a normal name keyword (general search)
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
@@ -221,6 +222,6 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find** | `find [player, players, staff] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find player James`, `find staff Alex`
+**Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
 **Help** | `help`

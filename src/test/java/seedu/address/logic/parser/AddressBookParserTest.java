@@ -89,7 +89,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_findWithRole() throws Exception {
-        FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " player amy");
+        FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " r/player amy");
         assertEquals(new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(
                 Role.PLAYER, Arrays.asList("amy"))), command);
     }

@@ -20,11 +20,11 @@ public class FindCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all persons whose names contain any of "
             + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
-            + "Parameters: [player|players|staff] KEYWORD [MORE_KEYWORDS]...\n"
+            + "Parameters: [r/ROLE] KEYWORD [MORE_KEYWORDS]...\n"
             + "Examples:\n"
             + "  " + COMMAND_WORD + " alice bob\n"
-            + "  " + COMMAND_WORD + " player alice\n"
-            + "  " + COMMAND_WORD + " staff tan";
+            + "  " + COMMAND_WORD + " r/player alice\n"
+            + "  " + COMMAND_WORD + " r/staff tan";
 
     private static final Logger logger = LogsCenter.getLogger(FindCommand.class);
 

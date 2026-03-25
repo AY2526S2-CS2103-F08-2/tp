@@ -35,8 +35,10 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_roleWithoutKeyword_throwsParseException() {
-        assertParseFailure(parser, "player", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "staff", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "r/player", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                                                                        FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "r/staff", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                                                                        FindCommand.MESSAGE_USAGE));
     }
 
     @Test
@@ -46,9 +48,15 @@ public class FindCommandParserTest {
         FindCommand expectedStaffCommand =
                 new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(Role.STAFF, Arrays.asList("Bob", "Tan")));
 
-        assertParseSuccess(parser, "player Alice", expectedPlayerCommand);
-        assertParseSuccess(parser, "players Alice", expectedPlayerCommand);
-        assertParseSuccess(parser, "staff Bob Tan", expectedStaffCommand);
+        assertParseSuccess(parser, "r/player Alice", expectedPlayerCommand);
+        assertParseSuccess(parser, "r/staff Bob Tan", expectedStaffCommand);
+    }
+
+    @Test
+    public void parse_roleLikeKeywords_treatedAsGeneralKeywords() {
+        FindCommand expectedFindCommand =
+                new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList("staff", "Ben")));
+        assertParseSuccess(parser, "staff Ben", expectedFindCommand);
     }
 
 }

@@ -2,10 +2,10 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
@@ -20,9 +20,6 @@ import seedu.address.model.person.RoleFilteredNameContainsKeywordsPredicate;
  */
 public class FindCommandParser implements Parser<FindCommand> {
     private static final Logger logger = LogsCenter.getLogger(FindCommandParser.class);
-    private static final String ROLE_PLAYER = "player";
-    private static final String ROLE_PLAYERS = "players";
-    private static final String ROLE_STAFF = "staff";
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
@@ -38,14 +35,14 @@ public class FindCommandParser implements Parser<FindCommand> {
         }
 
         String[] tokens = trimmedArgs.split("\\s+");
-        String firstToken = tokens[0].toLowerCase(Locale.ROOT);
+        String firstToken = tokens[0];
 
-        if (isRoleToken(firstToken)) {
+        if (isRolePrefixedToken(firstToken)) {
             if (tokens.length == 1) {
                 throw new ParseException(
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
-            Role role = parseRole(firstToken);
+            Role role = ParserUtil.parseRole(firstToken.substring(PREFIX_ROLE.getPrefix().length()));
             List<String> nameKeywords = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
             logger.fine(() -> String.format("Parsed role-aware find: role=%s keywords=%d", role, nameKeywords.size()));
             return new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(role, nameKeywords));
@@ -54,15 +51,8 @@ public class FindCommandParser implements Parser<FindCommand> {
         return new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList(tokens)));
     }
 
-    private boolean isRoleToken(String token) {
-        return ROLE_PLAYER.equals(token) || ROLE_PLAYERS.equals(token) || ROLE_STAFF.equals(token);
-    }
-
-    private Role parseRole(String token) {
-        if (ROLE_STAFF.equals(token)) {
-            return Role.STAFF;
-        }
-        return Role.PLAYER;
+    private boolean isRolePrefixedToken(String token) {
+        return token.startsWith(PREFIX_ROLE.getPrefix());
     }
 
 }
