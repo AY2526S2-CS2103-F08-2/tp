@@ -13,6 +13,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
@@ -187,6 +188,11 @@ public class ModelManager implements Model {
     @Override
     public ObservableList<Team> getTeamList() {
         return addressBook.getTeamList();
+    }
+
+    @Override
+    public ObservableList<Position> getPositionList() {
+        return addressBook.getPositionList();
     }
 
     @Override

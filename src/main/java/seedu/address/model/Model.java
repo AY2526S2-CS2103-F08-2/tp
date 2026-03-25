@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
@@ -135,6 +136,9 @@ public interface Model {
 
     /** Returns an unmodifiable view of the team catalog list. */
     ObservableList<Team> getTeamList();
+
+    /** Returns an unmodifiable view of the position catalog list. */
+    ObservableList<Position> getPositionList();
 
     /** Returns an unmodifiable view of the status catalog list. */
     ObservableList<Status> getStatusList();
