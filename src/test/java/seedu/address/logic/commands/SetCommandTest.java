@@ -11,6 +11,7 @@ import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -218,6 +219,11 @@ public class SetCommandTest {
 
         @Override
         public ObservableList<Person> getFilteredPersonList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public List<Person> getPersonsMatching(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 

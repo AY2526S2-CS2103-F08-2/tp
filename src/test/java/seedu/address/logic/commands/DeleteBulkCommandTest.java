@@ -48,7 +48,7 @@ public class DeleteBulkCommandTest {
     }
 
     @Test
-    public void execute_confirm_successDeletesAllMatchingPersons() {
+    public void execute_confirm_successDeletesAllMatchingPersons() throws Exception {
         Model model = new ModelManager(buildAddressBookWithGraduatedPlayers(), new UserPrefs());
         DeleteBulkCommand command = new DeleteBulkCommand(graduatedTag, BulkDeletionDecision.CONFIRM);
 
