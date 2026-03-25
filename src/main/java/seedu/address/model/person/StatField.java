@@ -23,11 +23,11 @@ public enum StatField {
     LOSSES(PlayerStats::getMatchesLost, PlayerStats::setMatchesLost,
             x -> x >= 0, "The value for losses should be more or equal to 0.");
 
+    public final String messageConstraints;
+
     private final Function<PlayerStats, Integer> getter;
     private final BiConsumer<PlayerStats, Integer> setter;
     private final Predicate<Integer> validator; // check if the value is valid
-
-    public final String messageConstraints;
 
     StatField(Function<PlayerStats, Integer> getter, BiConsumer<PlayerStats, Integer> setter,
               Predicate<Integer> validator, String messageConstraints) {
