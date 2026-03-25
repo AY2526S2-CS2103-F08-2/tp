@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Represents a specific player stat field belonging to a {@link PlayerStats},
@@ -15,16 +16,25 @@ import java.util.function.Function;
  * corresponding method references.
  */
 public enum StatField {
-    GOALS(PlayerStats::getGoalsScored, PlayerStats::setGoalsScored),
-    WINS(PlayerStats::getMatchesWon, PlayerStats::setMatchesWon),
-    LOSSES(PlayerStats::getMatchesLost, PlayerStats::setMatchesLost);
+    GOALS(PlayerStats::getGoalsScored, PlayerStats::setGoalsScored,
+            x -> x >= 0, "The value for goals should be more or equal to 0."),
+    WINS(PlayerStats::getMatchesWon, PlayerStats::setMatchesWon,
+            x -> x >= 0, "The value for wins should be more or equal to 0."),
+    LOSSES(PlayerStats::getMatchesLost, PlayerStats::setMatchesLost,
+            x -> x >= 0, "The value for losses should be more or equal to 0.");
 
     private final Function<PlayerStats, Integer> getter;
     private final BiConsumer<PlayerStats, Integer> setter;
+    private final Predicate<Integer> validator; // check if the value is valid
 
-    StatField(Function<PlayerStats, Integer> getter, BiConsumer<PlayerStats, Integer> setter) {
+    public final String messageConstraints;
+
+    StatField(Function<PlayerStats, Integer> getter, BiConsumer<PlayerStats, Integer> setter,
+              Predicate<Integer> validator, String messageConstraints) {
         this.getter = getter;
         this.setter = setter;
+        this.validator = validator;
+        this.messageConstraints = messageConstraints;
     }
 
     /**
@@ -45,5 +55,15 @@ public enum StatField {
      */
     public void setValue(PlayerStats stats, int value) {
         setter.accept(stats, value);
+    }
+
+    /**
+     * Checks whether the given value is considered a valid value for the stat.
+     *
+     * @param value the value to test
+     * @return true if valid else false
+     */
+    public boolean isValid(int value) {
+        return validator.test(value);
     }
 }

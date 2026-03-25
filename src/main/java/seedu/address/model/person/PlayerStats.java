@@ -13,20 +13,6 @@ public class PlayerStats {
      * Constructs a {@code PlayerStats} with a fresh default state. (all 0s)
      */
     public PlayerStats() {
-        this(0, 0, 0);
-    }
-
-    /**
-     * Constructs a {@code PlayerStats} with the given stat data.
-     *
-     * @param goalsScored the goals scored
-     * @param matchesWon  the matches won
-     * @param matchesLost the matches lost
-     */
-    public PlayerStats(int goalsScored, int matchesWon, int matchesLost) {
-        this.goalsScored = goalsScored;
-        this.matchesWon = matchesWon;
-        this.matchesLost = matchesLost;
     }
 
     public int getGoalsScored() {
