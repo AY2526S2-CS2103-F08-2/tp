@@ -32,6 +32,10 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `list staff` : Lists only staff.
 
+   * `sort by/name` : Sorts all persons by name in ascending order.
+
+   * `sort players by/email desc` : Sorts only players by email in descending order.
+
    * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a player named `John Doe` to SoCcer Manager.
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
@@ -124,6 +128,25 @@ Examples:
 * `list`
 * `list players`
 * `list staff`
+
+### Sorting persons: `sort`
+
+Sorts persons in the UI by a supported attribute.
+
+Format:
+* `sort by/ATTRIBUTE`
+* `sort players by/ATTRIBUTE`
+* `sort staff by/ATTRIBUTE`
+* Add optional `desc` at the end for descending order
+
+Supported attributes:
+* `name`
+* `email`
+
+Examples:
+* `sort by/name`
+* `sort players by/email`
+* `sort staff by/name desc`
 
 ### Editing a person : `edit`
 
@@ -254,4 +277,5 @@ Action | Format, Examples
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
+**Sort** | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`
 **Help** | `help`
