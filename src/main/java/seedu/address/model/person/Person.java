@@ -74,8 +74,8 @@ public abstract class Person {
     public static Person createPerson(Name name, Phone phone, Email email,
                                       Address address, Set<Tag> tags, Role role, PlayerStats stats) {
         return switch (role) {
-            case PLAYER -> new Player(name, phone, email, address, tags, stats);
-            case STAFF -> new Staff(name, phone, email, address, tags);
+        case PLAYER -> new Player(name, phone, email, address, tags, stats);
+        case STAFF -> new Staff(name, phone, email, address, tags);
         };
     }
 
