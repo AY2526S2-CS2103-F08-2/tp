@@ -105,7 +105,7 @@ public class EventEditCommand extends Command {
         Set<String> updatedPlayerNames = editEventDescriptor.getEventPlayerNames()
                 .orElse(eventToEdit.getEventPlayerList().getPlayerNames());
 
-        List<Person> playerList = new ArrayList<>();
+        Set<Person> playerList = new HashSet<>();
 
         for (String playerName : updatedPlayerNames) {
             Person person = model.getAddressBook().getPersonList().stream()
@@ -118,10 +118,6 @@ public class EventEditCommand extends Command {
             }
 
             playerList.add(person);
-        }
-
-        if (playerList.size() != new HashSet<>(playerList).size()) {
-            throw new CommandException(MESSAGE_ADD_DUPLICATE_PLAYER);
         }
 
         EventPlayerList eventPlayerList = new EventPlayerList(playerList);

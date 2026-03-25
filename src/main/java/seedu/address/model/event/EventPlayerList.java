@@ -22,7 +22,7 @@ public class EventPlayerList implements Iterable<Person> {
 
     private final UniquePersonList uniquePersonList = new UniquePersonList();
 
-    public EventPlayerList(List<Person> personList) {
+    public EventPlayerList(Set<Person> personList) {
         personList.forEach(this::add);
     }
 

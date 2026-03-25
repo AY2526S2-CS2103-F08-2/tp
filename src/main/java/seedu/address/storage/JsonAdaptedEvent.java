@@ -1,8 +1,10 @@
 package seedu.address.storage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -93,7 +95,7 @@ class JsonAdaptedEvent {
         }
         final Date modelDate = new Date(date);
 
-        final List<Person> playerList = new ArrayList<>();
+        final Set<Person> playerList = new HashSet<>();
         for (String playerName : players) {
             Person person = personMap.get(playerName);
             if (person == null) {
