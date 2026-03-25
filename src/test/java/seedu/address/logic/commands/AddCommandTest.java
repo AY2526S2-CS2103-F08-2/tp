@@ -23,7 +23,11 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -150,8 +154,106 @@ public class AddCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        public boolean hasTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteTeam(Team team) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setTeam(Team oldTeam, Team newTeam) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteStatus(Status status) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setStatus(Status oldStatus, Status newStatus) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteEvent(Event target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        };
+
+        @Override
+        public void setEvent(Event target, Event editedEvent) {
+            throw new AssertionError("This method should not be called.");
+        };
+
         @Override
         public ObservableList<Person> getFilteredPersonList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        public ObservableList<Team> getTeamList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasPosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addPosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deletePosition(Position position) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setPosition(Position oldPosition, Position newPosition) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Position> getPositionList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Status> getStatusList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Event> getEventList() {
             throw new AssertionError("This method should not be called.");
         }
 

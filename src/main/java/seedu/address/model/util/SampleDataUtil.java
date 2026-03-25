@@ -11,13 +11,42 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 /**
  * Contains utility methods for populating {@code AddressBook} with sample data.
  */
 public class SampleDataUtil {
+    public static Team[] getDefaultTeams() {
+        return new Team[] {
+            new Team("Unassigned Team"),
+            new Team("First Team"),
+            new Team("Second Team")
+        };
+    }
+
+    public static Position[] getDefaultPositions() {
+        return new Position[] {
+            new Position("Unassigned Position"),
+            new Position("Goalkeeper"),
+            new Position("Defender"),
+            new Position("Midfielder"),
+            new Position("Forward")
+        };
+    }
+
+    public static Status[] getDefaultStatuses() {
+        return new Status[] {
+            new Status("Unknown"),
+            new Status("Active"),
+            new Status("Unavailable")
+        };
+    }
+
     public static Person[] getSamplePersons() {
         return new Person[]{
                 Person.createPerson(new Name("Alex Yeoh"), new Phone("87438807"), new Email("alexyeoh@example.com"),
@@ -44,6 +73,15 @@ public class SampleDataUtil {
 
     public static ReadOnlyAddressBook getSampleAddressBook() {
         AddressBook sampleAb = new AddressBook();
+        for (Team defaultTeam : getDefaultTeams()) {
+            sampleAb.addTeam(defaultTeam);
+        }
+        for (Position defaultPosition : getDefaultPositions()) {
+            sampleAb.addPosition(defaultPosition);
+        }
+        for (Status defaultStatus : getDefaultStatuses()) {
+            sampleAb.addStatus(defaultStatus);
+        }
         for (Person samplePerson : getSamplePersons()) {
             sampleAb.addPerson(samplePerson);
         }
