@@ -20,6 +20,10 @@ import seedu.address.model.event.Event;
 import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
+<<<<<<< HEAD
+=======
+import seedu.address.model.person.Role;
+>>>>>>> a6115282 (Add attendance command)
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
