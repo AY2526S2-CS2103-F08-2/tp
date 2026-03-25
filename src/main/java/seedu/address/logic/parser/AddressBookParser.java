@@ -19,13 +19,12 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.commands.SetCommand;
-import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.commands.PositionAddCommand;
 import seedu.address.logic.commands.PositionDeleteCommand;
 import seedu.address.logic.commands.PositionEditCommand;
 import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.SetCommand;
 import seedu.address.logic.commands.StatusAddCommand;
 import seedu.address.logic.commands.StatusDeleteCommand;
 import seedu.address.logic.commands.StatusEditCommand;
@@ -34,7 +33,9 @@ import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
 import seedu.address.logic.commands.TeamListCommand;
+import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+
 
 /**
  * Parses user input.
@@ -175,7 +176,8 @@ public class AddressBookParser {
 
         case UpdateCommand.COMMAND_WORD:
             command = new UpdateCommandParser().parse(arguments);
-            
+            break;
+
         case MatchCommand.COMMAND_WORD:
             command = new MatchCommandParser().parse(arguments);
             break;

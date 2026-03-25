@@ -24,10 +24,14 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.StatField;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.testutil.PersonBuilder;
 
 public class SetCommandTest {
@@ -173,8 +177,108 @@ public class SetCommandTest {
         }
 
         @Override
+        public boolean hasTeam(Team team) {
+            return false;
+        }
+
+        @Override
+        public void addTeam(Team team) {
+
+        }
+
+        @Override
+        public void deleteTeam(Team team) {
+
+        }
+
+        @Override
+        public void setTeam(Team oldTeam, Team newTeam) {
+
+        }
+
+        @Override
+        public boolean hasEvent(Event event) {
+            return false;
+        }
+
+        @Override
+        public void deleteEvent(Event target) {
+
+        }
+
+        @Override
+        public void addEvent(Event event) {
+
+        }
+
+        @Override
+        public void setEvent(Event target, Event editedEvent) {
+
+        }
+
+        @Override
         public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Event> getEventList() {
+            return null;
+        }
+
+        @Override
+        public ObservableList<Team> getTeamList() {
+            return null;
+        }
+
+        @Override
+        public boolean hasPosition(Position position) {
+            return false;
+        }
+
+        @Override
+        public void addPosition(Position position) {
+
+        }
+
+        @Override
+        public void deletePosition(Position position) {
+
+        }
+
+        @Override
+        public void setPosition(Position oldPosition, Position newPosition) {
+
+        }
+
+        @Override
+        public ObservableList<Position> getPositionList() {
+            return null;
+        }
+
+        @Override
+        public ObservableList<Status> getStatusList() {
+            return null;
+        }
+
+        @Override
+        public boolean hasStatus(Status status) {
+            return false;
+        }
+
+        @Override
+        public void addStatus(Status status) {
+
+        }
+
+        @Override
+        public void deleteStatus(Status status) {
+
+        }
+
+        @Override
+        public void setStatus(Status oldStatus, Status newStatus) {
+
         }
 
         @Override
