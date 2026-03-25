@@ -59,6 +59,8 @@ public class Messages {
         switch (event.getEventType()) {
         case MATCH -> builder.append("Event Type: Match; Opponent: ")
                 .append(event.getEventName());
+        case TRAINING -> builder.append("Training: ")
+                .append(event.getEventName());
         default -> builder.append("Event: ").append(event.getEventName());
         }
         builder.append("; Date: ")
@@ -69,5 +71,4 @@ public class Messages {
                 .collect(Collectors.joining(", ")));
         return builder.toString();
     }
-
 }

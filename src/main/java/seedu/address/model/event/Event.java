@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.event.match.Match;
+import seedu.address.model.event.training.Training;
 
 /**
  * Represents an Event in the address book.
@@ -43,6 +44,7 @@ public abstract class Event {
                                     EventPlayerList eventPlayerList) {
         return switch (eventType) {
         case MATCH -> new Match(eventName, eventDate, eventPlayerList);
+        case TRAINING -> new Training(eventName, eventDate, eventPlayerList);
         };
     }
 
@@ -88,7 +90,7 @@ public abstract class Event {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof Match)) {
+        if (!(other instanceof Event)) {
             return false;
         }
 

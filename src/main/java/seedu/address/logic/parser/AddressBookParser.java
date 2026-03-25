@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeleteBulkCommand;
@@ -25,6 +26,7 @@ import seedu.address.logic.commands.PositionAddCommand;
 import seedu.address.logic.commands.PositionDeleteCommand;
 import seedu.address.logic.commands.PositionEditCommand;
 import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.SetCommand;
 import seedu.address.logic.commands.StatusAddCommand;
 import seedu.address.logic.commands.StatusDeleteCommand;
 import seedu.address.logic.commands.StatusEditCommand;
@@ -33,7 +35,10 @@ import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
 import seedu.address.logic.commands.TeamListCommand;
+import seedu.address.logic.commands.TrainingCommand;
+import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+
 
 /**
  * Parses user input.
@@ -172,8 +177,24 @@ public class AddressBookParser {
             command = new HelpCommand();
             break;
 
+        case SetCommand.COMMAND_WORD:
+            command = new SetCommandParser().parse(arguments);
+            break;
+
+        case UpdateCommand.COMMAND_WORD:
+            command = new UpdateCommandParser().parse(arguments);
+            break;
+
         case MatchCommand.COMMAND_WORD:
             command = new MatchCommandParser().parse(arguments);
+            break;
+
+        case TrainingCommand.COMMAND_WORD:
+            command = new TrainingCommandParser().parse(arguments);
+            break;
+
+        case AttendanceCommand.COMMAND_WORD:
+            command = new AttendanceCommand();
             break;
 
         case EventDeleteCommand.COMMAND_WORD:

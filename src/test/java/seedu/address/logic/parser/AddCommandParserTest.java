@@ -452,6 +452,11 @@ public class AddCommandParserTest {
             throw new AssertionError("This method should not be called.");
         };
 
+        @Override
+        public String getAttendanceReport() {
+            throw new AssertionError("This method should not be called.");
+        };
+
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
         }

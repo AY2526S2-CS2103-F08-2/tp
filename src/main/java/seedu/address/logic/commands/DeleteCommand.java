@@ -151,7 +151,7 @@ public class DeleteCommand extends Command {
         return matches.get(criteriaMatchIndex.getZeroBased());
     }
 
-    private CommandResult executeDecision(Model model, Person personToDelete) {
+    private CommandResult executeDecision(Model model, Person personToDelete) throws CommandException {
         if (deletionDecision == DeletionDecision.CONFIRM) {
             model.deletePerson(personToDelete);
             return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
