@@ -2,8 +2,10 @@ package seedu.address.model.event;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
@@ -44,6 +46,17 @@ public class EventPlayerList implements Iterable<Person> {
 
     public ObservableList<Person> asUnmodifiableObservableList() {
         return uniquePersonList.asUnmodifiableObservableList();
+    }
+
+    /**
+     * Gets player names in a set. Used for editing events.
+     */
+    public Set<String> getPlayerNames() {
+        Set<String> playerNames = new HashSet<>();
+        for (Person person : getUniquePersonList()) {
+            playerNames.add(person.getName().toString());
+        }
+        return playerNames;
     }
 
     @Override
