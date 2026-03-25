@@ -85,7 +85,7 @@ public class UpdateCommand extends Command {
         if (!this.stat.isValid(newValue)) {
             throw new CommandException(stat.messageConstraints);
         }
-        stat.setValue(playerStats, this.value);
+        stat.setValue(playerStats, newValue);
 
         return player;
     }
