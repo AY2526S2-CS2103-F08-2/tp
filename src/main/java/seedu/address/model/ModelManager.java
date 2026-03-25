@@ -119,7 +119,9 @@ public class ModelManager implements Model {
     public boolean hasEvent(Event event) {
         requireNonNull(event);
         return addressBook.hasEvent(event);
-      
+    }
+
+    @Override
     public boolean hasTeam(Team team) {
         requireNonNull(team);
         return addressBook.hasTeam(team);

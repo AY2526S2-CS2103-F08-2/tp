@@ -150,7 +150,7 @@ public class AddCommandTest {
         public void setPerson(Person target, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
-          
+
         public boolean hasTeam(Team team) {
             throw new AssertionError("This method should not be called.");
         }
@@ -172,7 +172,7 @@ public class AddCommandTest {
 
         @Override
         public boolean hasEvent(Event event) {
-          throw new AssertionError("This method should not be called.");
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override

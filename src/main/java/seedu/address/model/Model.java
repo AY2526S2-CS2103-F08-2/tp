@@ -131,7 +131,7 @@ public interface Model {
      * Returns an unmodifiable view of the event list
      */
     ObservableList<Event> getEventList();
-  
+
     /** Returns an unmodifiable view of the team catalog list. */
     ObservableList<Team> getTeamList();
 
