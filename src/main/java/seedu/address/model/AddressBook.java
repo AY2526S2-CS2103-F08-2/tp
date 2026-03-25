@@ -237,6 +237,16 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces {@code oldPosition} in the catalog with {@code newPosition}.
+     * {@code oldPosition} must exist in the catalog.
+     * {@code newPosition} must not duplicate an existing position.
+     */
+    public void setPosition(Position oldPosition, Position newPosition) {
+        requireNonNull(newPosition);
+        positions.setPosition(oldPosition, newPosition);
+    }
+
+    /**
      * Removes {@code position} from the address book catalog.
      * {@code position} must exist in the catalog.
      */
@@ -260,6 +270,16 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addStatus(Status status) {
         statuses.add(status);
+    }
+
+    /**
+     * Replaces {@code oldStatus} in the catalog with {@code newStatus}.
+     * {@code oldStatus} must exist in the catalog.
+     * {@code newStatus} must not duplicate an existing status.
+     */
+    public void setStatus(Status oldStatus, Status newStatus) {
+        requireNonNull(newStatus);
+        statuses.setStatus(oldStatus, newStatus);
     }
 
     /**

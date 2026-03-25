@@ -23,6 +23,14 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
+import seedu.address.logic.commands.PositionAddCommand;
+import seedu.address.logic.commands.PositionDeleteCommand;
+import seedu.address.logic.commands.PositionEditCommand;
+import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.StatusAddCommand;
+import seedu.address.logic.commands.StatusDeleteCommand;
+import seedu.address.logic.commands.StatusEditCommand;
+import seedu.address.logic.commands.StatusListCommand;
 import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
@@ -144,6 +152,65 @@ public class AddressBookParserTest {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE), () -> parser
                         .parseCommand(TeamListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_statusList() throws Exception {
+        assertTrue(parser.parseCommand(StatusListCommand.COMMAND_WORD) instanceof StatusListCommand);
+    }
+
+    @Test
+    public void parseCommand_statusListWithArguments_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatusListCommand.MESSAGE_USAGE), () -> parser
+                        .parseCommand(StatusListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_positionList() throws Exception {
+        assertTrue(parser.parseCommand(PositionListCommand.COMMAND_WORD) instanceof PositionListCommand);
+    }
+
+    @Test
+    public void parseCommand_positionListWithArguments_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionListCommand.MESSAGE_USAGE), () -> parser
+                        .parseCommand(PositionListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_positionAdd() throws Exception {
+        assertTrue(parser.parseCommand(PositionAddCommand.COMMAND_WORD + " Winger")
+                instanceof PositionAddCommand);
+    }
+
+    @Test
+    public void parseCommand_positionEdit() throws Exception {
+        assertTrue(parser.parseCommand(PositionEditCommand.COMMAND_WORD + " old/Defender new/Center Back")
+                instanceof PositionEditCommand);
+    }
+
+    @Test
+    public void parseCommand_positionDelete() throws Exception {
+        assertTrue(parser.parseCommand(PositionDeleteCommand.COMMAND_WORD + " Defender")
+                instanceof PositionDeleteCommand);
+    }
+
+    @Test
+    public void parseCommand_statusAdd() throws Exception {
+        assertTrue(parser.parseCommand(StatusAddCommand.COMMAND_WORD + " Rehab") instanceof StatusAddCommand);
+    }
+
+    @Test
+    public void parseCommand_statusEdit() throws Exception {
+        assertTrue(parser.parseCommand(StatusEditCommand.COMMAND_WORD + " old/Active new/Rehab")
+                instanceof StatusEditCommand);
+    }
+
+    @Test
+    public void parseCommand_statusDelete() throws Exception {
+        assertTrue(parser.parseCommand(StatusDeleteCommand.COMMAND_WORD + " Active")
+                instanceof StatusDeleteCommand);
     }
 
     @Test

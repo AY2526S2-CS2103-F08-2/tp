@@ -13,6 +13,8 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
+import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
 /**
@@ -186,6 +188,64 @@ public class ModelManager implements Model {
     @Override
     public ObservableList<Team> getTeamList() {
         return addressBook.getTeamList();
+    }
+
+    @Override
+    public boolean hasPosition(Position position) {
+        requireNonNull(position);
+        return addressBook.hasPosition(position);
+    }
+
+    @Override
+    public void addPosition(Position position) {
+        requireNonNull(position);
+        addressBook.addPosition(position);
+    }
+
+    @Override
+    public void deletePosition(Position position) {
+        requireNonNull(position);
+        addressBook.removePosition(position);
+    }
+
+    @Override
+    public void setPosition(Position oldPosition, Position newPosition) {
+        requireAllNonNull(oldPosition, newPosition);
+        addressBook.setPosition(oldPosition, newPosition);
+    }
+
+    @Override
+    public ObservableList<Position> getPositionList() {
+        return addressBook.getPositionList();
+    }
+
+    @Override
+    public ObservableList<Status> getStatusList() {
+        return addressBook.getStatusList();
+    }
+
+    @Override
+    public boolean hasStatus(Status status) {
+        requireNonNull(status);
+        return addressBook.hasStatus(status);
+    }
+
+    @Override
+    public void addStatus(Status status) {
+        requireNonNull(status);
+        addressBook.addStatus(status);
+    }
+
+    @Override
+    public void deleteStatus(Status status) {
+        requireNonNull(status);
+        addressBook.removeStatus(status);
+    }
+
+    @Override
+    public void setStatus(Status oldStatus, Status newStatus) {
+        requireAllNonNull(oldStatus, newStatus);
+        addressBook.setStatus(oldStatus, newStatus);
     }
 
     @Override
