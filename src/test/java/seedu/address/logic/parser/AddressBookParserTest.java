@@ -116,6 +116,7 @@ public class AddressBookParserTest {
     public void parseCommand_sort() throws Exception {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/name") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email") instanceof SortCommand);
+        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email desc") instanceof SortCommand);
     }
 
     @Test

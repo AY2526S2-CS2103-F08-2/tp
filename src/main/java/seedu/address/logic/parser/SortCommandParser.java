@@ -21,6 +21,7 @@ public class SortCommandParser implements Parser<SortCommand> {
     public static final String ARGUMENT_PLAYERS = "players";
     public static final String ARGUMENT_STAFF = "staff";
     public static final String SCOPE_ALL_PERSONS = "persons";
+    public static final String ARGUMENT_DESC = "desc";
 
     @Override
     public SortCommand parse(String args) throws ParseException {
@@ -37,11 +38,19 @@ public class SortCommandParser implements Parser<SortCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
         }
 
-        String attributeKeyword = argMultimap.getValue(PREFIX_SORT_BY)
+        String sortArgument = argMultimap.getValue(PREFIX_SORT_BY)
                 .orElseThrow(() -> new ParseException(
                         String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE)));
 
-        return new SortCommand(parseScope(scope), parseAttribute(attributeKeyword), getScopeDescription(scope));
+        String[] sortTokens = sortArgument.split("\\s+");
+        if (sortTokens.length == 0 || sortTokens.length > 2) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+        }
+
+        String attributeKeyword = sortTokens[0];
+        boolean isDescending = parseSortOrder(sortTokens);
+        return new SortCommand(parseScope(scope), parseAttribute(attributeKeyword),
+                getScopeDescription(scope), isDescending);
     }
 
     private Predicate<Person> parseScope(String scope) {
@@ -74,5 +83,17 @@ public class SortCommandParser implements Parser<SortCommand> {
             return SCOPE_ALL_PERSONS;
         }
         return scope.toLowerCase();
+    }
+
+    private boolean parseSortOrder(String[] sortTokens) throws ParseException {
+        if (sortTokens.length == 1) {
+            return false;
+        }
+
+        if (ARGUMENT_DESC.equalsIgnoreCase(sortTokens[1])) {
+            return true;
+        }
+
+        throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
     }
 }

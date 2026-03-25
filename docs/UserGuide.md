@@ -32,9 +32,9 @@ AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized fo
 
    * `list staff` : Lists only staff.
 
-   * `sort by/name` : Sorts all persons by name.
+   * `sort by/name` : Sorts all persons by name in ascending order.
 
-   * `sort players by/email` : Sorts only players by email.
+   * `sort players by/email desc` : Sorts only players by email in descending order.
 
    * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
 
@@ -131,12 +131,13 @@ Examples:
 
 ### Sorting persons: `sort`
 
-Sorts persons in the UI alphabetically by a supported attribute.
+Sorts persons in the UI by a supported attribute.
 
 Format:
 * `sort by/ATTRIBUTE`
 * `sort players by/ATTRIBUTE`
 * `sort staff by/ATTRIBUTE`
+* Add optional `desc` at the end for descending order
 
 Supported attributes:
 * `name`
@@ -145,7 +146,7 @@ Supported attributes:
 Examples:
 * `sort by/name`
 * `sort players by/email`
-* `sort staff by/name`
+* `sort staff by/name desc`
 
 ### Editing a person : `edit`
 

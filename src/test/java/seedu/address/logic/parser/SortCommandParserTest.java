@@ -20,28 +20,37 @@ public class SortCommandParserTest {
 
     @Test
     public void parse_sortAllPersonsByName_returnsSortCommand() throws Exception {
-        SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons");
+        SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.NAME, "persons", false);
         assertEquals(expected, parser.parse("by/name"));
     }
 
     @Test
     public void parse_sortPlayersByEmail_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
-                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players");
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players", false);
         assertEquals(expected, parser.parse("players by/email"));
     }
 
     @Test
     public void parse_caseInsensitive_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
-                new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.NAME, "staff");
+                new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.NAME, "staff", false);
         assertEquals(expected, parser.parse("STAFF by/NAME"));
     }
 
     @Test
     public void parse_extraWhitespace_returnsSortCommand() {
-        SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.EMAIL, "persons");
+        SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.EMAIL, "persons", false);
         assertParseSuccess(parser, "   by/email   ", expected);
+    }
+
+    @Test
+    public void parse_descendingOrder_returnsSortCommand() {
+        SortCommand expected = new SortCommand(new PersonHasRolePredicate(Role.PLAYER),
+                PersonSortAttribute.NAME, "players", true);
+        assertParseSuccess(parser, "players by/name desc", expected);
     }
 
     @Test
@@ -53,5 +62,8 @@ public class SortCommandParserTest {
         assertParseFailure(parser, "players name", expectedMessage);
         assertParseFailure(parser, "players by/goals", expectedMessage);
         assertParseFailure(parser, "players by/name by/email", expectedMessage);
+        assertParseFailure(parser, "by/name asc", expectedMessage);
+        assertParseFailure(parser, "players by/name descending", expectedMessage);
+        assertParseFailure(parser, "players desc by/name", expectedMessage);
     }
 }

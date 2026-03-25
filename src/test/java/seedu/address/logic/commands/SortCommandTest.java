@@ -63,41 +63,62 @@ public class SortCommandTest {
 
     @Test
     public void execute_sortAllPersonsByName_success() {
-        SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons");
+        SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.NAME, "persons", false);
 
         expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
         expectedModel.updateSortedPersonListComparator(PersonSortAttribute.NAME.getComparator());
 
         assertCommandSuccess(command, model,
-                String.format(SortCommand.MESSAGE_SUCCESS, "persons", "name"), expectedModel);
+                String.format(SortCommand.MESSAGE_SUCCESS, "persons", "name", SortCommand.ORDER_ASCENDING),
+                expectedModel);
         assertEquals(List.of(STAFF_ADAM, PLAYER_BETH, STAFF_MIA, PLAYER_ZOE), model.getFilteredPersonList());
     }
 
     @Test
     public void execute_sortPlayersByEmail_success() {
         SortCommand command = new SortCommand(
-                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players");
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players", false);
 
         expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.PLAYER));
         expectedModel.updateSortedPersonListComparator(PersonSortAttribute.EMAIL.getComparator());
 
         assertCommandSuccess(command, model,
-                String.format(SortCommand.MESSAGE_SUCCESS, "players", "email"), expectedModel);
+                String.format(SortCommand.MESSAGE_SUCCESS, "players", "email", SortCommand.ORDER_ASCENDING),
+                expectedModel);
         assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
     }
 
     @Test
+    public void execute_sortAllPersonsByNameDescending_success() {
+        SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.NAME, "persons", true);
+
+        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.NAME.getComparator().reversed());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "persons", "name", SortCommand.ORDER_DESCENDING),
+                expectedModel);
+        assertEquals(List.of(PLAYER_ZOE, STAFF_MIA, PLAYER_BETH, STAFF_ADAM), model.getFilteredPersonList());
+    }
+
+    @Test
     public void equals() {
-        SortCommand sortByName = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons");
+        SortCommand sortByName = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.NAME, "persons", false);
         SortCommand sortByNameCopy =
-                new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons");
+                new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons", false);
         SortCommand sortPlayersByEmail =
-                new SortCommand(new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players");
+                new SortCommand(new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players", false);
+        SortCommand sortByNameDescending =
+                new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS, PersonSortAttribute.NAME, "persons", true);
 
         assertTrue(sortByName.equals(sortByName));
         assertTrue(sortByName.equals(sortByNameCopy));
         assertFalse(sortByName.equals(1));
         assertFalse(sortByName.equals(null));
         assertFalse(sortByName.equals(sortPlayersByEmail));
+        assertFalse(sortByName.equals(sortByNameDescending));
     }
 }
