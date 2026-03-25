@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.DeleteBulkCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
@@ -74,6 +75,13 @@ public class AddressBookParserTest {
                 DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased()
                         + " " + DeleteCommand.CONFIRM_KEYWORD);
         assertEquals(new DeleteCommand(INDEX_FIRST_PERSON, true), command);
+    }
+
+    @Test
+    public void parseCommand_deleteBulk() throws Exception {
+        DeleteBulkCommand command = (DeleteBulkCommand) parser.parseCommand(
+                DeleteBulkCommand.COMMAND_WORD + " t/graduated");
+        assertEquals(new DeleteBulkCommand(new seedu.address.model.tag.Tag("graduated")), command);
     }
 
     @Test
