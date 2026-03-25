@@ -19,6 +19,7 @@ public class Messages {
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
+    public static final String MESSAGE_INVALID_EVENT_DISPLAYED_INDEX = "The event index provided is invalid";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -56,7 +57,7 @@ public class Messages {
     public static String format(Event event) {
         final StringBuilder builder = new StringBuilder();
         switch (event.getEventType()) {
-        case MATCH -> builder.append("Opponent: ")
+        case MATCH -> builder.append("Event Type: Match; Opponent: ")
                 .append(event.getEventName());
         default -> builder.append("Event: ").append(event.getEventName());
         }
