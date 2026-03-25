@@ -4,6 +4,8 @@ import java.util.Locale;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.DeleteBulkCommand;
+import seedu.address.logic.commands.DeleteBulkCommand.BulkDeletionDecision;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
 
@@ -12,8 +14,18 @@ import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
  */
 class DeleteInteractionFlow {
     private PendingDeleteContext pendingDeleteContext;
+    private String pendingDeleteBulkTagArgument;
 
     String preprocessInput(String trimmedInput) {
+        if (pendingDeleteBulkTagArgument != null && isYesNo(trimmedInput)) {
+            return DeleteBulkCommand.COMMAND_WORD + " " + trimmedInput.toLowerCase(Locale.ROOT)
+                    + " " + pendingDeleteBulkTagArgument;
+        }
+        if (pendingDeleteBulkTagArgument != null) {
+            pendingDeleteBulkTagArgument = null;
+            return trimmedInput;
+        }
+
         if (pendingDeleteContext == null) {
             return trimmedInput;
         }
@@ -27,15 +39,23 @@ class DeleteInteractionFlow {
         }
 
         pendingDeleteContext = null;
+        pendingDeleteBulkTagArgument = null;
         return trimmedInput;
     }
 
     void updateAfterParse(Command command) {
-        if (!(command instanceof DeleteCommand)) {
-            pendingDeleteContext = null;
+        if (command instanceof DeleteBulkCommand) {
+            updateDeleteBulkContext((DeleteBulkCommand) command);
             return;
         }
 
+        if (!(command instanceof DeleteCommand)) {
+            pendingDeleteContext = null;
+            pendingDeleteBulkTagArgument = null;
+            return;
+        }
+
+        pendingDeleteBulkTagArgument = null;
         DeleteCommand deleteCommand = (DeleteCommand) command;
         if (deleteCommand.getDeletionDecision() != DeletionDecision.UNDECIDED) {
             pendingDeleteContext = null;
@@ -55,6 +75,17 @@ class DeleteInteractionFlow {
         }
 
         pendingDeleteContext = new PendingDeleteContext(buildBaseDeleteCommand(deleteCommand), null, true);
+    }
+
+    private void updateDeleteBulkContext(DeleteBulkCommand deleteBulkCommand) {
+        pendingDeleteContext = null;
+        if (deleteBulkCommand.getDecision() != BulkDeletionDecision.UNDECIDED) {
+            pendingDeleteBulkTagArgument = null;
+            return;
+        }
+
+        pendingDeleteBulkTagArgument = CliSyntax.PREFIX_TAG
+                + deleteBulkCommand.getTag().tagName;
     }
 
     private String buildBaseDeleteCommand(DeleteCommand deleteCommand) {

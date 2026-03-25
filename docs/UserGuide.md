@@ -206,6 +206,20 @@ Examples:
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
+### Bulk deleting persons by tag : `deletebulk`
+
+Deletes all persons that share a specified tag.
+
+Format: `deletebulk t/TAG`
+
+* `deletebulk t/TAG` filters and shows matching persons in the GUI list and CLI message.
+* To confirm or cancel bulk deletion, type `y`/`Y` or `n`/`N`.
+* Both players and staff with the specified tag are considered.
+
+Examples:
+* `deletebulk t/graduated`, then `y` deletes all persons tagged `graduated`.
+* `deletebulk t/graduated`, then `n` cancels the bulk deletion.
+
 ### Clearing all entries : `clear`
 
 Clears all entries from SoCcer Manager.
@@ -259,6 +273,7 @@ Action | Format, Examples
 **Match** | `match n/OPPONENT_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `match n/Mancherster United d/2026-05-15 pl/John Doe`
 **Clear** | `clear`
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
+**Delete Bulk** | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`

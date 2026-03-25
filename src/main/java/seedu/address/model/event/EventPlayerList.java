@@ -18,6 +18,7 @@ import seedu.address.model.person.UniquePersonList;
  */
 public class EventPlayerList implements Iterable<Person> {
     public static final String MESSAGE_CONSTRAINTS = "%s is not a player!";
+    public static final String MESSAGE_NOT_FOUND = "%s is not part of the event!";
 
     private final UniquePersonList uniquePersonList = new UniquePersonList();
 
@@ -25,8 +26,17 @@ public class EventPlayerList implements Iterable<Person> {
         personSet.forEach(this::add);
     }
 
-    private UniquePersonList getUniquePersonList() {
-        return uniquePersonList;
+    /**
+     * Returns true if the player list contains an equivalent player as the given argument.
+     */
+    public boolean contains(Person toCheck) {
+        requireNonNull(toCheck);
+
+        if (toCheck.getRole() != Role.PLAYER) {
+            throw new IllegalArgumentException(String.format(MESSAGE_CONSTRAINTS, toCheck));
+        }
+
+        return uniquePersonList.contains(toCheck);
     }
 
     /**
@@ -43,6 +53,20 @@ public class EventPlayerList implements Iterable<Person> {
         uniquePersonList.add(person);
     }
 
+    /**
+     * Removes a person from the UniquePersonList. Person must exist in the list.
+     * @param person
+     */
+    public void remove(Person person) {
+        requireNonNull(person);
+
+        if (!uniquePersonList.contains(person)) {
+            throw new IllegalArgumentException(String.format(MESSAGE_NOT_FOUND, person));
+        }
+
+        uniquePersonList.remove(person);
+    }
+
     public ObservableList<Person> asUnmodifiableObservableList() {
         return uniquePersonList.asUnmodifiableObservableList();
     }
@@ -52,7 +76,7 @@ public class EventPlayerList implements Iterable<Person> {
      */
     public Set<String> getPlayerNames() {
         Set<String> playerNames = new HashSet<>();
-        for (Person person : getUniquePersonList()) {
+        for (Person person : uniquePersonList) {
             playerNames.add(person.getName().toString());
         }
         return playerNames;

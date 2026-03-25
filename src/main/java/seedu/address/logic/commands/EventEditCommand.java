@@ -92,7 +92,7 @@ public class EventEditCommand extends Command {
      * Creates and returns a {@code Event} with the details of {@code eventToEdit}
      * edited with {@code editEventDescriptor}.
      */
-    private static Event createEditedEvent(Event eventToEdit, EditEventDescriptor editEventDescriptor, Model model)
+    public static Event createEditedEvent(Event eventToEdit, EditEventDescriptor editEventDescriptor, Model model)
             throws CommandException {
         assert eventToEdit != null;
         requireNonNull(model);

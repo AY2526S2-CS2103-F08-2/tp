@@ -2,10 +2,12 @@ package seedu.address.model;
 
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
@@ -66,7 +68,7 @@ public interface Model {
      * Deletes the given person.
      * The person must exist in the address book.
      */
-    void deletePerson(Person target);
+    void deletePerson(Person target) throws CommandException;
 
     /**
      * Adds the given person.
@@ -129,6 +131,12 @@ public interface Model {
 
     /** Returns an unmodifiable view of the filtered and sorted person list */
     ObservableList<Person> getFilteredPersonList();
+
+    /**
+     * Returns all persons matching the given {@code predicate}.
+     * The returned list is a snapshot and is independent of the model's filtered list state.
+     */
+    List<Person> getPersonsMatching(Predicate<Person> predicate);
 
     /**
      * Returns an unmodifiable view of the event list
@@ -196,4 +204,7 @@ public interface Model {
      * @throws NullPointerException if {@code comparator} is null.
      */
     void updateSortedPersonListComparator(Comparator<Person> comparator);
+     * Returns the attendance rate of all players.
+     */
+    String getAttendanceReport();
 }

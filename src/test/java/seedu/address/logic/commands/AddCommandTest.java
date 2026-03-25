@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -258,12 +259,18 @@ public class AddCommandTest {
         }
 
         @Override
+        public List<Person> getPersonsMatching(Predicate<Person> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void updateSortedPersonListComparator(Comparator<Person> comparator) {
+        public String getAttendanceReport() {
             throw new AssertionError("This method should not be called.");
         }
     }
