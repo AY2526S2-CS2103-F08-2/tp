@@ -23,6 +23,7 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListRoleCommand;
+import seedu.address.logic.commands.StatusListCommand;
 import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
@@ -135,6 +136,18 @@ public class AddressBookParserTest {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamListCommand.MESSAGE_USAGE), () -> parser
                         .parseCommand(TeamListCommand.COMMAND_WORD + " now"));
+    }
+
+    @Test
+    public void parseCommand_statusList() throws Exception {
+        assertTrue(parser.parseCommand(StatusListCommand.COMMAND_WORD) instanceof StatusListCommand);
+    }
+
+    @Test
+    public void parseCommand_statusListWithArguments_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatusListCommand.MESSAGE_USAGE), () -> parser
+                        .parseCommand(StatusListCommand.COMMAND_WORD + " now"));
     }
 
     @Test
