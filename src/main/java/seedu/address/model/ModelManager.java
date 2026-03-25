@@ -20,12 +20,8 @@ import seedu.address.model.event.Event;
 import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
-<<<<<<< HEAD
-=======
 import seedu.address.model.person.Role;
->>>>>>> a6115282 (Add attendance command)
 import seedu.address.model.person.Position;
-import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
@@ -115,7 +111,7 @@ public class ModelManager implements Model {
     public void deletePerson(Person target) throws CommandException {
         addressBook.removePerson(target);
         for (Event e : addressBook.getEventList()) {
-            if (e.getEventPlayerList().contains(target)) {
+            if (e.getEventPlayerList().contains((Player) target)) {
                 EditEventDescriptor descriptor = new EditEventDescriptor();
                 descriptor.setEventType(e.getEventType());
                 descriptor.setEventName(e.getEventName());
