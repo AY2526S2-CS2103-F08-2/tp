@@ -41,6 +41,26 @@ public class UniquePositionList implements Iterable<Position> {
     }
 
     /**
+     * Replaces the position {@code target} in the list with {@code editedPosition}.
+     * {@code target} must exist in the list.
+     * The position identity of {@code editedPosition} must not duplicate another existing position.
+     */
+    public void setPosition(Position target, Position editedPosition) {
+        requireAllNonNull(target, editedPosition);
+
+        int index = internalList.indexOf(target);
+        if (index == -1) {
+            throw new PositionNotFoundException();
+        }
+
+        if (!target.equals(editedPosition) && contains(editedPosition)) {
+            throw new DuplicatePositionException();
+        }
+
+        internalList.set(index, editedPosition);
+    }
+
+    /**
      * Removes the equivalent position from the list.
      * The position must exist in the list.
      */

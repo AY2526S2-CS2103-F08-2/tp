@@ -203,6 +203,18 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void deletePosition(Position position) {
+        requireNonNull(position);
+        addressBook.removePosition(position);
+    }
+
+    @Override
+    public void setPosition(Position oldPosition, Position newPosition) {
+        requireAllNonNull(oldPosition, newPosition);
+        addressBook.setPosition(oldPosition, newPosition);
+    }
+
+    @Override
     public ObservableList<Position> getPositionList() {
         return addressBook.getPositionList();
     }

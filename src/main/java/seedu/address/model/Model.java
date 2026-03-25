@@ -146,6 +146,17 @@ public interface Model {
      */
     void addPosition(Position position);
 
+    /**
+     * Deletes the given position from the position catalog.
+     * {@code position} must exist in the position catalog.
+     */
+    void deletePosition(Position position);
+
+    /**
+     * Replaces {@code oldPosition} with {@code newPosition} in the position catalog.
+     */
+    void setPosition(Position oldPosition, Position newPosition);
+
     /** Returns an unmodifiable view of the position catalog list. */
     ObservableList<Position> getPositionList();
 
