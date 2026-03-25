@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.TrainingCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.training.Date;
-import seedu.address.model.training.TrainingName;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.EventName;
 
 /**
  * Parses input arguments and creates a new TrainingCommand object
@@ -35,11 +35,11 @@ public class TrainingCommandParser implements Parser<Command> {
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_DATE);
-        TrainingName trainingName = ParserUtil.parseTrainingName(argMultimap.getValue(PREFIX_NAME).get());
+        EventName eventName = ParserUtil.parseEventName(argMultimap.getValue(PREFIX_NAME).get());
         Date date = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DATE).get());
         List<String> playerNames = ParserUtil.parsePlayers(argMultimap.getAllValues(PREFIX_PLAYER));
 
-        return new TrainingCommand(trainingName, date, playerNames);
+        return new TrainingCommand(eventName, date, playerNames);
     }
 
     /**

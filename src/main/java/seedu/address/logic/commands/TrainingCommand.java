@@ -13,12 +13,13 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventPlayerList;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
-import seedu.address.model.training.Date;
-import seedu.address.model.training.Training;
-import seedu.address.model.training.TrainingName;
-import seedu.address.model.training.TrainingPlayerList;
 
 /**
  * Adds a training to the address book.
@@ -38,23 +39,23 @@ public class TrainingCommand extends Command {
                                                + PREFIX_PLAYER + "Alex Yeoh ";
 
     public static final String MESSAGE_SUCCESS = "New Training added: %1$s";
-    public static final String MESSAGE_DUPLICATE_MATCH = "This training already exists in the address book!";
+    public static final String MESSAGE_DUPLICATE_TRAINING = "This training already exists in the address book!";
     public static final String MESSAGE_PERSON_DOES_NOT_EXIST = "%s does not exist in the address book!";
     public static final String MESSAGE_NOT_A_PLAYER = "%s is not a player!";
     public static final String MESSAGE_ADD_DUPLICATE_PLAYER = "Cannot add same player twice!";
 
-    private final TrainingName trainingName;
+    private final EventName eventName;
     private final Date date;
     private final List<String> playerNames;
 
     /**
      * Creates a TrainingCommand. {@code Training} is not created yet as {@code playerNames} has not been validated.
      */
-    public TrainingCommand(TrainingName trainingName, Date date, List<String> playerNames) {
-        requireNonNull(trainingName);
+    public TrainingCommand(EventName eventName, Date date, List<String> playerNames) {
+        requireNonNull(eventName);
         requireNonNull(date);
         requireNonNull(playerNames);
-        this.trainingName = trainingName;
+        this.eventName = eventName;
         this.date = date;
         this.playerNames = playerNames;
     }
@@ -82,14 +83,14 @@ public class TrainingCommand extends Command {
             throw new CommandException(MESSAGE_ADD_DUPLICATE_PLAYER);
         }
 
-        TrainingPlayerList trainingPlayerList = new TrainingPlayerList(playerList);
-        Training toAdd = new Training(trainingName, date, trainingPlayerList);
+        EventPlayerList eventPlayerList = new EventPlayerList(playerList);
+        Event toAdd = Event.createEvent(eventName, date, EventType.TRAINING, eventPlayerList);
 
-        if (model.hasTraining(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_MATCH);
+        if (model.hasEvent(toAdd)) {
+            throw new CommandException(MESSAGE_DUPLICATE_TRAINING);
         }
 
-        model.addTraining(toAdd);
+        model.addEvent(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 
@@ -105,7 +106,7 @@ public class TrainingCommand extends Command {
         }
 
         TrainingCommand otherTrainingCommand = (TrainingCommand) other;
-        return trainingName.equals(otherTrainingCommand.trainingName)
+        return eventName.equals(otherTrainingCommand.eventName)
                && date.equals(otherTrainingCommand.date)
                && playerNames.equals(otherTrainingCommand.playerNames);
     }
@@ -113,7 +114,7 @@ public class TrainingCommand extends Command {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("Opponent Name: ", trainingName)
+                .add("Training: ", eventName)
                 .add("Date: ", date)
                 .add("Player Names: ", playerNames)
                 .toString();

@@ -24,6 +24,7 @@ import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamDeleteCommand;
 import seedu.address.logic.commands.TeamEditCommand;
 import seedu.address.logic.commands.TeamListCommand;
+import seedu.address.logic.commands.TrainingCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -120,6 +121,10 @@ public class AddressBookParser {
 
         case MatchCommand.COMMAND_WORD:
             command = new MatchCommandParser().parse(arguments);
+            break;
+
+        case TrainingCommand.COMMAND_WORD:
+            command = new TrainingCommandParser().parse(arguments);
             break;
 
         case EventDeleteCommand.COMMAND_WORD:

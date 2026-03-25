@@ -47,6 +47,7 @@ public class EventCard extends UiPart<Region> {
         date.setText("Match Date: " + event.getEventDate().toString());
         switch (event.getEventType()) {
         case MATCH -> eventName.setText("vs " + event.getEventName().toString());
+        case TRAINING -> eventName.setText("Training: " + event.getEventName().toString());
         default -> eventName.setText("Event Name: " + event.getEventName().toString());
         }
 

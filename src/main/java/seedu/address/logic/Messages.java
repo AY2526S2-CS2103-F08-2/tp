@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
-import seedu.address.model.training.Training;
 
 /**
  * Container for user visible messages.
@@ -60,6 +59,8 @@ public class Messages {
         switch (event.getEventType()) {
         case MATCH -> builder.append("Event Type: Match; Opponent: ")
                 .append(event.getEventName());
+        case TRAINING -> builder.append("Training: ")
+                .append(event.getEventName());
         default -> builder.append("Event: ").append(event.getEventName());
         }
         builder.append("; Date: ")
@@ -68,22 +69,6 @@ public class Messages {
                 .append(event.getEventPlayerList().asUnmodifiableObservableList().stream()
                 .map(person -> person.getName().toString())
                 .collect(Collectors.joining(", ")));
-        return builder.toString();
-    }
-
-    /**
-     * Formats the {@code training} for display to the user.
-     */
-    public static String format(Training training) {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Training: ")
-                .append(training.getTrainingName())
-                .append("; Date: ")
-                .append(training.getTrainingDate().toString())
-                .append("; Players: ")
-                .append(training.getTrainingPlayerList().asUnmodifiableObservableList().stream()
-                        .map(person -> person.getName().toString())
-                        .collect(Collectors.joining(", ")));
         return builder.toString();
     }
 }

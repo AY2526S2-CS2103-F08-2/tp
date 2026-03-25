@@ -4,7 +4,8 @@ package seedu.address.model.event;
  * Represents the type of event in the address book.
  */
 public enum EventType {
-    MATCH;
+    MATCH,
+    TRAINING;
 
     public static final String MESSAGE_CONSTRAINTS = "EventType must be MATCH";
 
