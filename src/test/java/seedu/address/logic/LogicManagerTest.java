@@ -22,6 +22,7 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.PositionListCommand;
 import seedu.address.logic.commands.StatusAddCommand;
 import seedu.address.logic.commands.TeamAddCommand;
 import seedu.address.logic.commands.TeamListCommand;
@@ -78,6 +79,12 @@ public class LogicManagerTest {
     public void execute_teamList_success() throws Exception {
         String teamListCommand = TeamListCommand.COMMAND_WORD;
         assertCommandSuccess(teamListCommand, TeamListCommand.MESSAGE_EMPTY, model);
+    }
+
+    @Test
+    public void execute_positionList_success() throws Exception {
+        String positionListCommand = PositionListCommand.COMMAND_WORD;
+        assertCommandSuccess(positionListCommand, PositionListCommand.MESSAGE_EMPTY, model);
     }
 
     @Test
