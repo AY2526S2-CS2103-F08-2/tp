@@ -263,6 +263,16 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces {@code oldStatus} in the catalog with {@code newStatus}.
+     * {@code oldStatus} must exist in the catalog.
+     * {@code newStatus} must not duplicate an existing status.
+     */
+    public void setStatus(Status oldStatus, Status newStatus) {
+        requireNonNull(newStatus);
+        statuses.setStatus(oldStatus, newStatus);
+    }
+
+    /**
      * Removes {@code status} from the address book catalog.
      * {@code status} must exist in the catalog.
      */

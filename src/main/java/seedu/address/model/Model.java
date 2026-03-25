@@ -148,6 +148,11 @@ public interface Model {
      */
     void addStatus(Status status);
 
+    /**
+     * Replaces {@code oldStatus} with {@code newStatus} in the status catalog.
+     */
+    void setStatus(Status oldStatus, Status newStatus);
+
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.
