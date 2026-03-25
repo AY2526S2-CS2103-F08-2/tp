@@ -9,7 +9,7 @@ import seedu.address.model.tag.Tag;
  */
 public class Player extends Person {
 
-    private PlayerStats stats;
+    private final PlayerStats stats;
 
     /**
      * Constructs a {@code Player} with the given data.
@@ -22,5 +22,10 @@ public class Player extends Person {
      */
     public Player(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
         super(name, phone, email, address, tags, Role.PLAYER);
+        this.stats = new PlayerStats();
+    }
+
+    public PlayerStats getStats() {
+        return stats;
     }
 }
