@@ -204,6 +204,8 @@ public interface Model {
      * @throws NullPointerException if {@code comparator} is null.
      */
     void updateSortedPersonListComparator(Comparator<Person> comparator);
+
+    /**
      * Returns the attendance rate of all players.
      */
     String getAttendanceReport();
