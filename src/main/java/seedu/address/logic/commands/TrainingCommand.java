@@ -86,6 +86,16 @@ public class TrainingCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_TRAINING);
         }
 
+<<<<<<< HEAD
+=======
+        EventPlayerList eventPlayerList = new EventPlayerList(playerList);
+        Event toAdd = Event.createEvent(eventName, date, EventType.TRAINING, eventPlayerList);
+
+        if (model.hasEvent(toAdd)) {
+            throw new CommandException(MESSAGE_DUPLICATE_TRAINING);
+        }
+
+>>>>>>> 2da8ec8e (Finish training command add functionality)
         model.addEvent(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
