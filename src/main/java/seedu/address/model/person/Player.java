@@ -37,6 +37,7 @@ public class Player extends Person {
      */
     public Player(Name name, Phone phone, Email email, Address address, Set<Tag> tags, PlayerStats stats) {
         super(name, phone, email, address, tags, Role.PLAYER);
+        assert stats != null;
         this.stats = stats;
     }
 

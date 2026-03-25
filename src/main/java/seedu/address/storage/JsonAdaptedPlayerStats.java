@@ -53,6 +53,14 @@ public class JsonAdaptedPlayerStats {
      * @throws IllegalValueException if there were any data constraints violated in the adapted player stats.
      */
     public PlayerStats toModelType() throws IllegalValueException {
+        for (String key : stats.keySet()) {
+            try {
+                StatField.valueOf(key);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalValueException("Unknown stat field: " + key);
+            }
+        }
+
         PlayerStats playerStats = new PlayerStats();
         for (StatField field: StatField.values()) {
             int value = stats.getOrDefault(field.name(), 0);
