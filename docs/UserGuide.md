@@ -32,6 +32,10 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `list staff` : Lists only staff.
 
+   * `sort by/name` : Sorts all persons by name in ascending order.
+
+   * `sort players by/email desc` : Sorts only players by email in descending order.
+
    * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a player named `John Doe` to SoCcer Manager.
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
@@ -125,6 +129,25 @@ Examples:
 * `list players`
 * `list staff`
 
+### Sorting persons: `sort`
+
+Sorts persons in the UI by a supported attribute.
+
+Format:
+* `sort by/ATTRIBUTE`
+* `sort players by/ATTRIBUTE`
+* `sort staff by/ATTRIBUTE`
+* Add optional `desc` at the end for descending order
+
+Supported attributes:
+* `name`
+* `email`
+
+Examples:
+* `sort by/name`
+* `sort players by/email`
+* `sort staff by/name desc`
+
 ### Editing a person : `edit`
 
 Edits an existing person in SoCcer Manager.
@@ -205,9 +228,23 @@ Format: `deleteevent INDEX`
 * `deleteevent INDEX` selects the event at the specified `INDEX`
 * The index refers to the index number shown in the displayed event list.
 * The index **must be a positive integer** 1, 2, 3, …​
-* 
+
 Examples:
 * `deleteevent 2` deletes the second event in the list.
+
+### Bulk deleting persons by tag : `deletebulk`
+
+Deletes all persons that share a specified tag.
+
+Format: `deletebulk t/TAG`
+
+* `deletebulk t/TAG` filters and shows matching persons in the GUI list and CLI message.
+* To confirm or cancel bulk deletion, type `y`/`Y` or `n`/`N`.
+* Both players and staff with the specified tag are considered.
+
+Examples:
+* `deletebulk t/graduated`, then `y` deletes all persons tagged `graduated`.
+* `deletebulk t/graduated`, then `n` cancels the bulk deletion.
 
 ### Clearing all entries : `clear`
 
@@ -262,9 +299,11 @@ Action | Format, Examples
 **Match** | `match n/OPPONENT_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `match n/Mancherster United d/2026-05-15 pl/John Doe`
 **Clear** | `clear`
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
+**Delete Bulk** | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Delete Event** | `delete INDEX` <br> e.g., `deleteevent 3`
 **Edit Event** | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
+**Sort** | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`
 **Help** | `help`
