@@ -20,6 +20,7 @@ public class StatusDeleteCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Deleted status: %1$s";
     public static final String MESSAGE_STATUS_NOT_FOUND = "The specified status does not exist in the catalog";
+    public static final String MESSAGE_CANNOT_DELETE_DEFAULT_STATUS = "Cannot delete default status: Unknown";
 
     private final Status toDelete;
 
@@ -34,6 +35,10 @@ public class StatusDeleteCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
+        if (toDelete.isDefaultUnknownStatus()) {
+            throw new CommandException(MESSAGE_CANNOT_DELETE_DEFAULT_STATUS);
+        }
 
         if (!model.hasStatus(toDelete)) {
             throw new CommandException(MESSAGE_STATUS_NOT_FOUND);

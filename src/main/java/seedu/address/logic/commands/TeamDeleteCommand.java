@@ -20,6 +20,7 @@ public class TeamDeleteCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Deleted team: %1$s";
     public static final String MESSAGE_TEAM_NOT_FOUND = "The specified team does not exist in the catalog";
+    public static final String MESSAGE_CANNOT_DELETE_DEFAULT_TEAM = "Cannot delete default team: Unassigned Team";
 
     private final Team toDelete;
 
@@ -34,6 +35,10 @@ public class TeamDeleteCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
+        if (toDelete.isDefaultUnassignedTeam()) {
+            throw new CommandException(MESSAGE_CANNOT_DELETE_DEFAULT_TEAM);
+        }
 
         if (!model.hasTeam(toDelete)) {
             throw new CommandException(MESSAGE_TEAM_NOT_FOUND);

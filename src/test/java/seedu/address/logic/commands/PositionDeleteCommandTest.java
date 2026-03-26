@@ -46,6 +46,14 @@ public class PositionDeleteCommandTest {
     }
 
     @Test
+    public void execute_defaultPosition_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new PositionDeleteCommand(new Position(Position.DEFAULT_UNASSIGNED_POSITION)),
+                model, PositionDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_POSITION);
+    }
+
+    @Test
     public void equals() {
         PositionDeleteCommand deleteDefender = new PositionDeleteCommand(new Position("Defender"));
         PositionDeleteCommand deleteMidfielder = new PositionDeleteCommand(new Position("Midfielder"));

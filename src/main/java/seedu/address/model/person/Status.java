@@ -9,6 +9,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Status {
 
+    public static final String DEFAULT_UNKNOWN_STATUS = "Unknown";
     public static final String MESSAGE_CONSTRAINTS =
             "Status names should only contain alphanumeric characters, spaces, and hyphens,"
                     + " and it should not be blank.";
@@ -40,6 +41,13 @@ public class Status {
      */
     public String toCanonicalForm() {
         return value.toLowerCase();
+    }
+
+    /**
+     * Returns true if this status is the protected default status.
+     */
+    public boolean isDefaultUnknownStatus() {
+        return this.equals(new Status(DEFAULT_UNKNOWN_STATUS));
     }
 
     @Override
