@@ -277,6 +277,22 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
+### Editing an event: `editevent`
+
+Edits an existing event in SoCcer Manager.
+
+Format: `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`
+
+* Edits the event at the specified `INDEX`. The index refers to the index number shown in the displayed event list. The index **must be a positive integer** 1, 2, 3, …​
+* At least one of the optional fields must be provided.
+* `et/EVENT_TYPE` must be `MATCH` or `TRAINING`
+* When editing players, the existing players will be removed i.e adding of players is not cumulative.
+* You can remove all players by typing `pl/` without specifying any tags after it.
+
+Examples:
+*  `editevent 1 et/TRAINING d/2026-01-01 1200` Edits the event type and date of the 1st event to be `TRAINING` and `2026-01-01 1200` respectively.
+*  `editevent 2 n/Barcelona pl/` Edits the name of the 2nd event to be `Barcelona` and clears all existing players involved.
+
 ### Locating persons by name: `find`
 
 Finds persons whose names contain any of the given keywords, optionally limited by role.
@@ -317,6 +333,16 @@ Examples:
 * `list` followed by `delete 2`, then `y` deletes the 2nd person in SoCcer Manager.
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
+
+### Deleting an event : `deleteevent`
+
+Format: `deleteevent INDEX`
+* `deleteevent INDEX` selects the event at the specified `INDEX`
+* The index refers to the index number shown in the displayed event list.
+* The index **must be a positive integer** 1, 2, 3, …​
+
+Examples:
+* `deleteevent 2` deletes the second event in the list.
 
 ### Bulk deleting persons by tag : `deletebulk`
 
@@ -387,6 +413,8 @@ Action | Format, Examples
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
 **Delete Bulk** | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`
+**Edit Event** | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
 **Sort** | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`
