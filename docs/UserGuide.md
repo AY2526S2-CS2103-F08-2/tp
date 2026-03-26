@@ -148,6 +148,32 @@ Examples:
 * `sort players by/email`
 * `sort staff by/name desc`
 
+### Player Stats
+Every **player** will have stats that denote their individual performance. 
+These stats can be modified by the user via commands.
+
+Note: staff do not have any performance stats.
+
+_Current valid stats: `goals`, `wins`, `losses`_
+
+#### Set player stat: `set`
+Sets a specific stat of a player to a given value.
+
+Format: `set INDEX STAT VALUE`
+
+Examples:
+- `set 1 goals 7`
+- `set 3 wins 3`
+
+#### Update player stat: `update`
+Updates a specific stat of a player by incrementing it by a given value. (can be negative)
+
+Format: `update INDEX STAT VALUE`
+
+Examples:
+- `update 1 goals 3`
+- `update 3 wins -2`
+
 ### Attributes
 
 SoCcer Manager starts with sample team, status, and position catalog entries in a fresh setup.
@@ -424,6 +450,8 @@ Action | Format, Examples
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
 **Sort** | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`
+**Set** | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`
+**Update** | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`
 **Attributes** | team, status, and position catalog commands
 **Team** | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`
 **Status** | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`
