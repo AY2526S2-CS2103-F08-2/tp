@@ -148,6 +148,118 @@ Examples:
 * `sort players by/email`
 * `sort staff by/name desc`
 
+### Attributes
+
+SoCcer Manager starts with sample team, status, and position catalog entries in a fresh setup.
+
+#### Listing teams: `teamlist`
+
+Shows all teams in the team catalog.
+
+Format: `teamlist`
+
+Examples:
+* `teamlist`
+
+#### Adding a team: `teamadd`
+
+Adds a team to the team catalog.
+
+Format: `teamadd TEAM_NAME`
+
+Examples:
+* `teamadd Reserve Team`
+
+#### Editing a team: `teamedit`
+
+Renames an existing team in the team catalog.
+
+Format: `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME`
+
+Examples:
+* `teamedit old/First Team new/Reserve Team`
+
+#### Deleting a team: `teamdelete`
+
+Deletes an existing team from the team catalog.
+
+Format: `teamdelete TEAM_NAME`
+
+Examples:
+* `teamdelete Reserve Team`
+
+#### Listing statuses: `statuslist`
+
+Shows all statuses in the status catalog.
+
+Format: `statuslist`
+
+Examples:
+* `statuslist`
+
+#### Adding a status: `statusadd`
+
+Adds a status to the status catalog.
+
+Format: `statusadd STATUS_NAME`
+
+Examples:
+* `statusadd Rehab`
+
+#### Editing a status: `statusedit`
+
+Renames an existing status in the status catalog.
+
+Format: `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME`
+
+Examples:
+* `statusedit old/Active new/Rehab`
+
+#### Deleting a status: `statusdelete`
+
+Deletes an existing status from the status catalog.
+
+Format: `statusdelete STATUS_NAME`
+
+Examples:
+* `statusdelete Rehab`
+
+#### Listing positions: `positionlist`
+
+Shows all positions in the position catalog.
+
+Format: `positionlist`
+
+Examples:
+* `positionlist`
+
+#### Adding a position: `positionadd`
+
+Adds a position to the position catalog.
+
+Format: `positionadd POSITION_NAME`
+
+Examples:
+* `positionadd Winger`
+
+#### Editing a position: `positionedit`
+
+Renames an existing position in the position catalog.
+
+Format: `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME`
+
+Examples:
+* `positionedit old/Defender new/Center Back`
+
+#### Deleting a position: `positiondelete`
+
+Deletes an existing position from the position catalog.
+
+Format: `positiondelete POSITION_NAME`
+
+Examples:
+* `positiondelete Winger`
+
 ### Editing a person : `edit`
 
 Edits an existing person in SoCcer Manager.
@@ -278,4 +390,8 @@ Action | Format, Examples
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
 **Sort** | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`
+**Attributes** | team, status, and position catalog commands
+**Team** | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`
+**Status** | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`
+**Position** | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back`
 **Help** | `help`
