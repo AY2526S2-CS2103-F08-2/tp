@@ -46,7 +46,7 @@ public class EventEditCommand extends Command {
             + "[" + PREFIX_PLAYER + "PLAYER]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_NAME + "Manchester United "
-            + PREFIX_EVENT_TYPE + "MATCH"
+            + PREFIX_EVENT_TYPE + "MATCH "
             + PREFIX_DATE + "2025-03-24 1600";
 
     public static final String MESSAGE_EDIT_EVENT_SUCCESS = "Edited Event: %1$s";
