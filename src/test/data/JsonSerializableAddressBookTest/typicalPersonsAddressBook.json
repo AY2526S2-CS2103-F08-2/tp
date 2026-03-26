@@ -65,5 +65,8 @@
       "opponentName" : "Manchester United",
       "date" : "2026-04-15 1600",
       "players" : [ "Amy Bee" ]
-    } ]
+    } ],
+  "teams" : [ "Unassigned Team", "First Team", "Second Team" ],
+  "positions" : [ "Unassigned Position", "Goalkeeper", "Defender", "Midfielder", "Forward" ],
+  "statuses" : [ "Unknown", "Active", "Unavailable" ]
 }

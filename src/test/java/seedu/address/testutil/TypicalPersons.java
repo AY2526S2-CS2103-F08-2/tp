@@ -6,7 +6,11 @@ import java.util.List;
 
 import seedu.address.model.AddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
+import seedu.address.model.util.SampleDataUtil;
 
 /**
  * A utility class containing a list of {@code Person} objects to be used in tests.
@@ -54,6 +58,15 @@ public class TypicalPersons {
      */
     public static AddressBook getTypicalAddressBook() {
         AddressBook ab = new AddressBook();
+        for (Team defaultTeam : SampleDataUtil.getDefaultTeams()) {
+            ab.addTeam(defaultTeam);
+        }
+        for (Position defaultPosition : SampleDataUtil.getDefaultPositions()) {
+            ab.addPosition(defaultPosition);
+        }
+        for (Status defaultStatus : SampleDataUtil.getDefaultStatuses()) {
+            ab.addStatus(defaultStatus);
+        }
         for (Person person : getTypicalPersons()) {
             ab.addPerson(person);
         }
