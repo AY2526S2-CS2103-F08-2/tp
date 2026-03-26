@@ -17,7 +17,10 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Player;
 import seedu.address.model.person.PlayerStats;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -34,6 +37,9 @@ class JsonAdaptedPerson {
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
     private final String role;
     private final JsonAdaptedPlayerStats stats;
+    private final String team;
+    private final String status;
+    private final String position;
 
 
     /**
@@ -45,7 +51,10 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
                              @JsonProperty("email") String email, @JsonProperty("address") String address,
                              @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("role") String role,
-                             @JsonProperty("stats") JsonAdaptedPlayerStats stats) {
+                             @JsonProperty("stats") JsonAdaptedPlayerStats stats,
+                             @JsonProperty("team") String team,
+                             @JsonProperty("status") String status,
+                             @JsonProperty("position") String position) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -55,6 +64,9 @@ class JsonAdaptedPerson {
         }
         this.role = role;
         this.stats = stats;
+        this.team = team;
+        this.status = status;
+        this.position = position;
     }
 
     /**
@@ -76,6 +88,9 @@ class JsonAdaptedPerson {
         } else {
             stats = null;
         }
+        team = source.getTeam().value;
+        status = source.getStatus().value;
+        position = source.getPosition().value;
     }
 
     /**
@@ -132,16 +147,59 @@ class JsonAdaptedPerson {
         }
         final Role modelRole = Role.valueOf(role.toUpperCase());
 
+        if (team == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Team.class.getSimpleName()));
+        }
+        Team modelTeam = parseTeam(team);
+
+        if (status == null) {
+            throw new IllegalValueException(
+                    String.format(MISSING_FIELD_MESSAGE_FORMAT, Status.class.getSimpleName()));
+        }
+        Status modelStatus = parseStatus(status);
+
+        if (position == null) {
+            throw new IllegalValueException(
+                    String.format(MISSING_FIELD_MESSAGE_FORMAT, Position.class.getSimpleName()));
+        }
+        Position modelPosition = parsePosition(position);
+
         // for players only
         if (role.equalsIgnoreCase("PLAYER")) {
             PlayerStats modelPlayerStats = (stats != null)
                     ? stats.toModelType()
                     : new PlayerStats(); // default zeros if stats missing from JSON
             return Person.createPerson(modelName, modelPhone, modelEmail,
-                    modelAddress, modelTags, modelRole, modelPlayerStats);
+                    modelAddress, modelTags, modelRole, modelPlayerStats,
+                    modelTeam, modelStatus, modelPosition);
         }
 
-        return Person.createPerson(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelRole);
+        return Person.createPerson(modelName, modelPhone, modelEmail,
+                modelAddress, modelTags, modelRole, modelTeam, modelStatus, modelPosition);
+    }
+
+    private Team parseTeam(String teamValue) throws IllegalValueException {
+        String trimmedTeam = teamValue.trim();
+        if (!Team.isValidTeamName(trimmedTeam)) {
+            throw new IllegalValueException(Team.MESSAGE_CONSTRAINTS);
+        }
+        return new Team(trimmedTeam);
+    }
+
+    private Status parseStatus(String statusValue) throws IllegalValueException {
+        String trimmedStatus = statusValue.trim();
+        if (!Status.isValidStatusName(trimmedStatus)) {
+            throw new IllegalValueException(Status.MESSAGE_CONSTRAINTS);
+        }
+        return new Status(trimmedStatus);
+    }
+
+    private Position parsePosition(String positionValue) throws IllegalValueException {
+        String trimmedPosition = positionValue.trim();
+        if (!Position.isValidPositionName(trimmedPosition)) {
+            throw new IllegalValueException(Position.MESSAGE_CONSTRAINTS);
+        }
+        return new Position(trimmedPosition);
     }
 
 }

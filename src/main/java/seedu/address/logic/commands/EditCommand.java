@@ -27,7 +27,10 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -104,8 +107,12 @@ public class EditCommand extends Command {
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         Role updatedRole = editPersonDescriptor.getRole().orElse(personToEdit.getRole());
+        Team updatedTeam = personToEdit.getTeam();
+        Status updatedStatus = personToEdit.getStatus();
+        Position updatedPosition = personToEdit.getPosition();
 
-        return Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, updatedRole);
+        return Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+                updatedRole, updatedTeam, updatedStatus, updatedPosition);
     }
 
     @Override
