@@ -152,6 +152,12 @@ Examples:
 
 SoCcer Manager starts with sample team, status, and position catalog entries in a fresh setup.
 
+For attribute catalog commands, value matching is case-insensitive. This means both `*edit` and `*delete`
+commands work regardless of letter case (for example, `teamdelete reserve team` matches `Reserve Team`).
+
+Case-only renames are supported for attribute edit commands. For example, if `R` exists in a catalog,
+`teamedit old/R new/r` (and similarly for `statusedit` / `positionedit`) updates the displayed casing.
+
 #### Listing teams: `teamlist`
 
 Shows all teams in the team catalog.
