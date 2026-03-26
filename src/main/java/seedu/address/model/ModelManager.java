@@ -5,8 +5,10 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -195,15 +197,22 @@ public class ModelManager implements Model {
 
     @Override
     public String getAttendanceReport() {
-        StringBuilder sb = new StringBuilder();
         ObservableList<Event> trainingList =
                 addressBook.getEventList().filtered(e -> e.getEventType() == EventType.TRAINING);
 
+        Map<String, Double> attendanceMap = new HashMap<>();
         for (Person p : addressBook.getPersonList().filtered(p -> p.getRole() == Role.PLAYER)) {
-            long appearances = trainingList.stream().filter(e -> e.getEventPlayerList().contains((Player) p)).count();
+            long appearances = trainingList.stream().filter(e -> e.getEventPlayerList().contains(p)).count();
             double rate = (double) appearances / trainingList.size() * 100;
-            sb.append(String.format("%s: %.1f%%\n", p.getName(), rate));
+            attendanceMap.put(p.getName().toString(), rate);
         }
+        StringBuilder sb = new StringBuilder();
+        attendanceMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .forEach(entry -> {
+                    sb.append(String.format("%-20s: %.1f%%\n", entry.getKey(), entry.getValue()));
+                });
+
         return sb.toString();
     }
     //=========== Match List Accessors =======================================================================
