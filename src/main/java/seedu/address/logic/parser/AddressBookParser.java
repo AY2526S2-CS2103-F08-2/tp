@@ -12,6 +12,7 @@ import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.DeleteBulkCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EventDeleteCommand;
@@ -26,6 +27,7 @@ import seedu.address.logic.commands.PositionDeleteCommand;
 import seedu.address.logic.commands.PositionEditCommand;
 import seedu.address.logic.commands.PositionListCommand;
 import seedu.address.logic.commands.SetCommand;
+import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.StatusAddCommand;
 import seedu.address.logic.commands.StatusDeleteCommand;
 import seedu.address.logic.commands.StatusEditCommand;
@@ -86,6 +88,10 @@ public class AddressBookParser {
 
         case DeleteCommand.COMMAND_WORD:
             command = new DeleteCommandParser().parse(arguments);
+            break;
+
+        case DeleteBulkCommand.COMMAND_WORD:
+            command = new DeleteBulkCommandParser().parse(arguments);
             break;
 
         case ClearCommand.COMMAND_WORD:
@@ -184,6 +190,9 @@ public class AddressBookParser {
             command = new MatchCommandParser().parse(arguments);
             break;
 
+        case SortCommand.COMMAND_WORD:
+            command = new SortCommandParser().parse(arguments);
+            break;
         case TrainingCommand.COMMAND_WORD:
             command = new TrainingCommandParser().parse(arguments);
             break;

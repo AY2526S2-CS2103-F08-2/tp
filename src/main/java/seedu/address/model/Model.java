@@ -1,6 +1,8 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
@@ -127,8 +129,14 @@ public interface Model {
      */
     void setEvent(Event target, Event editedEvent);
 
-    /** Returns an unmodifiable view of the filtered person list */
+    /** Returns an unmodifiable view of the filtered and sorted person list */
     ObservableList<Person> getFilteredPersonList();
+
+    /**
+     * Returns all persons matching the given {@code predicate}.
+     * The returned list is a snapshot and is independent of the model's filtered list state.
+     */
+    List<Person> getPersonsMatching(Predicate<Person> predicate);
 
     /**
      * Returns an unmodifiable view of the event list
@@ -190,6 +198,12 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Updates the sorting of the filtered person list using the given {@code comparator}.
+     * @throws NullPointerException if {@code comparator} is null.
+     */
+    void updateSortedPersonListComparator(Comparator<Person> comparator);
 
     /**
      * Returns the attendance rate of all players.

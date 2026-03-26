@@ -6,8 +6,11 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.DeleteBulkCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
+import seedu.address.logic.commands.HelpCommand;
+import seedu.address.model.tag.Tag;
 
 public class DeleteInteractionFlowTest {
 
@@ -36,6 +39,49 @@ public class DeleteInteractionFlowTest {
         flow.updateAfterParse(new DeleteCommand(INDEX_FIRST_PERSON));
 
         assertEquals("gg", flow.preprocessInput("gg"));
+        assertEquals("y", flow.preprocessInput("y"));
+    }
+
+    @Test
+    public void preprocessInput_deleteBulk_yesMapsToFollowUpCommand() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteBulkCommand(new Tag("graduated")));
+
+        assertEquals("deletebulk y t/graduated", flow.preprocessInput("y"));
+    }
+
+    @Test
+    public void preprocessInput_deleteBulk_noMapsToFollowUpCommand() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteBulkCommand(new Tag("graduated")));
+
+        assertEquals("deletebulk n t/graduated", flow.preprocessInput("n"));
+    }
+
+    @Test
+    public void preprocessInput_deleteBulkInvalidFollowUp_clearsPendingContext() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteBulkCommand(new Tag("graduated")));
+
+        assertEquals("oops", flow.preprocessInput("oops"));
+        assertEquals("y", flow.preprocessInput("y"));
+    }
+
+    @Test
+    public void updateAfterParse_nonDeleteCommand_clearsAllPendingContext() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteBulkCommand(new Tag("graduated")));
+        flow.updateAfterParse(new HelpCommand());
+
+        assertEquals("y", flow.preprocessInput("y"));
+    }
+
+    @Test
+    public void updateAfterParse_deleteBulkDecisionMade_clearsPendingBulkContext() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteBulkCommand(
+                new Tag("graduated"), DeleteBulkCommand.BulkDeletionDecision.CONFIRM));
+
         assertEquals("y", flow.preprocessInput("y"));
     }
 }
