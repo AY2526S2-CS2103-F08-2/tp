@@ -111,6 +111,20 @@ Examples:
 - `match n/Mancherster United d/2026-05-15 1600`
 - `match n/Mancherster United d/2026-05-15 1600 pl/John Doe`
 
+### Adding a training session: `training`
+
+Adds a training session to the address book.
+
+Format: `training n/TRAINING_NAME d/DATE [pl/PLAYER_NAME]…​`
+
+Notes:
+- Date must have format `yyyy-MM-dd HHmm`
+- Variable number of players can be added to the training session, and must exist in the address book
+
+Examples:
+- `training n/Warm Up d/2026-05-15 1600`
+- `training n/Run Laps d/2026-05-15 1600 pl/John Doe`
+
 ### Listing persons: `list`
 
 Shows persons in SoCcer Manager, optionally filtered by role.
@@ -128,6 +142,17 @@ Examples:
 * `list`
 * `list players`
 * `list staff`
+
+### Viewing attendance for trainings: `attendance`
+
+Shows a summary of player attendance for trainings for every player in the address book.
+
+Format: `attendance`
+
+Notes: 
+- There must be at least 1 training and 1 player in the address book.
+- The attendance rates are rounded to one decimal place.
+- Sorted in descending order, highest attendance rate shown at the top.
 
 ### Sorting persons: `sort`
 
@@ -360,6 +385,7 @@ Format: `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`
 * If multiple persons match, it will show a clash list with indexes. Enter the clash index to choose a person.
 * To confirm or cancel deletion, type `y`/`Y` or `n`/`N`.
 * The index **must be a positive integer** 1, 2, 3, …​
+* Deleting a person will remove them from all events of which they are currently a part of.
 
 Examples:
 * `list` followed by `delete 2`, then `y` deletes the 2nd person in SoCcer Manager.
@@ -437,23 +463,25 @@ _Details coming soon ..._
 
 ## Command summary
 
-Action | Format, Examples
---------|------------------
-**Add** | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
-**Match** | `match n/OPPONENT_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `match n/Mancherster United d/2026-05-15 pl/John Doe`
-**Clear** | `clear`
-**Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
-**Delete Bulk** | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)
-**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`
-**Edit Event** | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`
-**Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
-**List** | `list` / `list players` / `list staff`<br> e.g., `list players`
-**Sort** | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`
-**Set** | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`
-**Update** | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`
-**Attributes** | team, status, and position catalog commands
-**Team** | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`
-**Status** | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`
-**Position** | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back`
-**Help** | `help`
+| Action           | Format, Examples                                                                                                                                                                                                       |
+|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Add**          | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`                                   |
+| **Match**        | `match n/OPPONENT_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `match n/Mancherster United d/2026-05-15 1600 pl/John Doe`                                                                                                |
+| **Training**     | `training n/TRAINING_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `training n/Warm Up d/2026-06-16 1700 pl/John Doe`                                                                                                     |
+| **Attendance**   | `attendance`                                                                                                                                                                                                           |
+| **Clear**        | `clear`                                                                                                                                                                                                                |
+| **Delete**       | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)                                                                              |
+| **Delete Bulk**  | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)                                                                                                                                                |
+| **Edit**         | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`                                                                                   |
+| **Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                         |
+| **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |
+| **Find**         | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                        |
+| **List**         | `list` / `list players` / `list staff`<br> e.g., `list players`                                                                                                                                                        |
+| **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                       |
+| **Set**          | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                      |
+| **Update**       | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                 |
+| **Attributes**   | team, status, and position catalog commands                                                                                                                                                                            |
+| **Team**         | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`                                |
+| **Status**       | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`                              |
+| **Position**     | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back` |
+| **Help**         | `help`                                                                                                                                                                                                                 |
