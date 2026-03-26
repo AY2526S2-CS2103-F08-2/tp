@@ -301,7 +301,7 @@ Action | Format, Examples
 **Delete** | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)
 **Delete Bulk** | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Delete Event** | `delete INDEX` <br> e.g., `deleteevent 3`
+**Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`
 **Edit Event** | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`
 **Find** | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`
 **List** | `list` / `list players` / `list staff`<br> e.g., `list players`
