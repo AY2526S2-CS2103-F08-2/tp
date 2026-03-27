@@ -195,6 +195,22 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Role-filtered list command
+
+The `list players` and `list staff` commands are handled by `AddressBookParser` via
+`ListRoleCommandParser`, which creates a `ListRoleCommand` with the corresponding role predicate.
+
+When executed, `ListRoleCommand` calls `Model#updateFilteredPersonList(...)` with
+`PersonHasRolePredicate(Role.PLAYER)` or `PersonHasRolePredicate(Role.STAFF)`, which updates the
+observable filtered list shown in the UI.
+
+The sequence diagram below illustrates the interaction flow using `execute("list players")` as the example.
+
+![Interactions for the `list players` Command](images/ListRoleSequenceDiagram.png)
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+</div>
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
