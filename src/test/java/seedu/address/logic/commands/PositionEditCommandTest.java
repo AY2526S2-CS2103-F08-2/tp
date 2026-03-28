@@ -60,6 +60,15 @@ public class PositionEditCommandTest {
     }
 
     @Test
+    public void execute_defaultPosition_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(
+                new PositionEditCommand(new Position(Position.DEFAULT_UNASSIGNED_POSITION), new Position("Winger")),
+                model, PositionEditCommand.MESSAGE_CANNOT_EDIT_DEFAULT_POSITION);
+    }
+
+    @Test
     public void equals() {
         PositionEditCommand editDefenderToCenterBack =
                 new PositionEditCommand(new Position("Defender"), new Position("Center Back"));

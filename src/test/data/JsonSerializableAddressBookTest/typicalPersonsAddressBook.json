@@ -6,46 +6,67 @@
     "email" : "Player_Amy@example.com",
     "address" : "Block 33, Street 34",
     "tags" : ["friend"],
-    "role" : "PLAYER"
+    "role" : "PLAYER",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
   }, {
     "name" : "Ben Tan",
     "phone" : "99999999",
     "email" : "Player_Ben@example.com",
     "address" : "Block 123, Street 3",
     "tags" : [ ],
-    "role" : "PLAYER"
+    "role" : "PLAYER",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
   }, {
     "name" : "Charlie Ng",
     "phone" : "93456789",
     "email" : "charlieng@example.com",
     "address" : "7th street",
     "tags" : [ ],
-    "role" : "PLAYER"
+    "role" : "PLAYER",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
   }, {
     "name" : "Diva Meier",
     "phone" : "94433443",
     "email" : "divameier@example.com",
     "address" : "chinatown",
     "tags" : [ ],
-    "role" : "STAFF"
+    "role" : "STAFF",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
   }, {
     "name" : "Hoon Meier",
     "phone" : "84824243",
     "email" : "hoonmeier@example.com",
     "address" : "little india",
     "tags" : [ ],
-    "role" : "STAFF"
+    "role" : "STAFF",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
   }, {
     "name" : "Ida Mueller",
     "phone" : "84821311",
     "email" : "idamueller@example.com",
     "address" : "chicago ave",
     "tags" : [ ],
-    "role" : "STAFF"
+    "role" : "STAFF",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
   } ],
   "matches" : [ {
       "opponentName" : "Manchester United",
       "date" : "2026-04-15 1600",
       "players" : [ "Amy Bee" ]
-    } ]
+    } ],
+  "teams" : [ "Unassigned Team", "First Team", "Second Team" ],
+  "positions" : [ "Unassigned Position", "Goalkeeper", "Defender", "Midfielder", "Forward" ],
+  "statuses" : [ "Unknown", "Active", "Unavailable" ]
 }

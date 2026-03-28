@@ -25,18 +25,25 @@ public abstract class Person {
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
     private final Role role;
+    private final Team team;
+    private final Status status;
+    private final Position position;
 
     /**
      * Every field must be present and not null. Includes role field.
      */
-    protected Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role) {
-        requireAllNonNull(name, phone, email, address, tags, role);
+    protected Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                     Role role, Team team, Status status, Position position) {
+        requireAllNonNull(name, phone, email, address, tags, role, team, status, position);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
         this.role = role;
+        this.team = team;
+        this.status = status;
+        this.position = position;
     }
 
     /**
@@ -52,9 +59,21 @@ public abstract class Person {
      */
     public static Person createPerson(Name name, Phone phone, Email email,
                                       Address address, Set<Tag> tags, Role role) {
+        Team defaultTeam = new Team(Team.DEFAULT_UNASSIGNED_TEAM);
+        Status defaultStatus = new Status(Status.DEFAULT_UNKNOWN_STATUS);
+        Position defaultPosition = new Position(Position.DEFAULT_UNASSIGNED_POSITION);
+        return createPerson(name, phone, email, address, tags, role, defaultTeam, defaultStatus, defaultPosition);
+    }
+
+    /**
+     * Factory method for creating a person with explicit attributes.
+     */
+    public static Person createPerson(Name name, Phone phone, Email email,
+                                      Address address, Set<Tag> tags, Role role,
+                                      Team team, Status status, Position position) {
         return switch (role) {
-        case PLAYER -> new Player(name, phone, email, address, tags);
-        case STAFF -> new Staff(name, phone, email, address, tags);
+        case PLAYER -> new Player(name, phone, email, address, tags, team, status, position);
+        case STAFF -> new Staff(name, phone, email, address, tags, team, status, position);
         };
     }
 
@@ -73,9 +92,22 @@ public abstract class Person {
      */
     public static Person createPerson(Name name, Phone phone, Email email,
                                       Address address, Set<Tag> tags, Role role, PlayerStats stats) {
+        Team defaultTeam = new Team(Team.DEFAULT_UNASSIGNED_TEAM);
+        Status defaultStatus = new Status(Status.DEFAULT_UNKNOWN_STATUS);
+        Position defaultPosition = new Position(Position.DEFAULT_UNASSIGNED_POSITION);
+        return createPerson(name, phone, email, address, tags, role, stats, defaultTeam, defaultStatus,
+                defaultPosition);
+    }
+
+    /**
+     * Factory method for creating a person with explicit attributes and player stats.
+     */
+    public static Person createPerson(Name name, Phone phone, Email email,
+                                      Address address, Set<Tag> tags, Role role, PlayerStats stats,
+                                      Team team, Status status, Position position) {
         return switch (role) {
-        case PLAYER -> new Player(name, phone, email, address, tags, stats);
-        case STAFF -> new Staff(name, phone, email, address, tags);
+        case PLAYER -> new Player(name, phone, email, address, tags, stats, team, status, position);
+        case STAFF -> new Staff(name, phone, email, address, tags, team, status, position);
         };
     }
 
@@ -100,6 +132,18 @@ public abstract class Person {
      */
     public Role getRole() {
         return role;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public Position getPosition() {
+        return position;
     }
 
     /**
@@ -144,13 +188,16 @@ public abstract class Person {
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags)
-                && role.equals(otherPerson.role);
+                && role.equals(otherPerson.role)
+                && team.equals(otherPerson.team)
+                && status.equals(otherPerson.status)
+                && position.equals(otherPerson.position);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, role);
+        return Objects.hash(name, phone, email, address, tags, role, team, status, position);
     }
 
     @Override
@@ -161,6 +208,9 @@ public abstract class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
+                .add("team", team)
+                .add("status", status)
+                .add("position", position)
                 .add("tags", tags)
                 .toString();
     }

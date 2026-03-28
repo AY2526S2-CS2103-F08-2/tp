@@ -60,6 +60,14 @@ public class StatusEditCommandTest {
     }
 
     @Test
+    public void execute_defaultStatus_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new StatusEditCommand(new Status(Status.DEFAULT_UNKNOWN_STATUS), new Status("Rehab")),
+                model, StatusEditCommand.MESSAGE_CANNOT_EDIT_DEFAULT_STATUS);
+    }
+
+    @Test
     public void equals() {
         StatusEditCommand editActiveToRehab = new StatusEditCommand(new Status("Active"), new Status("Rehab"));
         StatusEditCommand editUnknownToRehab = new StatusEditCommand(new Status("Unknown"), new Status("Rehab"));

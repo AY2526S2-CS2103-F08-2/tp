@@ -46,6 +46,14 @@ public class StatusDeleteCommandTest {
     }
 
     @Test
+    public void execute_defaultStatus_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new StatusDeleteCommand(new Status(Status.DEFAULT_UNKNOWN_STATUS)),
+                model, StatusDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_STATUS);
+    }
+
+    @Test
     public void equals() {
         StatusDeleteCommand deleteActive = new StatusDeleteCommand(new Status("Active"));
         StatusDeleteCommand deleteUnavailable = new StatusDeleteCommand(new Status("Unavailable"));

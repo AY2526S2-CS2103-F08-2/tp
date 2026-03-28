@@ -21,6 +21,7 @@ public class StatusEditCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Renamed status: %1$s -> %2$s";
     public static final String MESSAGE_STATUS_NOT_FOUND = "The specified status does not exist in the catalog";
     public static final String MESSAGE_DUPLICATE_STATUS = "This status already exists in the catalog";
+    public static final String MESSAGE_CANNOT_EDIT_DEFAULT_STATUS = "Cannot edit default status: Unknown";
 
     private final Status oldStatus;
     private final Status newStatus;
@@ -38,6 +39,10 @@ public class StatusEditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
+        if (oldStatus.isDefaultUnknownStatus()) {
+            throw new CommandException(MESSAGE_CANNOT_EDIT_DEFAULT_STATUS);
+        }
 
         if (!model.hasStatus(oldStatus)) {
             throw new CommandException(MESSAGE_STATUS_NOT_FOUND);

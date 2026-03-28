@@ -10,7 +10,10 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -38,6 +41,9 @@ public class EditPersonDescriptorBuilder {
         descriptor.setEmail(person.getEmail());
         descriptor.setAddress(person.getAddress());
         descriptor.setRole(person.getRole());
+        descriptor.setTeam(person.getTeam());
+        descriptor.setStatus(person.getStatus());
+        descriptor.setPosition(person.getPosition());
         descriptor.setTags(person.getTags());
 
     }
@@ -79,6 +85,30 @@ public class EditPersonDescriptorBuilder {
      */
     public EditPersonDescriptorBuilder withRole(String role) {
         descriptor.setRole(Role.valueOf(role));
+        return this;
+    }
+
+    /**
+     * Sets the {@code Team} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withTeam(String team) {
+        descriptor.setTeam(new Team(team));
+        return this;
+    }
+
+    /**
+     * Sets the {@code Status} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withStatus(String status) {
+        descriptor.setStatus(new Status(status));
+        return this;
+    }
+
+    /**
+     * Sets the {@code Position} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withPosition(String position) {
+        descriptor.setPosition(new Position(position));
         return this;
     }
 

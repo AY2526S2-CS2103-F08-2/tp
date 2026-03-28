@@ -46,6 +46,14 @@ public class TeamDeleteCommandTest {
     }
 
     @Test
+    public void execute_defaultTeam_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new TeamDeleteCommand(new Team(Team.DEFAULT_UNASSIGNED_TEAM)),
+                model, TeamDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_TEAM);
+    }
+
+    @Test
     public void equals() {
         TeamDeleteCommand deleteFirstTeam = new TeamDeleteCommand(new Team("First Team"));
         TeamDeleteCommand deleteSecondTeam = new TeamDeleteCommand(new Team("Second Team"));

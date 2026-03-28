@@ -60,6 +60,14 @@ public class TeamEditCommandTest {
     }
 
     @Test
+    public void execute_defaultTeam_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new TeamEditCommand(new Team(Team.DEFAULT_UNASSIGNED_TEAM), new Team("Reserve Team")),
+                model, TeamEditCommand.MESSAGE_CANNOT_EDIT_DEFAULT_TEAM);
+    }
+
+    @Test
     public void equals() {
         TeamEditCommand editFirstToReserve = new TeamEditCommand(new Team("First Team"), new Team("Reserve Team"));
         TeamEditCommand editSecondToReserve = new TeamEditCommand(new Team("Second Team"), new Team("Reserve Team"));

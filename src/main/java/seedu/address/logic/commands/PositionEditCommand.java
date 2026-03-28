@@ -21,6 +21,8 @@ public class PositionEditCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Renamed position: %1$s -> %2$s";
     public static final String MESSAGE_POSITION_NOT_FOUND = "The specified position does not exist in the catalog";
     public static final String MESSAGE_DUPLICATE_POSITION = "This position already exists in the catalog";
+    public static final String MESSAGE_CANNOT_EDIT_DEFAULT_POSITION =
+            "Cannot edit default position: Unassigned Position";
 
     private final Position oldPosition;
     private final Position newPosition;
@@ -38,6 +40,10 @@ public class PositionEditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
+        if (oldPosition.isDefaultUnassignedPosition()) {
+            throw new CommandException(MESSAGE_CANNOT_EDIT_DEFAULT_POSITION);
+        }
 
         if (!model.hasPosition(oldPosition)) {
             throw new CommandException(MESSAGE_POSITION_NOT_FOUND);

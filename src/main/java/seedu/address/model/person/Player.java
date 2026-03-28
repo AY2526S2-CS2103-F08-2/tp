@@ -21,7 +21,18 @@ public class Player extends Person {
      * @param tags the player tags
      */
     public Player(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        super(name, phone, email, address, tags, Role.PLAYER);
+        this(name, phone, email, address, tags,
+                new Team(Team.DEFAULT_UNASSIGNED_TEAM),
+                new Status(Status.DEFAULT_UNKNOWN_STATUS),
+                new Position(Position.DEFAULT_UNASSIGNED_POSITION));
+    }
+
+    /**
+     * Constructs a {@code Player} with explicit attributes and fresh stats.
+     */
+    public Player(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  Team team, Status status, Position position) {
+        super(name, phone, email, address, tags, Role.PLAYER, team, status, position);
         this.stats = new PlayerStats();
     }
 
@@ -36,7 +47,18 @@ public class Player extends Person {
      * @param stats the player stats
      */
     public Player(Name name, Phone phone, Email email, Address address, Set<Tag> tags, PlayerStats stats) {
-        super(name, phone, email, address, tags, Role.PLAYER);
+        this(name, phone, email, address, tags, stats,
+                new Team(Team.DEFAULT_UNASSIGNED_TEAM),
+                new Status(Status.DEFAULT_UNKNOWN_STATUS),
+                new Position(Position.DEFAULT_UNASSIGNED_POSITION));
+    }
+
+    /**
+     * Constructs a {@code Player} with explicit attributes and stats.
+     */
+    public Player(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  PlayerStats stats, Team team, Status status, Position position) {
+        super(name, phone, email, address, tags, Role.PLAYER, team, status, position);
         assert stats != null;
         this.stats = stats;
     }
