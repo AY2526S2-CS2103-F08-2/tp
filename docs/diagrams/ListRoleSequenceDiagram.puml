@@ -1,0 +1,68 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ListRoleCommandParser" as ListRoleCommandParser LOGIC_COLOR
+participant "lr:ListRoleCommand" as ListRoleCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("list players")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("list players")
+activate AddressBookParser
+
+create ListRoleCommandParser
+AddressBookParser -> ListRoleCommandParser
+activate ListRoleCommandParser
+
+ListRoleCommandParser --> AddressBookParser
+deactivate ListRoleCommandParser
+
+AddressBookParser -> ListRoleCommandParser : parse("players")
+activate ListRoleCommandParser
+
+create ListRoleCommand
+ListRoleCommandParser -> ListRoleCommand
+activate ListRoleCommand
+
+ListRoleCommand --> ListRoleCommandParser
+deactivate ListRoleCommand
+
+ListRoleCommandParser --> AddressBookParser : lr
+deactivate ListRoleCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+ListRoleCommandParser -[hidden]-> AddressBookParser
+destroy ListRoleCommandParser
+
+AddressBookParser --> LogicManager : lr
+deactivate AddressBookParser
+
+LogicManager -> ListRoleCommand : execute(m)
+activate ListRoleCommand
+
+ListRoleCommand -> Model : updateFilteredPersonList(rolePredicate)
+activate Model
+Model --> ListRoleCommand
+deactivate Model
+
+create CommandResult
+ListRoleCommand -> CommandResult
+activate CommandResult
+CommandResult --> ListRoleCommand
+deactivate CommandResult
+
+ListRoleCommand --> LogicManager : r
+deactivate ListRoleCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
