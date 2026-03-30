@@ -17,11 +17,15 @@ import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_PLAYER_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_PLAYER_BEN;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_PLAYER_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_PLAYER_BEN;
+import static seedu.address.logic.commands.CommandTestUtil.POSITION_DESC_FORWARD;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
 import static seedu.address.logic.commands.CommandTestUtil.ROLE_DESC_PLAYER;
+import static seedu.address.logic.commands.CommandTestUtil.ROLE_DESC_STAFF;
+import static seedu.address.logic.commands.CommandTestUtil.STATUS_DESC_ACTIVE;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
+import static seedu.address.logic.commands.CommandTestUtil.TEAM_DESC_FIRST;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_PLAYER_BEN;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_PLAYER_BEN;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_PLAYER_BEN;
@@ -33,9 +37,13 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_POSITION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 import static seedu.address.testutil.TypicalPersons.PLAYER_BEN;
 
@@ -47,6 +55,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.Messages;
@@ -120,6 +129,18 @@ public class AddCommandParserTest {
         assertParseFailure(parser, ROLE_DESC_PLAYER + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_ROLE));
 
+        // multiple teams
+        assertParseFailure(parser, validExpectedPersonString + TEAM_DESC_FIRST + TEAM_DESC_FIRST,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_TEAM));
+
+        // multiple statuses
+        assertParseFailure(parser, validExpectedPersonString + STATUS_DESC_ACTIVE + STATUS_DESC_ACTIVE,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_STATUS));
+
+        // multiple positions
+        assertParseFailure(parser, validExpectedPersonString + POSITION_DESC_FORWARD + POSITION_DESC_FORWARD,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_POSITION));
+
         // multiple fields repeated
         assertParseFailure(parser,
                 validExpectedPersonString + PHONE_DESC_PLAYER_AMY + EMAIL_DESC_PLAYER_AMY + NAME_DESC_PLAYER_AMY
@@ -180,6 +201,32 @@ public class AddCommandParserTest {
                 NAME_DESC_PLAYER_AMY + PHONE_DESC_PLAYER_AMY + EMAIL_DESC_PLAYER_AMY + ADDRESS_DESC_PLAYER_AMY
                         + ROLE_DESC_PLAYER,
                 new AddCommand(expectedPerson));
+    }
+
+    @Test
+    public void parse_optionalAttributesPresent_success() {
+        Person expectedPerson = new PersonBuilder(PLAYER_BEN)
+                .withTeam("First Team")
+                .withStatus("Active")
+                .withPosition("Forward")
+                .withTags(VALID_TAG_FRIEND)
+                .build();
+        assertParseSuccess(parser,
+                NAME_DESC_PLAYER_BEN + PHONE_DESC_PLAYER_BEN + EMAIL_DESC_PLAYER_BEN + ADDRESS_DESC_PLAYER_BEN
+                        + ROLE_DESC_PLAYER + TEAM_DESC_FIRST + STATUS_DESC_ACTIVE + POSITION_DESC_FORWARD
+                        + TAG_DESC_FRIEND,
+                new AddCommand(expectedPerson));
+    }
+
+    @Test
+    public void parse_staffWithPosition_commandRejects() throws Exception {
+        String userInput = NAME_DESC_PLAYER_BEN + PHONE_DESC_PLAYER_BEN + EMAIL_DESC_PLAYER_BEN
+                + ADDRESS_DESC_PLAYER_BEN + ROLE_DESC_STAFF + POSITION_DESC_FORWARD;
+        AddCommand command = parser.parse(userInput);
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+
+        assertThrows(seedu.address.logic.commands.exceptions.CommandException.class,
+                AddCommand.MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF, () -> command.execute(modelStub));
     }
 
     @Test
@@ -341,7 +388,7 @@ public class AddCommandParserTest {
 
         @Override
         public boolean hasTeam(Team team) {
-            throw new AssertionError("This method should not be called.");
+            return true;
         }
 
         @Override
@@ -361,7 +408,7 @@ public class AddCommandParserTest {
 
         @Override
         public boolean hasStatus(Status status) {
-            throw new AssertionError("This method should not be called.");
+            return true;
         }
 
         @Override
@@ -384,13 +431,17 @@ public class AddCommandParserTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        @Override
         public ObservableList<Team> getTeamList() {
-            throw new AssertionError("This method should not be called.");
+            return FXCollections.observableArrayList(
+                    new Team(Team.DEFAULT_UNASSIGNED_TEAM),
+                    new Team("First Team"),
+                    new Team("Second Team"));
         }
 
         @Override
         public boolean hasPosition(Position position) {
-            throw new AssertionError("This method should not be called.");
+            return true;
         }
 
         @Override
@@ -410,12 +461,18 @@ public class AddCommandParserTest {
 
         @Override
         public ObservableList<Position> getPositionList() {
-            throw new AssertionError("This method should not be called.");
+            return FXCollections.observableArrayList(
+                    new Position(Position.DEFAULT_UNASSIGNED_POSITION),
+                    new Position("Forward"),
+                    new Position("Defender"));
         }
 
         @Override
         public ObservableList<Status> getStatusList() {
-            throw new AssertionError("This method should not be called.");
+            return FXCollections.observableArrayList(
+                    new Status(Status.DEFAULT_UNKNOWN_STATUS),
+                    new Status("Active"),
+                    new Status("Unavailable"));
         }
 
         @Override

@@ -67,6 +67,7 @@ public class CommandTestUtil {
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
     public static final String ROLE_DESC_PLAYER = " " + PREFIX_ROLE + VALID_ROLE_PLAYER;
+    public static final String ROLE_DESC_STAFF = " " + PREFIX_ROLE + VALID_ROLE_STAFF;
     public static final String TEAM_DESC_FIRST = " " + PREFIX_TEAM + VALID_TEAM_FIRST;
     public static final String TEAM_DESC_SECOND = " " + PREFIX_TEAM + VALID_TEAM_SECOND;
     public static final String STATUS_DESC_ACTIVE = " " + PREFIX_STATUS + VALID_STATUS_ACTIVE;
