@@ -211,6 +211,18 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
 
+### Update player stats command
+
+The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
+which creates a `UpdateCommand` with the given parameters (`INDEX, STAT, VALUE`).
+
+After updating the player stats with the relevant setter function in `PlayerStats`, it refreshes the observable filtered list
+by calling `Model#updateFilteredPersonList(...)` with `PREDICATE_SHOW_ALL_PERSONS`.
+
+The sequence diagram below illustrates the interactions, taking a `execute("update 1 wins 5")` call as an example.
+
+![Interactions for the `update` Command](images/UpdateSequenceDiagram.png)
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
