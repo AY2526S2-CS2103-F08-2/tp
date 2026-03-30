@@ -14,6 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Position;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link PositionDeleteCommand}.
@@ -46,6 +47,25 @@ public class PositionDeleteCommandTest {
     }
 
     @Test
+    public void execute_defaultPosition_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new PositionDeleteCommand(new Position(Position.DEFAULT_UNASSIGNED_POSITION)),
+                model, PositionDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_POSITION);
+    }
+
+    @Test
+    public void execute_positionInUse_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        Position inUsePosition = new Position("Winger");
+        model.addPosition(inUsePosition);
+        model.addPerson(new PersonBuilder().withPosition("Winger").build());
+
+        assertCommandFailure(new PositionDeleteCommand(inUsePosition),
+                model, PositionDeleteCommand.MESSAGE_POSITION_IN_USE);
+    }
+
+    @Test
     public void equals() {
         PositionDeleteCommand deleteDefender = new PositionDeleteCommand(new Position("Defender"));
         PositionDeleteCommand deleteMidfielder = new PositionDeleteCommand(new Position("Midfielder"));
@@ -65,4 +85,3 @@ public class PositionDeleteCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

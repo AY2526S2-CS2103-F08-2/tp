@@ -9,6 +9,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Team {
 
+    public static final String DEFAULT_UNASSIGNED_TEAM = "Unassigned Team";
     public static final String MESSAGE_CONSTRAINTS =
             "Team names should only contain alphanumeric characters, spaces, and hyphens,"
                     + " and it should not be blank.";
@@ -40,6 +41,13 @@ public class Team {
      */
     public String toCanonicalForm() {
         return value.toLowerCase();
+    }
+
+    /**
+     * Returns true if this team is the protected default team.
+     */
+    public boolean isDefaultUnassignedTeam() {
+        return this.equals(new Team(DEFAULT_UNASSIGNED_TEAM));
     }
 
     @Override

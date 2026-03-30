@@ -18,5 +18,8 @@ public class CliSyntax {
     public static final Prefix PREFIX_PLAYER = new Prefix("pl/");
     public static final Prefix PREFIX_SORT_BY = new Prefix("by/");
     public static final Prefix PREFIX_EVENT_TYPE = new Prefix("et/");
+    public static final Prefix PREFIX_TEAM = new Prefix("tm/");
+    public static final Prefix PREFIX_STATUS = new Prefix("st/");
+    public static final Prefix PREFIX_POSITION = new Prefix("pos/");
 
 }

@@ -19,6 +19,17 @@ public class Staff extends Person {
      * @param tags the staff tags
      */
     public Staff(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        super(name, phone, email, address, tags, Role.STAFF);
+        this(name, phone, email, address, tags,
+                new Team(Team.DEFAULT_UNASSIGNED_TEAM),
+                new Status(Status.DEFAULT_UNKNOWN_STATUS),
+                new Position(Position.DEFAULT_UNASSIGNED_POSITION));
+    }
+
+    /**
+     * Constructs a {@code Staff} with explicit attributes.
+     */
+    public Staff(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                 Team team, Status status, Position position) {
+        super(name, phone, email, address, tags, Role.STAFF, team, status, position);
     }
 }

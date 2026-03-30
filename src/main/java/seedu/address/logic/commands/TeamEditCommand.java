@@ -21,6 +21,7 @@ public class TeamEditCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Renamed team: %1$s -> %2$s";
     public static final String MESSAGE_TEAM_NOT_FOUND = "The specified team does not exist in the catalog";
     public static final String MESSAGE_DUPLICATE_TEAM = "This team already exists in the catalog";
+    public static final String MESSAGE_CANNOT_EDIT_DEFAULT_TEAM = "Cannot edit default team: Unassigned Team";
 
     private final Team oldTeam;
     private final Team newTeam;
@@ -38,6 +39,10 @@ public class TeamEditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
+        if (oldTeam.isDefaultUnassignedTeam()) {
+            throw new CommandException(MESSAGE_CANNOT_EDIT_DEFAULT_TEAM);
+        }
 
         if (!model.hasTeam(oldTeam)) {
             throw new CommandException(MESSAGE_TEAM_NOT_FOUND);

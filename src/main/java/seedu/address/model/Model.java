@@ -101,7 +101,8 @@ public interface Model {
     void deleteTeam(Team team);
 
     /**
-     * Replaces {@code oldTeam} with {@code newTeam} in the team catalog.
+     * Replaces {@code oldTeam} with {@code newTeam} in the team catalog and updates all persons
+     * currently assigned {@code oldTeam} to {@code newTeam}.
      */
     void setTeam(Team oldTeam, Team newTeam);
 
@@ -162,7 +163,8 @@ public interface Model {
     void deletePosition(Position position);
 
     /**
-     * Replaces {@code oldPosition} with {@code newPosition} in the position catalog.
+     * Replaces {@code oldPosition} with {@code newPosition} in the position catalog and updates all persons
+     * currently assigned {@code oldPosition} to {@code newPosition}.
      */
     void setPosition(Position oldPosition, Position newPosition);
 
@@ -188,7 +190,8 @@ public interface Model {
     void deleteStatus(Status status);
 
     /**
-     * Replaces {@code oldStatus} with {@code newStatus} in the status catalog.
+     * Replaces {@code oldStatus} with {@code newStatus} in the status catalog and updates all persons
+     * currently assigned {@code oldStatus} to {@code newStatus}.
      */
     void setStatus(Status oldStatus, Status newStatus);
 

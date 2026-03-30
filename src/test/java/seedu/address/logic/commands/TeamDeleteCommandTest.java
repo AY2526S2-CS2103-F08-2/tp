@@ -14,6 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Team;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link TeamDeleteCommand}.
@@ -46,6 +47,24 @@ public class TeamDeleteCommandTest {
     }
 
     @Test
+    public void execute_defaultTeam_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new TeamDeleteCommand(new Team(Team.DEFAULT_UNASSIGNED_TEAM)),
+                model, TeamDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_TEAM);
+    }
+
+    @Test
+    public void execute_teamInUse_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        Team inUseTeam = new Team("Reserve Team");
+        model.addTeam(inUseTeam);
+        model.addPerson(new PersonBuilder().withTeam("Reserve Team").build());
+
+        assertCommandFailure(new TeamDeleteCommand(inUseTeam), model, TeamDeleteCommand.MESSAGE_TEAM_IN_USE);
+    }
+
+    @Test
     public void equals() {
         TeamDeleteCommand deleteFirstTeam = new TeamDeleteCommand(new Team("First Team"));
         TeamDeleteCommand deleteSecondTeam = new TeamDeleteCommand(new Team("Second Team"));
@@ -65,4 +84,3 @@ public class TeamDeleteCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

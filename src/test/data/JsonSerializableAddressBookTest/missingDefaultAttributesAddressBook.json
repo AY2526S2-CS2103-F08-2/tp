@@ -1,0 +1,6 @@
+{
+  "persons" : [ ],
+  "teams" : [ "First Team", "Second Team" ],
+  "positions" : [ "Forward" ],
+  "statuses" : [ "Active" ]
+}

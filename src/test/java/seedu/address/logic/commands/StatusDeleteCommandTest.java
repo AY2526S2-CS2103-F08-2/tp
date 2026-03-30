@@ -14,6 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Status;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link StatusDeleteCommand}.
@@ -46,6 +47,24 @@ public class StatusDeleteCommandTest {
     }
 
     @Test
+    public void execute_defaultStatus_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new StatusDeleteCommand(new Status(Status.DEFAULT_UNKNOWN_STATUS)),
+                model, StatusDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_STATUS);
+    }
+
+    @Test
+    public void execute_statusInUse_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        Status inUseStatus = new Status("Rehab");
+        model.addStatus(inUseStatus);
+        model.addPerson(new PersonBuilder().withStatus("Rehab").build());
+
+        assertCommandFailure(new StatusDeleteCommand(inUseStatus), model, StatusDeleteCommand.MESSAGE_STATUS_IN_USE);
+    }
+
+    @Test
     public void equals() {
         StatusDeleteCommand deleteActive = new StatusDeleteCommand(new Status("Active"));
         StatusDeleteCommand deleteUnavailable = new StatusDeleteCommand(new Status("Unavailable"));
@@ -65,4 +84,3 @@ public class StatusDeleteCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

@@ -9,6 +9,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Position {
 
+    public static final String DEFAULT_UNASSIGNED_POSITION = "Unassigned Position";
     public static final String MESSAGE_CONSTRAINTS =
             "Position names should only contain alphanumeric characters, spaces, and hyphens,"
                     + " and it should not be blank.";
@@ -40,6 +41,13 @@ public class Position {
      */
     public String toCanonicalForm() {
         return value.toLowerCase();
+    }
+
+    /**
+     * Returns true if this position is the protected default position.
+     */
+    public boolean isDefaultUnassignedPosition() {
+        return this.equals(new Position(DEFAULT_UNASSIGNED_POSITION));
     }
 
     @Override

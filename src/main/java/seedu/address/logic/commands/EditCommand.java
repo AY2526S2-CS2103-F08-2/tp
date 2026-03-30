@@ -5,8 +5,11 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_POSITION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
@@ -27,7 +30,10 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -46,6 +52,9 @@ public class EditCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_ROLE + "ROLE] "
+            + "[" + PREFIX_TEAM + "TEAM] "
+            + "[" + PREFIX_STATUS + "STATUS] "
+            + "[" + PREFIX_POSITION + "POSITION] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -54,6 +63,12 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_TEAM_NOT_IN_CATALOG = "The specified team does not exist in the catalog";
+    public static final String MESSAGE_STATUS_NOT_IN_CATALOG = "The specified status does not exist in the catalog";
+    public static final String MESSAGE_POSITION_NOT_IN_CATALOG =
+            "The specified position does not exist in the catalog";
+    public static final String MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF =
+            "Position can only be assigned to players";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -80,6 +95,30 @@ public class EditCommand extends Command {
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
+
+        if (editPersonDescriptor.getTeam().isPresent() && !model.hasTeam(editPersonDescriptor.getTeam().get())) {
+            throw new CommandException(MESSAGE_TEAM_NOT_IN_CATALOG);
+        }
+        if (editPersonDescriptor.getStatus().isPresent() && !model.hasStatus(editPersonDescriptor.getStatus().get())) {
+            throw new CommandException(MESSAGE_STATUS_NOT_IN_CATALOG);
+        }
+        if (editPersonDescriptor.getPosition().isPresent()
+                && !model.hasPosition(editPersonDescriptor.getPosition().get())) {
+            throw new CommandException(MESSAGE_POSITION_NOT_IN_CATALOG);
+        }
+
+        editPersonDescriptor.getTeam().ifPresent(team ->
+                editPersonDescriptor.setTeam(AttributeCatalogResolver.resolveTeam(model, team)));
+        editPersonDescriptor.getStatus().ifPresent(status ->
+                editPersonDescriptor.setStatus(AttributeCatalogResolver.resolveStatus(model, status)));
+        editPersonDescriptor.getPosition().ifPresent(position ->
+                editPersonDescriptor.setPosition(AttributeCatalogResolver.resolvePosition(model, position)));
+
+        Role updatedRole = editPersonDescriptor.getRole().orElse(personToEdit.getRole());
+        if (updatedRole == Role.STAFF && editPersonDescriptor.getPosition().isPresent()) {
+            throw new CommandException(MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF);
+        }
+
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
@@ -104,8 +143,16 @@ public class EditCommand extends Command {
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         Role updatedRole = editPersonDescriptor.getRole().orElse(personToEdit.getRole());
+        Team updatedTeam = editPersonDescriptor.getTeam().orElse(personToEdit.getTeam());
+        Status updatedStatus = editPersonDescriptor.getStatus().orElse(personToEdit.getStatus());
+        Position updatedPosition = editPersonDescriptor.getPosition().orElse(personToEdit.getPosition());
 
-        return Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, updatedRole);
+        if (updatedRole == Role.STAFF) {
+            updatedPosition = new Position(Position.DEFAULT_UNASSIGNED_POSITION);
+        }
+
+        return Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+                updatedRole, updatedTeam, updatedStatus, updatedPosition);
     }
 
     @Override
@@ -142,6 +189,9 @@ public class EditCommand extends Command {
         private Email email;
         private Address address;
         private Role role;
+        private Team team;
+        private Status status;
+        private Position position;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {
@@ -157,6 +207,9 @@ public class EditCommand extends Command {
             setEmail(toCopy.email);
             setAddress(toCopy.address);
             setRole(toCopy.role);
+            setTeam(toCopy.team);
+            setStatus(toCopy.status);
+            setPosition(toCopy.position);
             setTags(toCopy.tags);
         }
 
@@ -164,7 +217,7 @@ public class EditCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, role, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, role, team, status, position, tags);
         }
 
         public void setName(Name name) {
@@ -207,6 +260,30 @@ public class EditCommand extends Command {
             return Optional.ofNullable(role);
         }
 
+        public void setTeam(Team team) {
+            this.team = team;
+        }
+
+        public Optional<Team> getTeam() {
+            return Optional.ofNullable(team);
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
+
+        public Optional<Status> getStatus() {
+            return Optional.ofNullable(status);
+        }
+
+        public void setPosition(Position position) {
+            this.position = position;
+        }
+
+        public Optional<Position> getPosition() {
+            return Optional.ofNullable(position);
+        }
+
         /**
          * Sets {@code tags} to this object's {@code tags}.
          * A defensive copy of {@code tags} is used internally.
@@ -241,6 +318,9 @@ public class EditCommand extends Command {
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
                     && Objects.equals(role, otherEditPersonDescriptor.role)
+                    && Objects.equals(team, otherEditPersonDescriptor.team)
+                    && Objects.equals(status, otherEditPersonDescriptor.status)
+                    && Objects.equals(position, otherEditPersonDescriptor.position)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags);
         }
 
@@ -252,6 +332,9 @@ public class EditCommand extends Command {
                     .add("email", email)
                     .add("address", address)
                     .add("role", role)
+                    .add("team", team)
+                    .add("status", status)
+                    .add("position", position)
                     .add("tags", tags)
                     .toString();
         }

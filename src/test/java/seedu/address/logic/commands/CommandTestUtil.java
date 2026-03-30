@@ -8,8 +8,11 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_POSITION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.ArrayList;
@@ -43,6 +46,12 @@ public class CommandTestUtil {
     public static final String VALID_TAG_FRIEND = "friend";
     public static final String VALID_ROLE_PLAYER = "PLAYER";
     public static final String VALID_ROLE_STAFF = "STAFF";
+    public static final String VALID_TEAM_FIRST = "First Team";
+    public static final String VALID_TEAM_SECOND = "Second Team";
+    public static final String VALID_STATUS_ACTIVE = "Active";
+    public static final String VALID_STATUS_UNAVAILABLE = "Unavailable";
+    public static final String VALID_POSITION_FORWARD = "Forward";
+    public static final String VALID_POSITION_DEFENDER = "Defender";
     public static final String VALID_OPPONENT_NAME = "Manchester United";
     public static final String VALID_DATE = "2025-05-15 1600";
     public static final String VALID_EVENT_TYPE_MATCH = "MATCH";
@@ -58,6 +67,13 @@ public class CommandTestUtil {
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
     public static final String ROLE_DESC_PLAYER = " " + PREFIX_ROLE + VALID_ROLE_PLAYER;
+    public static final String ROLE_DESC_STAFF = " " + PREFIX_ROLE + VALID_ROLE_STAFF;
+    public static final String TEAM_DESC_FIRST = " " + PREFIX_TEAM + VALID_TEAM_FIRST;
+    public static final String TEAM_DESC_SECOND = " " + PREFIX_TEAM + VALID_TEAM_SECOND;
+    public static final String STATUS_DESC_ACTIVE = " " + PREFIX_STATUS + VALID_STATUS_ACTIVE;
+    public static final String STATUS_DESC_UNAVAILABLE = " " + PREFIX_STATUS + VALID_STATUS_UNAVAILABLE;
+    public static final String POSITION_DESC_FORWARD = " " + PREFIX_POSITION + VALID_POSITION_FORWARD;
+    public static final String POSITION_DESC_DEFENDER = " " + PREFIX_POSITION + VALID_POSITION_DEFENDER;
     public static final String DATE_DESC_MATCH = " " + PREFIX_DATE + VALID_DATE;
     public static final String OPPONENT_NAME_DESC_MATCH = " " + PREFIX_NAME + VALID_OPPONENT_NAME;
     public static final String MATCH_NAME_DESC_PLAYER_BEN = " " + PREFIX_PLAYER + VALID_NAME_PLAYER_BEN;
@@ -68,6 +84,9 @@ public class CommandTestUtil {
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
     public static final String INVALID_ROLE_DESC = " " + PREFIX_ROLE + "invalidRole";
+    public static final String INVALID_TEAM_DESC = " " + PREFIX_TEAM + "#bad";
+    public static final String INVALID_STATUS_DESC = " " + PREFIX_STATUS + "#bad";
+    public static final String INVALID_POSITION_DESC = " " + PREFIX_POSITION + "#bad";
     public static final String INVALID_OPPONENT_NAME_DESC = " " + PREFIX_NAME + "M@nchester";
     public static final String INVALID_DATE_DESC = " " + PREFIX_DATE + "2026-15-40 1500";
 
@@ -82,11 +101,15 @@ public class CommandTestUtil {
         DESC_PLAYER_AMY =
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_PLAYER_AMY).withPhone(VALID_PHONE_PLAYER_AMY)
                         .withEmail(VALID_EMAIL_PLAYER_AMY).withAddress(VALID_ADDRESS_PLAYER_AMY)
-                        .withTags(VALID_TAG_FRIEND).withRole(VALID_ROLE_PLAYER).build();
+                        .withTags(VALID_TAG_FRIEND).withRole(VALID_ROLE_PLAYER)
+                        .withTeam(VALID_TEAM_FIRST).withStatus(VALID_STATUS_ACTIVE)
+                        .withPosition(VALID_POSITION_FORWARD).build();
         DESC_PLAYER_BEN =
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_PLAYER_BEN).withPhone(VALID_PHONE_PLAYER_BEN)
                         .withEmail(VALID_EMAIL_PLAYER_BEN).withAddress(VALID_ADDRESS_PLAYER_BEN)
-                        .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).withRole(VALID_ROLE_PLAYER).build();
+                        .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).withRole(VALID_ROLE_PLAYER)
+                        .withTeam(VALID_TEAM_SECOND).withStatus(VALID_STATUS_UNAVAILABLE)
+                        .withPosition(VALID_POSITION_DEFENDER).build();
         DESC_MATCH =
                 new EditEventDescriptorBuilder().withEventName(VALID_OPPONENT_NAME).withEventDate(VALID_DATE)
                         .withEventType(VALID_EVENT_TYPE_MATCH).build();
