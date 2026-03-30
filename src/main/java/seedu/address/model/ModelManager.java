@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -173,6 +174,24 @@ public class ModelManager implements Model {
     public void setTeam(Team oldTeam, Team newTeam) {
         requireAllNonNull(oldTeam, newTeam);
         addressBook.setTeam(oldTeam, newTeam);
+
+        List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
+        for (Person person : snapshot) {
+            if (person.getTeam().equals(oldTeam)) {
+                Person updatedPerson;
+                if (person instanceof Player) {
+                    Player player = (Player) person;
+                    updatedPerson = Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
+                            player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
+                            newTeam, player.getStatus(), player.getPosition());
+                } else {
+                    updatedPerson = Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
+                            person.getAddress(), person.getTags(), person.getRole(),
+                            newTeam, person.getStatus(), person.getPosition());
+                }
+                addressBook.setPerson(person, updatedPerson);
+            }
+        }
     }
 
     @Override
@@ -263,6 +282,24 @@ public class ModelManager implements Model {
     public void setPosition(Position oldPosition, Position newPosition) {
         requireAllNonNull(oldPosition, newPosition);
         addressBook.setPosition(oldPosition, newPosition);
+
+        List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
+        for (Person person : snapshot) {
+            if (person.getPosition().equals(oldPosition)) {
+                Person updatedPerson;
+                if (person instanceof Player) {
+                    Player player = (Player) person;
+                    updatedPerson = Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
+                            player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
+                            player.getTeam(), player.getStatus(), newPosition);
+                } else {
+                    updatedPerson = Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
+                            person.getAddress(), person.getTags(), person.getRole(),
+                            person.getTeam(), person.getStatus(), newPosition);
+                }
+                addressBook.setPerson(person, updatedPerson);
+            }
+        }
     }
 
     @Override
@@ -297,6 +334,24 @@ public class ModelManager implements Model {
     public void setStatus(Status oldStatus, Status newStatus) {
         requireAllNonNull(oldStatus, newStatus);
         addressBook.setStatus(oldStatus, newStatus);
+
+        List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
+        for (Person person : snapshot) {
+            if (person.getStatus().equals(oldStatus)) {
+                Person updatedPerson;
+                if (person instanceof Player) {
+                    Player player = (Player) person;
+                    updatedPerson = Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
+                            player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
+                            player.getTeam(), newStatus, player.getPosition());
+                } else {
+                    updatedPerson = Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
+                            person.getAddress(), person.getTags(), person.getRole(),
+                            person.getTeam(), newStatus, person.getPosition());
+                }
+                addressBook.setPerson(person, updatedPerson);
+            }
+        }
     }
 
     @Override

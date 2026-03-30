@@ -10,6 +10,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -31,13 +32,13 @@ public class TeamEditCommandTest {
     }
 
     @Test
-    public void execute_validRename_success() {
+    public void execute_validRename_success() throws CommandException {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
 
         Team oldTeam = new Team("First Team");
         Team newTeam = new Team("Reserve Team");
-        expectedModel.setTeam(oldTeam, newTeam);
+        new TeamEditCommand(oldTeam, newTeam).execute(expectedModel);
 
         assertCommandSuccess(new TeamEditCommand(oldTeam, newTeam), model,
                 String.format(TeamEditCommand.MESSAGE_SUCCESS, oldTeam, newTeam), expectedModel);
@@ -88,4 +89,3 @@ public class TeamEditCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

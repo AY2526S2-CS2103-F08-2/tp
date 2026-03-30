@@ -10,10 +10,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Position;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link PositionEditCommand}.
@@ -69,6 +71,19 @@ public class PositionEditCommandTest {
     }
 
     @Test
+    public void execute_validRename_updatesPersonsWithOldPosition() throws CommandException {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        model.addPerson(new PersonBuilder().withPosition("Defender").build());
+
+        Position oldPosition = new Position("Defender");
+        Position newPosition = new Position("Center Back");
+        new PositionEditCommand(oldPosition, newPosition).execute(model);
+
+        assertTrue(model.getPersonsMatching(person -> person.getPosition().equals(oldPosition)).isEmpty());
+        assertFalse(model.getPersonsMatching(person -> person.getPosition().equals(newPosition)).isEmpty());
+    }
+
+    @Test
     public void equals() {
         PositionEditCommand editDefenderToCenterBack =
                 new PositionEditCommand(new Position("Defender"), new Position("Center Back"));
@@ -91,4 +106,3 @@ public class PositionEditCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

@@ -10,10 +10,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Status;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link StatusEditCommand}.
@@ -68,6 +70,19 @@ public class StatusEditCommandTest {
     }
 
     @Test
+    public void execute_validRename_updatesPersonsWithOldStatus() throws CommandException {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        model.addPerson(new PersonBuilder().withStatus("Active").build());
+
+        Status oldStatus = new Status("Active");
+        Status newStatus = new Status("Rehab");
+        new StatusEditCommand(oldStatus, newStatus).execute(model);
+
+        assertTrue(model.getPersonsMatching(person -> person.getStatus().equals(oldStatus)).isEmpty());
+        assertFalse(model.getPersonsMatching(person -> person.getStatus().equals(newStatus)).isEmpty());
+    }
+
+    @Test
     public void equals() {
         StatusEditCommand editActiveToRehab = new StatusEditCommand(new Status("Active"), new Status("Rehab"));
         StatusEditCommand editUnknownToRehab = new StatusEditCommand(new Status("Unknown"), new Status("Rehab"));
@@ -87,4 +102,3 @@ public class StatusEditCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-
