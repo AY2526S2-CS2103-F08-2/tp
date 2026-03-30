@@ -22,6 +22,7 @@ public class PositionDeleteCommand extends Command {
     public static final String MESSAGE_POSITION_NOT_FOUND = "The specified position does not exist in the catalog";
     public static final String MESSAGE_CANNOT_DELETE_DEFAULT_POSITION =
             "Cannot delete default position: Unassigned Position";
+    public static final String MESSAGE_POSITION_IN_USE = "Cannot delete position currently assigned to persons";
 
     private final Position toDelete;
 
@@ -43,6 +44,10 @@ public class PositionDeleteCommand extends Command {
 
         if (!model.hasPosition(toDelete)) {
             throw new CommandException(MESSAGE_POSITION_NOT_FOUND);
+        }
+
+        if (!model.getPersonsMatching(person -> person.getPosition().equals(toDelete)).isEmpty()) {
+            throw new CommandException(MESSAGE_POSITION_IN_USE);
         }
 
         model.deletePosition(toDelete);
@@ -70,4 +75,3 @@ public class PositionDeleteCommand extends Command {
                 .toString();
     }
 }
-
