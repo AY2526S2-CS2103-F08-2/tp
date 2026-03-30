@@ -28,6 +28,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Team;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 
@@ -164,6 +165,24 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder().withRole(VALID_ROLE_STAFF).withPosition("Forward").build());
 
         assertCommandFailure(editCommand, model, EditCommand.MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF);
+    }
+
+    @Test
+    public void execute_teamCaseDiffersFromCatalog_usesCatalogCasing() {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
+                new EditPersonDescriptorBuilder().withTeam("second team").build());
+
+        Person editedPerson = new PersonBuilder(personToEdit).withTeam("Second Team").build();
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(personToEdit, editedPerson);
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+        Team actualEditedTeam = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased()).getTeam();
+        assertEquals(new Team("Second Team"), actualEditedTeam);
+        assertEquals("Second Team", actualEditedTeam.value);
     }
 
     @Test

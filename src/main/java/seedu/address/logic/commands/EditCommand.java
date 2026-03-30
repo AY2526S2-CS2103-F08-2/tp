@@ -107,6 +107,12 @@ public class EditCommand extends Command {
             throw new CommandException(MESSAGE_POSITION_NOT_IN_CATALOG);
         }
 
+        editPersonDescriptor.getTeam().ifPresent(team -> editPersonDescriptor.setTeam(findCatalogTeam(model, team)));
+        editPersonDescriptor.getStatus().ifPresent(status ->
+                editPersonDescriptor.setStatus(findCatalogStatus(model, status)));
+        editPersonDescriptor.getPosition().ifPresent(position ->
+                editPersonDescriptor.setPosition(findCatalogPosition(model, position)));
+
         Role updatedRole = editPersonDescriptor.getRole().orElse(personToEdit.getRole());
         if (updatedRole == Role.STAFF && editPersonDescriptor.getPosition().isPresent()) {
             throw new CommandException(MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF);
@@ -121,6 +127,27 @@ public class EditCommand extends Command {
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+    }
+
+    private static Team findCatalogTeam(Model model, Team requestedTeam) {
+        return model.getTeamList().stream()
+                .filter(catalogTeam -> catalogTeam.equals(requestedTeam))
+                .findFirst()
+                .orElse(requestedTeam);
+    }
+
+    private static Status findCatalogStatus(Model model, Status requestedStatus) {
+        return model.getStatusList().stream()
+                .filter(catalogStatus -> catalogStatus.equals(requestedStatus))
+                .findFirst()
+                .orElse(requestedStatus);
+    }
+
+    private static Position findCatalogPosition(Model model, Position requestedPosition) {
+        return model.getPositionList().stream()
+                .filter(catalogPosition -> catalogPosition.equals(requestedPosition))
+                .findFirst()
+                .orElse(requestedPosition);
     }
 
     /**
