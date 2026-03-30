@@ -16,10 +16,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
-import seedu.address.model.person.Status;
-import seedu.address.model.person.Team;
 
 /**
  * Adds a person to the address book.
@@ -87,9 +84,9 @@ public class AddCommand extends Command {
 
         personToAdd = Person.createPerson(personToAdd.getName(), personToAdd.getPhone(),
                 personToAdd.getEmail(), personToAdd.getAddress(), personToAdd.getTags(), personToAdd.getRole(),
-                findCatalogTeam(model, personToAdd.getTeam()),
-                findCatalogStatus(model, personToAdd.getStatus()),
-                findCatalogPosition(model, personToAdd.getPosition()));
+                AttributeCatalogResolver.resolveTeam(model, personToAdd.getTeam()),
+                AttributeCatalogResolver.resolveStatus(model, personToAdd.getStatus()),
+                AttributeCatalogResolver.resolvePosition(model, personToAdd.getPosition()));
 
         if (model.hasPerson(personToAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
@@ -98,27 +95,6 @@ public class AddCommand extends Command {
         model.addPerson(personToAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, personToAdd.getRole().toString(),
                 Messages.format(personToAdd)));
-    }
-
-    private static Team findCatalogTeam(Model model, Team requestedTeam) {
-        return model.getTeamList().stream()
-                .filter(catalogTeam -> catalogTeam.equals(requestedTeam))
-                .findFirst()
-                .orElse(requestedTeam);
-    }
-
-    private static Status findCatalogStatus(Model model, Status requestedStatus) {
-        return model.getStatusList().stream()
-                .filter(catalogStatus -> catalogStatus.equals(requestedStatus))
-                .findFirst()
-                .orElse(requestedStatus);
-    }
-
-    private static Position findCatalogPosition(Model model, Position requestedPosition) {
-        return model.getPositionList().stream()
-                .filter(catalogPosition -> catalogPosition.equals(requestedPosition))
-                .findFirst()
-                .orElse(requestedPosition);
     }
 
     @Override
