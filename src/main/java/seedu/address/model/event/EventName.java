@@ -23,12 +23,12 @@ public class EventName {
     /**
      * Constructs an {@code EventName}.
      *
-     * @param opponentName A valid name.
+     * @param eventName A valid name.
      */
-    public EventName(String opponentName) {
-        requireNonNull(opponentName);
-        checkArgument(isValidName(opponentName), MESSAGE_CONSTRAINTS);
-        fullName = opponentName;
+    public EventName(String eventName) {
+        requireNonNull(eventName);
+        checkArgument(isValidName(eventName), MESSAGE_CONSTRAINTS);
+        fullName = eventName;
     }
 
     /**
