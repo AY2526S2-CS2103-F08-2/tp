@@ -319,6 +319,10 @@ public class ModelManager implements Model {
                 person -> recreatePersonWithAttributes(person, person.getTeam(), newStatus, person.getPosition()));
     }
 
+    /**
+     * Applies a person update function to every person that matches the given predicate.
+     * Uses a snapshot to avoid concurrent modification while replacing persons in the backing list.
+     */
     private void cascadePersonAttributeRename(Predicate<Person> shouldUpdate, Function<Person, Person> updatePerson) {
         requireAllNonNull(shouldUpdate, updatePerson);
         List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
@@ -329,6 +333,10 @@ public class ModelManager implements Model {
         }
     }
 
+    /**
+     * Recreates a person with updated Team/Status/Position while preserving all other fields.
+     * Preserves player stats for {@link Player} instances.
+     */
     private Person recreatePersonWithAttributes(Person person, Team team, Status status, Position position) {
         requireAllNonNull(person, team, status, position);
         if (person instanceof Player) {
