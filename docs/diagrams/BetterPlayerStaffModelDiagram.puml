@@ -1,0 +1,44 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Package Model <<Rectangle>>{
+    Class AddressBook
+    Class UniquePersonList
+    Class UniqueTagList
+
+    abstract Class Person
+    Class Staff
+    Class Player
+    Enum Role <<enumeration>>
+
+    Class Tag
+    Class Name
+    Class Phone
+    Class Email
+    Class Address
+}
+
+AddressBook *-right-> "1" UniquePersonList
+AddressBook *-right-> "1" UniqueTagList
+
+' UniqueTagList manages the Tag objects
+UniqueTagList -right-> "*" Tag
+
+' Person points to Tags instead of "owning" them
+Person -up-> "*" Tag
+Person -right-> "1" Role
+
+Person *--> Name
+Person *--> Phone
+Person *--> Email
+Person *--> Address
+
+Staff -up-|> Person
+Player -up-|> Person
+
+' UI/Logic references
+UniquePersonList -right-> Person
+@enduml
