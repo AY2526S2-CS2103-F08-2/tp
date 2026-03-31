@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-
 import seedu.address.logic.commands.PositionDeleteCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Position;
@@ -19,15 +17,9 @@ public class PositionDeleteCommandParser implements Parser<PositionDeleteCommand
      */
     @Override
     public PositionDeleteCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
-        if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionDeleteCommand.MESSAGE_USAGE));
-        }
-
-        Position position = ParserUtil.parsePosition(trimmedArgs);
+        Position position = ParserUtil.parsePosition(
+                AttributeParserUtil.parseRequiredValue(args, PositionDeleteCommand.MESSAGE_USAGE));
         return new PositionDeleteCommand(position);
     }
 }
-
 
