@@ -817,6 +817,24 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `teamedit old/Second Team new/Reserve Team`<br>
        Expected: Command succeeds and all persons previously assigned `Second Team` now display `Reserve Team`.
 
+### Role-scoped list
+
+1. Listing persons by role
+
+    1. Prerequisites: At least one player and one staff in the current address book.
+
+    1. Test case: `list players`<br>
+       Expected: Only players are shown. Status message indicates players were listed.
+
+    1. Test case: `list staff`<br>
+       Expected: Only staff are shown. Status message indicates staff were listed.
+
+    1. Test case: `list PLAYERS`<br>
+       Expected: Same result as `list players` (role keyword is case-insensitive).
+
+    1. Test case: `list coaches`<br>
+       Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
