@@ -471,26 +471,32 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 (For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified
 otherwise)
 
-**Use case: UC00 - Add new player**  
+**Use case: UC00 - Add new person**  
 **MSS**
 
-1. Manager requests to add a player.
-2. SoCcer Manager requests player details (name, role, position, stats).
-3. Manager enters the details.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager adds player and shows success message.  
+1. Manager requests to add a person.
+2. Manager provides person details, including optional attribute values.
+3. SoCcer Manager validates person details and optional attribute constraints.
+4. SoCcer Manager adds the person and shows a confirmation message.  
    Use case ends.
 
 **Extensions**
 
-* 3a. Invalid details (e.g., invalid name).
-    * 3a1. SoCcer Manager shows error message.  
+* 2a. Invalid person details (e.g., invalid name/phone/email/address).
+    * 2a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
-* 3b. Duplicate name detected.
-    * 3b1. SoCcer Manager warns about duplicate and asks to proceed.  
-      Use case resumes at step 4.
+* 2b. At least one optional provided attribute does not exist in the corresponding catalog.
+    * 2b1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
+
+* 2c. Manager assigns a non-default position to a staff member.
+    * 2c1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
+
+* 3a. Duplicate person detected.
+    * 3a1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
 
 *a. At any time, manager cancels.  
 Use case ends.
@@ -503,17 +509,17 @@ Use case ends.
 3. Manager marks attendance for specific players.
 4. SoCcer Manager requests confirmation.
 5. Manager confirms.
-6. SoCcer Manager updates attendance records and shows confirmation.  
+6. SoCcer Manager updates attendance records and shows a confirmation message.  
    Use case ends.
 
 **Extensions**
 
 * 2a. No players registered for session.
-    * 2a1. SoCcer Manager shows "No players for this session."  
+    * 2a1. SoCcer Manager shows that there are no players for the session.  
       Use case ends.
 
 * 3a. Manager enters invalid player ID.
-    * 3a1. SoCcer Manager shows error: "Invalid player ID."  
+    * 3a1. SoCcer Manager shows an error message.  
       Use case resumes at step 2.
 
 * 3b. Manager marks multiple players at once.
@@ -527,7 +533,7 @@ Use case ends.
 **Use case: UC02 - Draft a match team from stats**
 **MSS**
 
-1. Manager requests to filter players by criteria (e.g., position=striker, goals>5).
+1. Manager requests to filter players by performance criteria.
 2. SoCcer Manager shows filtered list of eligible players sorted by stats.
 3. Manager selects players to add to match team.
 4. SoCcer Manager requests confirmation.
@@ -538,7 +544,7 @@ Use case ends.
 **Extensions**
 
 * 2a. No players match criteria.
-    * 2a1. SoCcer Manager shows "No players match. Try broader filters."  
+    * 2a1. SoCcer Manager shows that no players match the criteria.  
       Use case resumes at step 1.
 
 * 3a. Selected player is unavailable (injured).
@@ -561,7 +567,7 @@ Use case ends.
 **Extensions**
 
 * 2a. No players below threshold.
-    * 2a1. SoCcer Manager shows "All players meeting standards."  
+    * 2a1. SoCcer Manager shows that no players are below the threshold.  
       Use case ends.
 
 * 3a. Manager requests export of flagged list.
@@ -579,21 +585,114 @@ Use case ends.
 3. Manager requests to delete by ID.
 4. SoCcer Manager requests confirmation.
 5. Manager confirms.
-6. SoCcer Manager deletes player and shows success.  
+6. SoCcer Manager deletes player and shows a success message.  
    Use case ends.
 
 **Extensions**
 
 * 2a. List empty.
-    * 2a1. "No players to delete." Ends.
+    * 2a1. SoCcer Manager shows that there are no players to delete.  
+      Use case ends.
 
 * 3a. Invalid ID.
-    * 3a1. Error: "Invalid ID."  
-      Resume step 2.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case resumes at step 2.
 
-* 4a. Manager cancels confirmation. Ends.
+* 4a. Manager cancels confirmation.
+    * 4a1. SoCcer Manager aborts deletion.  
+      Use case ends.
 
-*a. Cancel anytime. Ends.
+*a. At any time, manager cancels.  
+Use case ends.
+
+**Use case: UC05 - Rename an attribute catalog value**  
+**MSS**
+
+1. Manager requests to rename an attribute catalog value.
+2. Manager provides the existing value and the replacement value.
+3. SoCcer Manager validates rename constraints.
+4. SoCcer Manager renames the catalog value.
+5. SoCcer Manager updates all persons currently assigned the original value.
+6. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Existing value does not exist in the catalog.
+    * 2a1. SoCcer Manager shows error message.  
+      Use case ends.
+
+* 2b. Replacement value duplicates an existing catalog value.
+    * 2b1. SoCcer Manager shows error message.  
+      Use case ends.
+
+* 2c. Manager attempts to rename a protected default value.
+    * 2c1. SoCcer Manager shows error message.  
+      Use case ends.
+
+**Use case: UC06 - Delete an attribute catalog value**  
+**MSS**
+
+1. Manager requests to delete an attribute catalog value.
+2. Manager specifies the catalog value to delete.
+3. SoCcer Manager validates deletion constraints.
+4. SoCcer Manager deletes the catalog value.
+5. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Specified value does not exist in the catalog.
+    * 2a1. SoCcer Manager shows error message.  
+      Use case ends.
+
+* 3a. Manager attempts to delete a protected default value.
+    * 3a1. SoCcer Manager shows error message.  
+      Use case ends.
+
+* 3b. Specified value is currently assigned to one or more persons.
+    * 3b1. SoCcer Manager shows error message.  
+      Use case ends.
+
+**Use case: UC07 - Edit person attributes**  
+**MSS**
+
+1. Manager requests to edit a person.
+2. Manager provides one or more updated attribute values.
+3. SoCcer Manager validates the provided values against the corresponding catalogs.
+4. SoCcer Manager updates the person.
+5. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 3a. At least one provided attribute value does not exist in its catalog.
+    * 3a1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
+
+* 3b. Resulting role is `STAFF` and manager provides a position value.
+    * 3b1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
+
+**Use case: UC08 - View persons by role**  
+**MSS**
+
+1. Manager requests to list persons by role.
+2. Manager provides the target role to filter by.
+3. SoCcer Manager validates the requested role.
+4. SoCcer Manager filters the visible person list by the requested role.
+5. SoCcer Manager shows the filtered list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager provides role keyword in mixed/upper case.
+    * 2a1. SoCcer Manager treats role keyword case-insensitively.  
+      Use case resumes at step 3.
+
+* 3a. Manager provides an unsupported role keyword.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
 
 *{More to be added}*
 
