@@ -98,6 +98,9 @@ Notes:
 * If omitted, defaults are used: `Unassigned Team`, `Unknown`, `Unassigned Position`.
 * If provided, `TEAM`/`STATUS`/`POSITION` must already exist in their respective catalogs
   (see [Attributes](#attributes)).
+* For person assignment, input is normalized to the matched catalog entry's exact casing
+  (e.g., if `teamlist` contains `third team`, then `tm/Third Team` is stored as `third team`).
+  This applies to `add`/`edit` person commands.
 * `pos/` is only applicable to players; staff cannot be assigned a non-default position.
 
 Examples:
@@ -220,6 +223,15 @@ Catalog behavior:
 * Protected defaults cannot be edited or deleted (`Unassigned Team`, `Unassigned Position`, `Unknown`).
 * Deletion is blocked when the value is currently assigned to any person.
 * Renaming a catalog value automatically updates all persons currently assigned that value.
+* When creating catalog entries (`teamadd`/`statusadd`/`positionadd`), entered display casing is preserved.
+  Matching and uniqueness checks remain case-insensitive.
+
+Role applicability:
+* `Team` and `Status` apply to both players and staff.
+* `Position` is player-only; staff always use `Unassigned Position`.
+
+Display behavior:
+* Person cards show `Team`, `Status`, and `Position` only when the value is non-default.
 
 For attribute catalog commands, value matching is case-insensitive. This means both `*edit` and `*delete`
 commands work regardless of letter case (for example, `teamdelete reserve team` matches `Reserve Team`).
@@ -345,8 +357,10 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] 
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * If provided, `tm/TEAM`, `st/STATUS`, and `pos/POSITION` must already exist in their respective catalogs.
-* Attribute input is normalized to catalog casing (e.g., `tm/first team` is stored as `First Team`).
+* For person assignment, input is normalized to the matched catalog entry's exact casing
+  (e.g., if `teamlist` contains `third team`, then `tm/Third Team` is stored as `third team`).
 * `pos/` is only applicable to players.
+* If the resulting role is `staff`, any provided `pos/` is rejected.
 * When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
 * You can remove all the person’s tags by typing `t/` without
     specifying any tags after it.
