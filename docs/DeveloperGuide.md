@@ -224,6 +224,80 @@ The sequence diagram below illustrates the interactions, taking a `execute("upda
 
 ![Interactions for the `update` Command](images/UpdateSequenceDiagram.png)
 
+### Attributes catalog and assignment
+
+The attributes feature introduces three catalog-backed value objects:
+`Team`, `Status`, and `Position`.
+
+At model level:
+* `AddressBook` stores separate unique catalogs (`UniqueTeamList`, `UniqueStatusList`, `UniquePositionList`)
+  in addition to persons and events.
+* `Model` / `ModelManager` expose catalog operations:
+  `has*`, `add*`, `set*`, `delete*`, and `get*List`.
+* `Person` stores `Team`, `Status`, and `Position` as immutable fields.
+
+Default catalogs are seeded in `SampleDataUtil`:
+* Team: `Unassigned Team`, `First Team`, `Second Team`
+* Position: `Unassigned Position`, `Goalkeeper`, `Defender`, `Midfielder`, `Forward`
+* Status: `Unknown`, `Active`, `Unavailable`
+
+#### Catalog command flow
+
+`AddressBookParser` routes each catalog command to its parser:
+* Team: `teamadd`, `teamedit`, `teamdelete`, `teamlist`
+* Status: `statusadd`, `statusedit`, `statusdelete`, `statuslist`
+* Position: `positionadd`, `positionedit`, `positiondelete`, `positionlist`
+
+Command behavior:
+* `*add` checks duplicates before inserting.
+* `*edit` checks target exists, rejects duplicate destination values, and blocks edits of protected defaults.
+* `*delete` checks target exists, blocks deletion of protected defaults, and blocks deletion if in use by any person.
+* `*list` returns numbered catalog output for display.
+* Catalog identity is case-insensitive (via attribute value equality), so matching/duplicate checks are case-insensitive.
+* Case-only renames are supported (e.g., `First Team` -> `first team`).
+
+Protected default values:
+* Team: `Unassigned Team`
+* Position: `Unassigned Position`
+* Status: `Unknown`
+
+#### Attribute assignment in person commands
+
+`add` and `edit` support person attributes via prefixes:
+* `tm/` for team
+* `st/` for status
+* `pos/` for position
+
+Validation and normalization:
+* If provided, attribute values must exist in their catalogs.
+* In `add`, omitted values use defaults.
+* In `edit`, omitted values keep the person's existing attribute values.
+* Input matching is case-insensitive through attribute value equality.
+* Stored display casing follows the matched catalog entry's exact casing.
+* Position is player-only:
+  * in `add`, staff cannot be assigned a non-default position.
+  * in `edit`, any provided `pos/` is rejected if the resulting role is `STAFF`.
+
+#### Rename cascade behavior
+
+When a catalog value is renamed (`teamedit`, `statusedit`, `positionedit`):
+* `ModelManager#setTeam`, `setStatus`, and `setPosition` update the catalog entry.
+* The same operations then rebuild and replace all persons currently assigned the old value.
+* For players, existing `PlayerStats` are preserved during rebuild.
+
+#### Storage behavior
+
+`JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
+
+During load:
+* duplicate catalog entries are rejected,
+* protected default catalog values are auto-healed if missing from JSON, and
+* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`.
+
+#### UI behavior
+
+`PersonCard` renders `Team`, `Status`, and `Position` labels only when the person has non-default values.
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
@@ -597,6 +671,52 @@ testers are expected to do more *exploratory* testing.
        Expected: Similar to previous.
 
 1. _{ more test cases …​ }_
+
+### Attributes (catalog + assignment)
+
+1. Managing catalogs with default protections
+
+    1. Prerequisites: Fresh app state with default catalogs loaded.
+
+    1. Test case: `teamlist`<br>
+       Expected: Includes `Unassigned Team`, `First Team`, `Second Team`.
+
+    1. Test case: `teamdelete Unassigned Team`<br>
+       Expected: Rejected with a message indicating default team cannot be deleted.
+
+    1. Test case: `statusedit old/Unknown new/Available`<br>
+       Expected: Rejected with a message indicating default status cannot be edited.
+
+    1. Test case: `positionadd Winger` then `positiondelete Winger`<br>
+       Expected: Add succeeds, then delete succeeds.
+
+    1. Test case: `teamedit old/First Team new/first team`<br>
+       Expected: Command succeeds (case-only rename is accepted).
+
+1. In-use delete guards
+
+    1. Prerequisites: At least one person assigned `tm/First Team`.
+
+    1. Test case: `teamdelete First Team`<br>
+       Expected: Rejected because the catalog value is in use by persons.
+
+1. Person assignment and validation
+
+    1. Test case: `add n/Test Player r/player p/90000001 e/testp@example.com a/Test Addr tm/first team st/active pos/forward`<br>
+       Expected: Command succeeds and displayed person shows canonical casing (`First Team`, `Active`, `Forward`).
+
+    1. Test case: `add n/Test Staff r/staff p/90000002 e/tests@example.com a/Test Addr pos/Forward`<br>
+       Expected: Rejected because staff cannot be assigned non-default position.
+
+    1. Test case: `edit 1 tm/nonexistent`<br>
+       Expected: Rejected because attribute value is not present in catalog.
+
+1. Rename cascade to assigned persons
+
+    1. Prerequisites: At least one person currently assigned `tm/Second Team`.
+
+    1. Test case: `teamedit old/Second Team new/Reserve Team`<br>
+       Expected: Command succeeds and all persons previously assigned `Second Team` now display `Reserve Team`.
 
 ### Saving data
 
