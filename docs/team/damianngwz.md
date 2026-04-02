@@ -43,12 +43,11 @@ Given below are my contributions to the project.
         * Added implementation and interaction details for role-scoped list and attributes architecture/behavior, including use cases and testing notes (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
         * Updated use-case and DG-related content during early project phases (PR [#46](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/46)).
 
-
-* **Extra Templates**: (To be removed if irrelevant)
 * **Community**:
-    * Reviewed and merged teammate pull requests as part of integration and quality control during development cycles.
-    * Helped align team members on feature scope and implementation direction for list/attribute-related work.
-    * Coordinated and followed up on cross-feature integration issues to keep milestones on track.
+    * PRs reviewed (with non-trivial review comments): PR [#136](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/136), PR [#126](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/126),
+      PR [#114](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/114), PR [#112](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/112), PR [#103](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/103), PR [#90](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/90), PR [#81](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/81), PR [#75](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/75), PR [#67](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/67), PR [#51](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/51)
+  
+* **Extra Templates**: (To be removed if irrelevant)
 
 * **Tools**:
     * Set up and maintained the team repository workflow baseline (branching/merge flow and collaboration setup).
