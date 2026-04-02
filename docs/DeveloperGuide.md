@@ -501,111 +501,7 @@ otherwise)
 *a. At any time, manager cancels.  
 Use case ends.
 
-**Use case: UC01 - Record player training attendance**  
-**MSS**
-
-1. Manager requests to list players for a specific training session.
-2. SoCcer Manager shows list of players for the session.
-3. Manager marks attendance for specific players.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager updates attendance records and shows a confirmation message.  
-   Use case ends.
-
-**Extensions**
-
-* 2a. No players registered for session.
-    * 2a1. SoCcer Manager shows that there are no players for the session.  
-      Use case ends.
-
-* 3a. Manager enters invalid player ID.
-    * 3a1. SoCcer Manager shows an error message.  
-      Use case resumes at step 2.
-
-* 3b. Manager marks multiple players at once.
-    * 3b1. SoCcer Manager processes all and requests confirmation.  
-      Use case resumes at step 4.
-
-*a. At any time, manager requests to cancel.
-*a1. SoCcer Manager confirms cancellation.
-Use case ends.
-
-**Use case: UC02 - Draft a match team from stats**
-**MSS**
-
-1. Manager requests to filter players by performance criteria.
-2. SoCcer Manager shows filtered list of eligible players sorted by stats.
-3. Manager selects players to add to match team.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager updates team assignments and shows new team list.  
-   Use case ends.
-
-**Extensions**
-
-* 2a. No players match criteria.
-    * 2a1. SoCcer Manager shows that no players match the criteria.  
-      Use case resumes at step 1.
-
-* 3a. Selected player is unavailable (injured).
-    * 3a1. SoCcer Manager warns about unavailability.
-    * 3a2. Manager chooses to skip or select alternative.  
-      Use case resumes at step 4.
-
-*a. At any time, manager cancels.  
-Use case ends.
-
-**Use case: UC03 - View low-attendance players**  
-**MSS**
-
-1. Manager requests players below attendance threshold.
-2. SoCcer Manager shows flagged players with attendance stats.
-3. Manager selects a player to view details.
-4. SoCcer Manager shows player details.  
-   Use case ends.
-
-**Extensions**
-
-* 2a. No players below threshold.
-    * 2a1. SoCcer Manager shows that no players are below the threshold.  
-      Use case ends.
-
-* 3a. Manager requests export of flagged list.
-    * 3a1. SoCcer Manager generates contact list for export.  
-      Use case ends.
-
-*a. At any time, manager cancels.  
-Use case ends.
-
-**Use case: UC04 - Delete player**  
-**MSS**
-
-1. Manager requests list of players.
-2. SoCcer Manager shows list with IDs.
-3. Manager requests to delete by ID.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager deletes player and shows a success message.  
-   Use case ends.
-
-**Extensions**
-
-* 2a. List empty.
-    * 2a1. SoCcer Manager shows that there are no players to delete.  
-      Use case ends.
-
-* 3a. Invalid ID.
-    * 3a1. SoCcer Manager shows an error message.  
-      Use case resumes at step 2.
-
-* 4a. Manager cancels confirmation.
-    * 4a1. SoCcer Manager aborts deletion.  
-      Use case ends.
-
-*a. At any time, manager cancels.  
-Use case ends.
-
-**Use case: UC05 - Rename an attribute catalog value**  
+**Use case: UC01 - Rename an attribute catalog value**  
 **MSS**
 
 1. Manager requests to rename an attribute catalog value.
@@ -630,7 +526,7 @@ Use case ends.
     * 2c1. SoCcer Manager shows error message.  
       Use case ends.
 
-**Use case: UC06 - Delete an attribute catalog value**  
+**Use case: UC02 - Delete an attribute catalog value**  
 **MSS**
 
 1. Manager requests to delete an attribute catalog value.
@@ -654,7 +550,7 @@ Use case ends.
     * 3b1. SoCcer Manager shows error message.  
       Use case ends.
 
-**Use case: UC07 - Edit person attributes**  
+**Use case: UC03 - Edit person attributes**  
 **MSS**
 
 1. Manager requests to edit a person.
@@ -674,7 +570,7 @@ Use case ends.
     * 3b1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
-**Use case: UC08 - View persons by role**  
+**Use case: UC04 - View persons by role**  
 **MSS**
 
 1. Manager requests to list persons by role.
