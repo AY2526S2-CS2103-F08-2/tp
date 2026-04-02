@@ -5,42 +5,53 @@ title: DamianNgWZ's Project Portfolio Page
 
 ### Project: AddressBook Level 3
 
-AddressBook - Level 3 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+AddressBook - Level 3 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 15kLoC.
 
 Given below are my contributions to the project.
 
-* **New Feature**: Added the ability to undo/redo previous commands.
-    * What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-    * Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-    * Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-    * Credits: *{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}*
+* **New Feature**: Added role-scoped listing commands (`list players`, `list staff`).
+    * **What it does**: Extends the `list` command so users can filter the visible person list directly by role, while preserving the original `list` command as the all-persons view.
+    * **Justification**: Team workflows are frequently role-specific. Coaches regularly switch between player operations and staff operations, so a direct role-scoped list reduces command friction and improves navigation speed.
+    * **Highlights**: Implemented end-to-end parser-command-predicate integration (`AddressBookParser` -> `ListRoleCommandParser` -> `ListRoleCommand` -> `PersonHasRolePredicate`) with case-insensitive role handling and strict invalid-role rejection. This role-filtering foundation was later reused/extended in role-scoped filtering enhancements (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#76](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/76), PR [#95](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/95)).
+    * **Credits**: Followed the abstraction boundaries and command workflow patterns used in AB3 (`Parser` -> `Command` -> `Model` with predicate-based filtered list updates) to keep feature integration consistent with the existing architecture.
 
-* **New Feature**: Added a history command that allows the user to navigate to previous commands using up/down keys.
+* **New Feature**: Added attributes subsystem (`Team`, `Status`, `Position`) with catalog commands and person assignment.
+    * **What it does**: Introduces a full catalog-backed attribute domain where users can add/edit/delete/list approved attribute values and assign those values during person creation/editing with validation against catalog state.
+    * **Justification**: Replacing free-text team/status/position inputs with validated catalogs reduces data inconsistency and typo-driven errors. This also provides a stable baseline for integrating future features that depend on clean domain categorization (e.g., sorting, filtering, analytics/reporting, and role/attribute-driven workflows).
+    * **Highlights**:
+        * Established model/storage foundation for attributes (value objects, unique lists, defaults, and persistence path) as the base integration layer (PR [#93](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/93)).
+        * Delivered attribute command families incrementally with targeted tests: team commands (PR [#101](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/101)), status commands (PR [#107](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/107)), and position commands (PR [#116](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/116)); final integration was through PR [#107](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/107), which included the `position` increment from PR [#116](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/116) before merge to `master`.
+        * Implemented person-level assignment and UI integration, including non-default-only rendering and assignment validation paths (PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
+        * Enforced domain rules such as protected defaults, in-use delete blocking, and rename propagation to assigned persons.
+    * **Credits**: Followed AB3 command-building and layering conventions for relevant parts of the implementation so the new commands and model operations integrate cleanly with the existing codebase.
 
-* **Code contributed**: [RepoSense link]()
+* **Code contributed**: [RepoSense link](https://nus-cs2103-ay2526-s2.github.io/tp-dashboard/?search=DamianNgWZ&breakdown=true)
 
 * **Project management**:
-    * Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
+    * Served as team lead: managed deadlines, coordinated deliverables, and assigned tasks across teammates.
+    * Helped the team set up the repository baseline and collaboration workflow.
+    * Managed release preparations across all release iterations. `v1.3`-`v1.5` (3 releases)
 
 * **Enhancements to existing features**:
-    * Updated the GUI color scheme (Pull requests [\#33](), [\#34]())
-    * Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests [\#36](), [\#38]())
+    * Extended role-scoped filtering behavior through role-aware search/filter enhancements (PR [#95](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/95)).
+    * Refined attribute behavior after initial delivery (e.g., canonical casing and storage/default handling) through follow-up attribute integration work (PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
 
 * **Documentation**:
     * User Guide:
-        * Added documentation for the features `delete` and `find` [\#72]()
-        * Did cosmetic tweaks to existing documentation of features `clear`, `exit`: [\#74]()
+        * Updated command documentation and usage clarifications for list/attributes flows (PR [#76](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/76), PR [#127](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/127), PR [#128](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/128)).
     * Developer Guide:
-        * Added implementation details of the `delete` feature.
+        * Added implementation and interaction details for role-scoped list and attributes architecture/behavior, including use cases and testing notes (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
+        * Updated use-case and DG-related content during early project phases (PR [#46](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/46)).
 
+
+* **Extra Templates**: (To be removed if irrelevant)
 * **Community**:
-    * PRs reviewed (with non-trivial review comments): [\#12](), [\#32](), [\#19](), [\#42]()
-    * Contributed to forum discussions (examples: [1](), [2](), [3](), [4]())
-    * Reported bugs and suggestions for other teams in the class (examples: [1](), [2](), [3]())
-    * Some parts of the history feature I added was adopted by several other class mates ([1](), [2]())
+    * Reviewed and merged teammate pull requests as part of integration and quality control during development cycles.
+    * Helped align team members on feature scope and implementation direction for list/attribute-related work.
+    * Coordinated and followed up on cross-feature integration issues to keep milestones on track.
 
 * **Tools**:
-    * Integrated a third party library (Natty) to the project ([\#42]())
-    * Integrated a new Github plugin (CircleCI) to the team repo
+    * Set up and maintained the team repository workflow baseline (branching/merge flow and collaboration setup).
+    * Used CI/test workflows and local verification routines to support stable integration before releases.
 
 * _{you can add/remove categories in the list above}_
