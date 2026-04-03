@@ -1,0 +1,16 @@
+{
+  "persons" : [ {
+    "name" : "Jane Staff",
+    "phone" : "98765432",
+    "email" : "janestaff@example.com",
+    "address" : "123, Test Street",
+    "tags" : [ ],
+    "role" : "STAFF",
+    "team" : "Third Team",
+    "status" : "Active",
+    "position" : "Forward"
+  } ],
+  "teams" : [ ],
+  "positions" : [ ],
+  "statuses" : [ ]
+}

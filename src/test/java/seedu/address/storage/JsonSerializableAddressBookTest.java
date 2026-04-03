@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 import seedu.address.testutil.TypicalPersons;
@@ -32,6 +34,8 @@ public class JsonSerializableAddressBookTest {
             TEST_DATA_FOLDER.resolve("malformedAttributeCatalogAddressBook.json");
     private static final Path PERSON_ATTRIBUTES_NOT_IN_CATALOG_FILE =
             TEST_DATA_FOLDER.resolve("personAttributesNotInCatalogAddressBook.json");
+    private static final Path STAFF_NON_DEFAULT_POSITION_FILE =
+            TEST_DATA_FOLDER.resolve("staffWithNonDefaultPositionAddressBook.json");
 
     @Test
     public void toModelType_typicalPersonsFile_success() throws Exception {
@@ -135,6 +139,18 @@ public class JsonSerializableAddressBookTest {
         assertEquals(2, addressBookFromFile.getTeamList().size());
         assertEquals(2, addressBookFromFile.getPositionList().size());
         assertEquals(2, addressBookFromFile.getStatusList().size());
+    }
+
+    @Test
+    public void toModelType_staffWithNonDefaultPosition_normalizesToUnassignedPosition() throws Exception {
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(STAFF_NON_DEFAULT_POSITION_FILE,
+                JsonSerializableAddressBook.class).get();
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        Person staff = addressBookFromFile.getPersonList().get(0);
+        assertEquals(Role.STAFF, staff.getRole());
+        assertEquals(new Position(Position.DEFAULT_UNASSIGNED_POSITION), staff.getPosition());
+        assertEquals(1, addressBookFromFile.getPositionList().size());
     }
 
 }

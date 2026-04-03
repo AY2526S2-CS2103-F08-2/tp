@@ -16,8 +16,10 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Position;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
@@ -164,5 +166,15 @@ public class JsonAdaptedPersonTest {
                 VALID_TEAM, VALID_STATUS, null);
         String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Position.class.getSimpleName());
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    }
+
+    @Test
+    public void toModelType_staffWithNonDefaultPosition_normalizesToUnassignedPosition() throws Exception {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
+                VALID_TAGS, "STAFF", null, VALID_TEAM, VALID_STATUS, VALID_POSITION);
+
+        Person modelPerson = person.toModelType();
+        assertEquals(Role.STAFF, modelPerson.getRole());
+        assertEquals(new Position(Position.DEFAULT_UNASSIGNED_POSITION), modelPerson.getPosition());
     }
 }

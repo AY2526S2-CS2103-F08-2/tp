@@ -19,7 +19,9 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 
@@ -94,6 +96,17 @@ public class JsonAddressBookStorageTest {
         assertEquals(2, loadedAddressBook.getTeamList().size());
         assertEquals(2, loadedAddressBook.getPositionList().size());
         assertEquals(2, loadedAddressBook.getStatusList().size());
+    }
+
+    @Test
+    public void readAddressBook_staffWithNonDefaultPosition_normalizesToUnassignedPosition() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("staffWithNonDefaultPositionAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+
+        Person staff = loadedAddressBook.getPersonList().get(0);
+        assertEquals(Role.STAFF, staff.getRole());
+        assertEquals(new Position(Position.DEFAULT_UNASSIGNED_POSITION), staff.getPosition());
+        assertEquals(1, loadedAddressBook.getPositionList().size());
     }
 
     @Test
