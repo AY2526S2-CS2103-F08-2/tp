@@ -7,7 +7,9 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -109,6 +111,171 @@ public class MatchCommandTest {
 
         assertCommandFailure(command, model,
                 String.format(MatchCommand.MESSAGE_NOT_A_PLAYER, "Staff Person"));
+    }
+
+    @Test
+    public void execute_statusFilter_addSuccessful() {
+        Person matchingPlayer = new PersonBuilder()
+                .withName("Matching Player")
+                .withRole(Role.PLAYER)
+                .withStatus("Active")
+                .build();
+
+        Person nonMatchingPlayer = new PersonBuilder()
+                .withName("Non Matching Player")
+                .withRole(Role.PLAYER)
+                .withStatus("Unavailable")
+                .build();
+
+        model.addPerson(matchingPlayer);
+        model.addPerson(nonMatchingPlayer);
+
+        Match match = new MatchBuilder().build();
+
+        MatchCommand command = new MatchCommand(
+                match.getEventName(),
+                match.getEventDate(),
+                matchingPlayer.getStatus(),
+                null,
+                null,
+                List.of()
+        );
+
+        Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        expectedModel.addPerson(matchingPlayer);
+        expectedModel.addPerson(nonMatchingPlayer);
+
+        Set<Person> personSet = new HashSet<Person>();
+        personSet.add(matchingPlayer);
+
+        Match expectedMatch = new MatchBuilder()
+                .withOpponentName(match.getEventName().toString())
+                .withDate(match.getEventDate().getDateWithInputFormat())
+                .withPlayers(personSet)
+                .build();
+
+        expectedModel.addEvent(expectedMatch);
+
+        String expectedMessage = String.format(
+                MatchCommand.MESSAGE_SUCCESS,
+                Messages.format(expectedMatch)
+        );
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_statusFilterAndNamedPlayer_addSuccessful() {
+        Person filteredPlayer = new PersonBuilder()
+                .withName("Filtered Player")
+                .withRole(Role.PLAYER)
+                .withStatus("Active")
+                .build();
+
+        Person namedPlayer = new PersonBuilder()
+                .withName("Named Player")
+                .withRole(Role.PLAYER)
+                .withStatus("Unavailable")
+                .build();
+
+        model.addPerson(filteredPlayer);
+        model.addPerson(namedPlayer);
+
+        Match match = new MatchBuilder().build();
+
+        MatchCommand command = new MatchCommand(
+                match.getEventName(),
+                match.getEventDate(),
+                filteredPlayer.getStatus(),
+                null,
+                null,
+                List.of(namedPlayer.getName().toString())
+        );
+
+        Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        expectedModel.addPerson(filteredPlayer);
+        expectedModel.addPerson(namedPlayer);
+
+        Set<Person> personSet = new HashSet<Person>();
+        personSet.add(filteredPlayer);
+        personSet.add(namedPlayer);
+
+        Match expectedMatch = new MatchBuilder()
+                .withOpponentName(match.getEventName().toString())
+                .withDate(match.getEventDate().getDateWithInputFormat())
+                .withPlayers(personSet)
+                .build();
+
+        expectedModel.addEvent(expectedMatch);
+
+        String expectedMessage = String.format(
+                MatchCommand.MESSAGE_SUCCESS,
+                Messages.format(expectedMatch)
+        );
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_statusAndTeamFilter_addSuccessful() {
+        Person matchingPlayer = new PersonBuilder()
+                .withName("Matching Player")
+                .withRole(Role.PLAYER)
+                .withStatus("Active")
+                .withTeam("First Team")
+                .build();
+
+        Person sameStatusOnly = new PersonBuilder()
+                .withName("Same Status Only")
+                .withRole(Role.PLAYER)
+                .withStatus("Active")
+                .withTeam("Second Team")
+                .build();
+
+        Person sameTeamOnly = new PersonBuilder()
+                .withName("Same Team Only")
+                .withRole(Role.PLAYER)
+                .withStatus("Unavailable")
+                .withTeam("First Team")
+                .build();
+
+        model.addPerson(matchingPlayer);
+        model.addPerson(sameStatusOnly);
+        model.addPerson(sameTeamOnly);
+
+        Match match = new MatchBuilder().build();
+
+        MatchCommand command = new MatchCommand(
+                match.getEventName(),
+                match.getEventDate(),
+                matchingPlayer.getStatus(),
+                null,
+                matchingPlayer.getTeam(),
+                List.of()
+        );
+
+        Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        expectedModel.addPerson(matchingPlayer);
+        expectedModel.addPerson(sameStatusOnly);
+        expectedModel.addPerson(sameTeamOnly);
+
+        Set<Person> personSet = new HashSet<Person>();
+        personSet.add(matchingPlayer);
+
+        Match expectedMatch = new MatchBuilder()
+                .withOpponentName(match.getEventName().toString())
+                .withDate(match.getEventDate().getDateWithInputFormat())
+                .withPlayers(personSet)
+                .build();
+
+        expectedModel.addEvent(expectedMatch);
+
+        String expectedMessage = String.format(
+                MatchCommand.MESSAGE_SUCCESS,
+                Messages.format(expectedMatch)
+        );
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
     @Test
