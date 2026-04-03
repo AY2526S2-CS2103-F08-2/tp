@@ -1,0 +1,26 @@
+{
+  "persons" : [ {
+    "name" : "Valid Player",
+    "phone" : "98765432",
+    "email" : "validplayer@example.com",
+    "address" : "123, Test Street",
+    "tags" : [ ],
+    "role" : "PLAYER",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
+  }, {
+    "name" : "Invalid Player",
+    "phone" : "98abc",
+    "email" : "invalidplayer@example.com",
+    "address" : "456, Test Street",
+    "tags" : [ ],
+    "role" : "PLAYER",
+    "team" : "Unassigned Team",
+    "status" : "Unknown",
+    "position" : "Unassigned Position"
+  } ],
+  "teams" : [ ],
+  "positions" : [ ],
+  "statuses" : [ ]
+}

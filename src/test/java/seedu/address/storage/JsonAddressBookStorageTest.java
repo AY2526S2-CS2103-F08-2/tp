@@ -57,13 +57,25 @@ public class JsonAddressBookStorageTest {
     }
 
     @Test
-    public void readAddressBook_invalidPersonAddressBook_throwDataLoadingException() {
-        assertThrows(DataLoadingException.class, () -> readAddressBook("invalidPersonAddressBook.json"));
+    public void readAddressBook_invalidPersonAddressBook_malformedPersonIsSkipped() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("invalidPersonAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+        assertEquals(0, loadedAddressBook.getPersonList().size());
     }
 
     @Test
-    public void readAddressBook_invalidAndValidPersonAddressBook_throwDataLoadingException() {
-        assertThrows(DataLoadingException.class, () -> readAddressBook("invalidAndValidPersonAddressBook.json"));
+    public void readAddressBook_invalidAndValidPersonAddressBook_malformedPersonsAreSkipped() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("invalidAndValidPersonAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+        assertEquals(0, loadedAddressBook.getPersonList().size());
+    }
+
+    @Test
+    public void readAddressBook_malformedAndValidPersons_onlyValidPersonsLoaded() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("malformedAndValidPersonsAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+        assertEquals(1, loadedAddressBook.getPersonList().size());
+        assertEquals("Valid Player", loadedAddressBook.getPersonList().get(0).getName().toString());
     }
 
     @Test

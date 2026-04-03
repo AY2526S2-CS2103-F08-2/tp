@@ -36,6 +36,8 @@ public class JsonSerializableAddressBookTest {
             TEST_DATA_FOLDER.resolve("personAttributesNotInCatalogAddressBook.json");
     private static final Path STAFF_NON_DEFAULT_POSITION_FILE =
             TEST_DATA_FOLDER.resolve("staffWithNonDefaultPositionAddressBook.json");
+    private static final Path MALFORMED_AND_VALID_PERSONS_FILE =
+            TEST_DATA_FOLDER.resolve("malformedAndValidPersonsAddressBook.json");
 
     @Test
     public void toModelType_typicalPersonsFile_success() throws Exception {
@@ -47,10 +49,21 @@ public class JsonSerializableAddressBookTest {
     }
 
     @Test
-    public void toModelType_invalidPersonFile_throwsIllegalValueException() throws Exception {
+    public void toModelType_invalidPersonFile_malformedPersonIsSkipped() throws Exception {
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(INVALID_PERSON_FILE,
                 JsonSerializableAddressBook.class).get();
-        assertThrows(IllegalValueException.class, dataFromFile::toModelType);
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+        assertEquals(0, addressBookFromFile.getPersonList().size());
+    }
+
+    @Test
+    public void toModelType_malformedAndValidPersons_onlyValidPersonsLoaded() throws Exception {
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(MALFORMED_AND_VALID_PERSONS_FILE,
+                JsonSerializableAddressBook.class).get();
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        assertEquals(1, addressBookFromFile.getPersonList().size());
+        assertEquals("Valid Player", addressBookFromFile.getPersonList().get(0).getName().toString());
     }
 
     @Test

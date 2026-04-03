@@ -94,7 +94,19 @@ class JsonSerializableAddressBook {
         ensureDefaultAttributes(addressBook);
 
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
-            Person person = jsonAdaptedPerson.toModelType();
+            if (jsonAdaptedPerson == null) {
+                logger.warning("Skipping malformed person entry: null value.");
+                continue;
+            }
+
+            Person person;
+            try {
+                person = jsonAdaptedPerson.toModelType();
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed person entry: " + ive.getMessage());
+                continue;
+            }
+
             if (addressBook.hasPerson(person)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
