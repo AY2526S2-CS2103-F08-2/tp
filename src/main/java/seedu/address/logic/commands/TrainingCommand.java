@@ -12,8 +12,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
