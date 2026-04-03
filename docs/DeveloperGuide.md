@@ -112,10 +112,11 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API
-call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking
+`execute("delete 1 confirm")` as an example. This is the confirmed follow-up command produced by the parser's
+multi-step delete interaction flow after the user first selects a player for deletion.
 
-![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `delete 1 confirm` Command](images/DeleteSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
@@ -141,6 +142,9 @@ How the parsing works:
   placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse
   the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a
   `Command` object.
+* `AddressBookParser` also keeps a `DeleteInteractionFlow` helper to support multi-step follow-up inputs for
+  `delete` and `deletebulk`. This allows inputs such as `y`, `n`, or a clash-selection index to be rewritten into a
+  concrete command before normal parsing continues.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser`
   interface so that they can be treated similarly where possible e.g, during testing.
 
@@ -322,6 +326,37 @@ The following activity diagram summarizes what happens when a user executes a ne
     * Cons: We must ensure that the implementation of each individual command are correct.
 
 _{more aspects and alternatives to be added}_
+
+### Delete and bulk-delete confirmation flow
+
+The `delete` and `deletebulk` features use a parser-managed continuation flow so that follow-up inputs can stay short
+for the user.
+
+* For `delete`, an initial command can identify a player by list index or by matching name keywords.
+* If the command is not yet confirmed, `DeleteInteractionFlow` stores enough context to interpret the next input as
+  either confirmation (`y`), cancellation (`n`), or a clash-selection index.
+* For index-based deletion, a follow-up `y` is rewritten internally to `delete INDEX confirm`.
+* For bulk deletion, a follow-up `y` or `n` is rewritten internally to `deletebulk y t/TAG` or
+  `deletebulk n t/TAG`.
+
+The sequence diagram below shows the confirmed index-based delete path after the follow-up input has been rewritten into
+`delete 1 confirm`.
+
+![Delete confirmation flow in Logic](images/DeleteSequenceDiagram.png)
+
+### Sorting filtered lists
+
+`sort` is implemented as a `Logic`-to-`Model` operation that first sets the target scope and then applies a comparator
+to the filtered person list.
+
+* `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute, and the optional
+  `desc` modifier.
+* `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
+* `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
+
+The following sequence diagram illustrates `sort players by/email desc`.
+
+![Sort command flow in Logic](images/SortSequenceDiagram.png)
 
 ### \[Proposed\] Data archiving
 
