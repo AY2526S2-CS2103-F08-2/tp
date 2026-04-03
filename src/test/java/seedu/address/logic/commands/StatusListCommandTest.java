@@ -25,6 +25,7 @@ public class StatusListCommandTest {
     }
 
     @Test
+    // BOUNDARY (non-empty catalog state)
     public void execute_nonEmptyCatalog_success() {
         String expectedMessage = String.join(System.lineSeparator(),
                 "Statuses:",
@@ -35,6 +36,7 @@ public class StatusListCommandTest {
     }
 
     @Test
+    // BOUNDARY (empty catalog state)
     public void execute_emptyCatalog_returnsEmptyMessage() {
         Model emptyModel = new ModelManager();
         Model expectedEmptyModel = new ModelManager(emptyModel.getAddressBook(), new UserPrefs());
@@ -42,4 +44,3 @@ public class StatusListCommandTest {
         assertCommandSuccess(new StatusListCommand(), emptyModel, StatusListCommand.MESSAGE_EMPTY, expectedEmptyModel);
     }
 }
-

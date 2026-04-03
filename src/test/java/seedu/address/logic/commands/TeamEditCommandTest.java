@@ -22,16 +22,19 @@ import seedu.address.model.person.Team;
 public class TeamEditCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullOldTeam_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new TeamEditCommand(null, new Team("Reserve Team")));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullNewTeam_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new TeamEditCommand(new Team("First Team"), null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_validRename_success() throws CommandException {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -45,6 +48,7 @@ public class TeamEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (old value not found)
     public void execute_oldTeamNotFound_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -53,6 +57,7 @@ public class TeamEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (duplicate after edit)
     public void execute_newTeamAlreadyExists_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -61,6 +66,7 @@ public class TeamEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
     public void execute_defaultTeam_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 

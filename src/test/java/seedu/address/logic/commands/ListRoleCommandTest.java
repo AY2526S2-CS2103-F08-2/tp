@@ -30,6 +30,7 @@ public class ListRoleCommandTest {
     }
 
     @Test
+    // VALID_CASE + EP_VALID (role partition: players)
     public void execute_listPlayers_success() {
         PersonHasRolePredicate predicate = new PersonHasRolePredicate(Role.PLAYER);
         ListRoleCommand command = new ListRoleCommand(predicate, "players");
@@ -38,6 +39,7 @@ public class ListRoleCommandTest {
     }
 
     @Test
+    // VALID_CASE + EP_VALID (role partition: staff)
     public void execute_listStaff_success() {
         PersonHasRolePredicate predicate = new PersonHasRolePredicate(Role.STAFF);
         ListRoleCommand command = new ListRoleCommand(predicate, "staff");
@@ -71,6 +73,7 @@ public class ListRoleCommandTest {
     }
 
     @Test
+    // REGRESSION_GUARD + COMBO (filtered count matches predicate result)
     public void execute_listPlayers_correctCount() {
         PersonHasRolePredicate predicate = new PersonHasRolePredicate(Role.PLAYER);
         new ListRoleCommand(predicate, "players").execute(model);
@@ -80,4 +83,3 @@ public class ListRoleCommandTest {
                         .count());
     }
 }
-

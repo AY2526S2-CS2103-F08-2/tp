@@ -204,6 +204,7 @@ public class AddCommandParserTest {
     }
 
     @Test
+    // COMBO + DEPENDENCY_RULE (team/status/position accepted for player)
     public void parse_optionalAttributesPresent_success() {
         Person expectedPerson = new PersonBuilder(PLAYER_BEN)
                 .withTeam("First Team")
@@ -219,6 +220,7 @@ public class AddCommandParserTest {
     }
 
     @Test
+    // INVALID_CASE + DEPENDENCY_RULE (staff cannot take non-default position)
     public void parse_staffWithPosition_commandRejects() throws Exception {
         String userInput = NAME_DESC_PLAYER_BEN + PHONE_DESC_PLAYER_BEN + EMAIL_DESC_PLAYER_BEN
                 + ADDRESS_DESC_PLAYER_BEN + ROLE_DESC_STAFF + POSITION_DESC_FORWARD;

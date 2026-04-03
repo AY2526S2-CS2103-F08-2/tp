@@ -21,11 +21,13 @@ import seedu.address.model.person.Position;
 public class PositionAddCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullPosition_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new PositionAddCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_newPosition_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -38,6 +40,7 @@ public class PositionAddCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (duplicate catalog entry)
     public void execute_duplicatePosition_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Position duplicatePosition = new Position("Forward");
@@ -66,4 +69,3 @@ public class PositionAddCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

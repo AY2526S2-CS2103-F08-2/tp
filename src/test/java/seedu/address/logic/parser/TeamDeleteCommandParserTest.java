@@ -14,19 +14,21 @@ public class TeamDeleteCommandParserTest {
     private final TeamDeleteCommandParser parser = new TeamDeleteCommandParser();
 
     @Test
+    // VALID_CASE + EP_VALID
     public void parse_validArgs_returnsTeamDeleteCommand() {
         assertParseSuccess(parser, " Reserve Team ", new TeamDeleteCommand(new Team("Reserve Team")));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (invalid characters)
     public void parse_invalidArgs_throwsParseException() {
         assertParseFailure(parser, " #Reserve ", Team.MESSAGE_CONSTRAINTS);
     }
 
     @Test
+    // INVALID_CASE + BOUNDARY (blank input)
     public void parse_emptyArgs_throwsParseException() {
         assertParseFailure(parser, "   ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamDeleteCommand.MESSAGE_USAGE));
     }
 }
-

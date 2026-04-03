@@ -25,6 +25,9 @@ public class RoleFilteredNameContainsKeywordsPredicate implements Predicate<Pers
         this.namePredicate = new NameContainsKeywordsPredicate(keywords);
     }
 
+    /**
+     * Returns {@code true} if the given {@code person} matches both role and name predicates.
+     */
     @Override
     public boolean test(Person person) {
         requireNonNull(person);
@@ -55,4 +58,3 @@ public class RoleFilteredNameContainsKeywordsPredicate implements Predicate<Pers
                 .toString();
     }
 }
-

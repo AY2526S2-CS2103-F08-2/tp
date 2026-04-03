@@ -15,32 +15,36 @@ public class PositionEditCommandParserTest {
     private final PositionEditCommandParser parser = new PositionEditCommandParser();
 
     @Test
+    // VALID_CASE + EP_VALID
     public void parse_validArgs_returnsPositionEditCommand() {
         assertParseSuccess(parser, " old/Defender new/Center Back",
                 new PositionEditCommand(new Position("Defender"), new Position("Center Back")));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (missing required prefix)
     public void parse_missingOldPrefix_throwsParseException() {
         assertParseFailure(parser, " Defender new/Center Back",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionEditCommand.MESSAGE_USAGE));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (missing required prefix)
     public void parse_missingNewPrefix_throwsParseException() {
         assertParseFailure(parser, " old/Defender Center Back",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionEditCommand.MESSAGE_USAGE));
     }
 
     @Test
+    // INVALID_CASE + SINGLE_INVALID (duplicate single-value prefix)
     public void parse_duplicatePrefixes_throwsParseException() {
         assertParseFailure(parser, " old/Defender old/Forward new/Center Back",
                 Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_OLD_ATTRIBUTE));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (invalid token format)
     public void parse_invalidPositionValue_throwsParseException() {
         assertParseFailure(parser, " old/#Bad new/Center Back", Position.MESSAGE_CONSTRAINTS);
     }
 }
-
