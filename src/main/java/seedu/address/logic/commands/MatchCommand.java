@@ -39,15 +39,16 @@ public class MatchCommand extends Command {
             + "Parameters: "
             + PREFIX_NAME + "OPPONENT NAME "
             + PREFIX_DATE + "DATE "
-            + "[" + PREFIX_STATUS + "STATUS]"
-            + "[" + PREFIX_POSITION + "POSITION]"
-            + "[" + PREFIX_TEAM + "TEAM]"
-            + "[" + PREFIX_STATUS + "STATUS]"
+            + "[" + PREFIX_POSITION + "POSITION] "
+            + "[" + PREFIX_TEAM + "TEAM] "
+            + "[" + PREFIX_STATUS + "STATUS] "
             + "[" + PREFIX_PLAYER + "PLAYER]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Manchester United "
             + PREFIX_DATE + "2026-04-15 1600 "
-            + PREFIX_PLAYER + "Alex Yeoh ";
+            + PREFIX_PLAYER + "Alex Yeoh "
+            + PREFIX_STATUS + "Active "
+            + PREFIX_TEAM + "First Team ";
 
     public static final String MESSAGE_SUCCESS = "New Match added: %1$s";
     public static final String MESSAGE_DUPLICATE_MATCH = "This match already exists in the address book!";
