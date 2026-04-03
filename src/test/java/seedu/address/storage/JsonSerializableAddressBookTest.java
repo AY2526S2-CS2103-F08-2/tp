@@ -30,6 +30,8 @@ public class JsonSerializableAddressBookTest {
             TEST_DATA_FOLDER.resolve("missingDefaultAttributesAddressBook.json");
     private static final Path MALFORMED_ATTRIBUTE_CATALOG_FILE =
             TEST_DATA_FOLDER.resolve("malformedAttributeCatalogAddressBook.json");
+    private static final Path PERSON_ATTRIBUTES_NOT_IN_CATALOG_FILE =
+            TEST_DATA_FOLDER.resolve("personAttributesNotInCatalogAddressBook.json");
 
     @Test
     public void toModelType_typicalPersonsFile_success() throws Exception {
@@ -118,6 +120,20 @@ public class JsonSerializableAddressBookTest {
 
         assertTrue(addressBookFromFile.hasStatus(new Status(Status.DEFAULT_UNKNOWN_STATUS)));
         assertTrue(addressBookFromFile.hasStatus(new Status("Active")));
+        assertEquals(2, addressBookFromFile.getStatusList().size());
+    }
+
+    @Test
+    public void toModelType_personAttributesNotInCatalog_autoRegistersMissingCatalogValues() throws Exception {
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(PERSON_ATTRIBUTES_NOT_IN_CATALOG_FILE,
+                JsonSerializableAddressBook.class).get();
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        assertTrue(addressBookFromFile.hasTeam(new Team("Third Team")));
+        assertTrue(addressBookFromFile.hasPosition(new Position("Sweeper")));
+        assertTrue(addressBookFromFile.hasStatus(new Status("Injured")));
+        assertEquals(2, addressBookFromFile.getTeamList().size());
+        assertEquals(2, addressBookFromFile.getPositionList().size());
         assertEquals(2, addressBookFromFile.getStatusList().size());
     }
 

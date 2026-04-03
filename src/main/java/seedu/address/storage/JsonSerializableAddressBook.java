@@ -98,6 +98,7 @@ class JsonSerializableAddressBook {
             if (addressBook.hasPerson(person)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
+            ensurePersonAttributesInCatalog(addressBook, person);
             addressBook.addPerson(person);
             personMap.put(person.getName().toString(), person);
         }
@@ -218,6 +219,29 @@ class JsonSerializableAddressBook {
         }
         if (!hasDefaultStatus) {
             logger.warning("Auto-healed missing default status: " + Status.DEFAULT_UNKNOWN_STATUS);
+        }
+    }
+
+    /**
+     * Ensures a person's assigned attributes are present in catalogs. Missing valid values are auto-registered.
+     */
+    private void ensurePersonAttributesInCatalog(AddressBook addressBook, Person person) {
+        Team team = person.getTeam();
+        if (!addressBook.hasTeam(team)) {
+            addressBook.addTeam(team);
+            logger.warning("Auto-registered missing team from person record: " + team);
+        }
+
+        Position position = person.getPosition();
+        if (!addressBook.hasPosition(position)) {
+            addressBook.addPosition(position);
+            logger.warning("Auto-registered missing position from person record: " + position);
+        }
+
+        Status status = person.getStatus();
+        if (!addressBook.hasStatus(status)) {
+            addressBook.addStatus(status);
+            logger.warning("Auto-registered missing status from person record: " + status);
         }
     }
 

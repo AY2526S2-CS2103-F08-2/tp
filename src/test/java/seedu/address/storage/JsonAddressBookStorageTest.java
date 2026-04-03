@@ -84,6 +84,19 @@ public class JsonAddressBookStorageTest {
     }
 
     @Test
+    public void readAddressBook_personAttributesNotInCatalog_autoRegistersMissingCatalogValues() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("personAttributesNotInCatalogAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+
+        assertTrue(loadedAddressBook.hasTeam(new Team("Third Team")));
+        assertTrue(loadedAddressBook.hasPosition(new Position("Sweeper")));
+        assertTrue(loadedAddressBook.hasStatus(new Status("Injured")));
+        assertEquals(2, loadedAddressBook.getTeamList().size());
+        assertEquals(2, loadedAddressBook.getPositionList().size());
+        assertEquals(2, loadedAddressBook.getStatusList().size());
+    }
+
+    @Test
     public void readAndSaveAddressBook_allInOrder_success() throws Exception {
         Path filePath = testFolder.resolve("TempAddressBook.json");
         AddressBook original = getTypicalAddressBook();
