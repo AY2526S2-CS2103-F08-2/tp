@@ -237,22 +237,26 @@ public class ParserUtilTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void parseTeam_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseTeam(null));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (invalid characters)
     public void parseTeam_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseTeam(INVALID_TEAM));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void parseTeam_validValueWithoutWhitespace_returnsTeam() throws Exception {
         Team expectedTeam = new Team(VALID_TEAM);
         assertEquals(expectedTeam, ParserUtil.parseTeam(VALID_TEAM));
     }
 
     @Test
+    // BOUNDARY (trim surrounding whitespace)
     public void parseTeam_validValueWithWhitespace_returnsTrimmedTeam() throws Exception {
         String teamWithWhitespace = WHITESPACE + VALID_TEAM + WHITESPACE;
         Team expectedTeam = new Team(VALID_TEAM);
@@ -260,22 +264,26 @@ public class ParserUtilTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void parseStatus_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseStatus(null));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (invalid characters)
     public void parseStatus_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseStatus(INVALID_STATUS));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void parseStatus_validValueWithoutWhitespace_returnsStatus() throws Exception {
         Status expectedStatus = new Status(VALID_STATUS);
         assertEquals(expectedStatus, ParserUtil.parseStatus(VALID_STATUS));
     }
 
     @Test
+    // BOUNDARY (trim surrounding whitespace)
     public void parseStatus_validValueWithWhitespace_returnsTrimmedStatus() throws Exception {
         String statusWithWhitespace = WHITESPACE + VALID_STATUS + WHITESPACE;
         Status expectedStatus = new Status(VALID_STATUS);
@@ -283,26 +291,29 @@ public class ParserUtilTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void parsePosition_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parsePosition(null));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (invalid characters)
     public void parsePosition_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parsePosition(INVALID_POSITION));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void parsePosition_validValueWithoutWhitespace_returnsPosition() throws Exception {
         Position expectedPosition = new Position(VALID_POSITION);
         assertEquals(expectedPosition, ParserUtil.parsePosition(VALID_POSITION));
     }
 
     @Test
+    // BOUNDARY (trim surrounding whitespace)
     public void parsePosition_validValueWithWhitespace_returnsTrimmedPosition() throws Exception {
         String positionWithWhitespace = WHITESPACE + VALID_POSITION + WHITESPACE;
         Position expectedPosition = new Position(VALID_POSITION);
         assertEquals(expectedPosition, ParserUtil.parsePosition(positionWithWhitespace));
     }
 }
-

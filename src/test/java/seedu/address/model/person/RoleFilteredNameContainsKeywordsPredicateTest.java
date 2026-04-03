@@ -32,6 +32,7 @@ public class RoleFilteredNameContainsKeywordsPredicateTest {
     }
 
     @Test
+    // COMBO + EP_VALID (role + keyword must both match)
     public void test_matchingRoleAndName_returnsTrue() {
         RoleFilteredNameContainsKeywordsPredicate predicate =
                 new RoleFilteredNameContainsKeywordsPredicate(Role.PLAYER, Arrays.asList("Amy", "Tan"));
@@ -41,6 +42,7 @@ public class RoleFilteredNameContainsKeywordsPredicateTest {
     }
 
     @Test
+    // COMBO + INVALID_CASE (fail if role or keyword partition mismatches)
     public void test_nonMatchingRoleOrName_returnsFalse() {
         RoleFilteredNameContainsKeywordsPredicate predicate =
                 new RoleFilteredNameContainsKeywordsPredicate(Role.STAFF, Collections.singletonList("Amy"));
@@ -60,4 +62,3 @@ public class RoleFilteredNameContainsKeywordsPredicateTest {
         assertEquals(expected, predicate.toString());
     }
 }
-
