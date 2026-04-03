@@ -2,6 +2,7 @@ package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 import static seedu.address.testutil.TypicalPersons.PLAYER_TYRONE;
@@ -18,6 +19,9 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.person.Position;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 
 public class JsonAddressBookStorageTest {
     private static final Path TEST_DATA_FOLDER = Paths.get("src", "test", "data", "JsonAddressBookStorageTest");
@@ -58,6 +62,25 @@ public class JsonAddressBookStorageTest {
     @Test
     public void readAddressBook_invalidAndValidPersonAddressBook_throwDataLoadingException() {
         assertThrows(DataLoadingException.class, () -> readAddressBook("invalidAndValidPersonAddressBook.json"));
+    }
+
+    @Test
+    public void readAddressBook_malformedAttributeCatalogAddressBook_loadsSuccessfully() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("malformedAttributeCatalogAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+
+        assertTrue(loadedAddressBook.hasTeam(new Team(Team.DEFAULT_UNASSIGNED_TEAM)));
+        assertTrue(loadedAddressBook.hasTeam(new Team("First Team")));
+        assertTrue(loadedAddressBook.hasTeam(new Team("Third Team")));
+        assertEquals(3, loadedAddressBook.getTeamList().size());
+
+        assertTrue(loadedAddressBook.hasPosition(new Position(Position.DEFAULT_UNASSIGNED_POSITION)));
+        assertTrue(loadedAddressBook.hasPosition(new Position("Forward")));
+        assertEquals(2, loadedAddressBook.getPositionList().size());
+
+        assertTrue(loadedAddressBook.hasStatus(new Status(Status.DEFAULT_UNKNOWN_STATUS)));
+        assertTrue(loadedAddressBook.hasStatus(new Status("Active")));
+        assertEquals(2, loadedAddressBook.getStatusList().size());
     }
 
     @Test

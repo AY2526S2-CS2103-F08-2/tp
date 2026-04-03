@@ -87,29 +87,9 @@ class JsonSerializableAddressBook {
         AddressBook addressBook = new AddressBook();
         Map<String, Person> personMap = new HashMap<>();
 
-        for (JsonAdaptedTeam jsonAdaptedTeam : teams) {
-            Team team = jsonAdaptedTeam.toModelType();
-            if (addressBook.hasTeam(team)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_TEAM);
-            }
-            addressBook.addTeam(team);
-        }
-
-        for (JsonAdaptedPosition jsonAdaptedPosition : positions) {
-            Position position = jsonAdaptedPosition.toModelType();
-            if (addressBook.hasPosition(position)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_POSITION);
-            }
-            addressBook.addPosition(position);
-        }
-
-        for (JsonAdaptedStatus jsonAdaptedStatus : statuses) {
-            Status status = jsonAdaptedStatus.toModelType();
-            if (addressBook.hasStatus(status)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_STATUS);
-            }
-            addressBook.addStatus(status);
-        }
+        loadTeamCatalog(addressBook);
+        loadPositionCatalog(addressBook);
+        loadStatusCatalog(addressBook);
 
         ensureDefaultAttributes(addressBook);
 
@@ -130,6 +110,72 @@ class JsonSerializableAddressBook {
             addressBook.addEvent(event);
         }
         return addressBook;
+    }
+
+    /**
+     * Loads team catalog entries from JSON, skipping malformed or duplicate values.
+     */
+    private void loadTeamCatalog(AddressBook addressBook) {
+        for (JsonAdaptedTeam jsonAdaptedTeam : teams) {
+            if (jsonAdaptedTeam == null) {
+                logger.warning("Skipping malformed team entry: null value.");
+                continue;
+            }
+            try {
+                Team team = jsonAdaptedTeam.toModelType();
+                if (addressBook.hasTeam(team)) {
+                    logger.warning("Skipping duplicate team entry: " + team);
+                    continue;
+                }
+                addressBook.addTeam(team);
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed team entry: " + ive.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Loads position catalog entries from JSON, skipping malformed or duplicate values.
+     */
+    private void loadPositionCatalog(AddressBook addressBook) {
+        for (JsonAdaptedPosition jsonAdaptedPosition : positions) {
+            if (jsonAdaptedPosition == null) {
+                logger.warning("Skipping malformed position entry: null value.");
+                continue;
+            }
+            try {
+                Position position = jsonAdaptedPosition.toModelType();
+                if (addressBook.hasPosition(position)) {
+                    logger.warning("Skipping duplicate position entry: " + position);
+                    continue;
+                }
+                addressBook.addPosition(position);
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed position entry: " + ive.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Loads status catalog entries from JSON, skipping malformed or duplicate values.
+     */
+    private void loadStatusCatalog(AddressBook addressBook) {
+        for (JsonAdaptedStatus jsonAdaptedStatus : statuses) {
+            if (jsonAdaptedStatus == null) {
+                logger.warning("Skipping malformed status entry: null value.");
+                continue;
+            }
+            try {
+                Status status = jsonAdaptedStatus.toModelType();
+                if (addressBook.hasStatus(status)) {
+                    logger.warning("Skipping duplicate status entry: " + status);
+                    continue;
+                }
+                addressBook.addStatus(status);
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed status entry: " + ive.getMessage());
+            }
+        }
     }
 
     /**

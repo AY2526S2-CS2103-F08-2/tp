@@ -1,0 +1,6 @@
+{
+  "persons" : [ ],
+  "teams" : [ null, " ", "First Team", "first team", "Reserve@Team", "Third Team" ],
+  "positions" : [ null, "", "Forward", "forward", "Wing@er" ],
+  "statuses" : [ null, " ", "Active", "active", "Injured!" ]
+}

@@ -28,6 +28,8 @@ public class JsonSerializableAddressBookTest {
     private static final Path DUPLICATE_STATUS_FILE = TEST_DATA_FOLDER.resolve("duplicateStatusAddressBook.json");
     private static final Path MISSING_DEFAULT_ATTRIBUTES_FILE =
             TEST_DATA_FOLDER.resolve("missingDefaultAttributesAddressBook.json");
+    private static final Path MALFORMED_ATTRIBUTE_CATALOG_FILE =
+            TEST_DATA_FOLDER.resolve("malformedAttributeCatalogAddressBook.json");
 
     @Test
     public void toModelType_typicalPersonsFile_success() throws Exception {
@@ -54,27 +56,35 @@ public class JsonSerializableAddressBookTest {
     }
 
     @Test
-    public void toModelType_duplicateTeams_throwsIllegalValueException() throws Exception {
+    public void toModelType_duplicateTeams_duplicateEntriesAreIgnored() throws Exception {
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(DUPLICATE_TEAM_FILE,
                 JsonSerializableAddressBook.class).get();
-        assertThrows(IllegalValueException.class, JsonSerializableAddressBook.MESSAGE_DUPLICATE_TEAM,
-                dataFromFile::toModelType);
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        assertTrue(addressBookFromFile.hasTeam(new Team(Team.DEFAULT_UNASSIGNED_TEAM)));
+        assertTrue(addressBookFromFile.hasTeam(new Team("First Team")));
+        assertEquals(2, addressBookFromFile.getTeamList().size());
     }
 
     @Test
-    public void toModelType_duplicatePositions_throwsIllegalValueException() throws Exception {
+    public void toModelType_duplicatePositions_duplicateEntriesAreIgnored() throws Exception {
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(DUPLICATE_POSITION_FILE,
                 JsonSerializableAddressBook.class).get();
-        assertThrows(IllegalValueException.class, JsonSerializableAddressBook.MESSAGE_DUPLICATE_POSITION,
-                dataFromFile::toModelType);
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        assertTrue(addressBookFromFile.hasPosition(new Position(Position.DEFAULT_UNASSIGNED_POSITION)));
+        assertTrue(addressBookFromFile.hasPosition(new Position("Forward")));
+        assertEquals(2, addressBookFromFile.getPositionList().size());
     }
 
     @Test
-    public void toModelType_duplicateStatuses_throwsIllegalValueException() throws Exception {
+    public void toModelType_duplicateStatuses_duplicateEntriesAreIgnored() throws Exception {
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(DUPLICATE_STATUS_FILE,
                 JsonSerializableAddressBook.class).get();
-        assertThrows(IllegalValueException.class, JsonSerializableAddressBook.MESSAGE_DUPLICATE_STATUS,
-                dataFromFile::toModelType);
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        assertTrue(addressBookFromFile.hasStatus(new Status(Status.DEFAULT_UNKNOWN_STATUS)));
+        assertEquals(1, addressBookFromFile.getStatusList().size());
     }
 
     @Test
@@ -89,6 +99,26 @@ public class JsonSerializableAddressBookTest {
         assertEquals(new Team(Team.DEFAULT_UNASSIGNED_TEAM), addressBookFromFile.getTeamList().get(0));
         assertEquals(new Position(Position.DEFAULT_UNASSIGNED_POSITION), addressBookFromFile.getPositionList().get(0));
         assertEquals(new Status(Status.DEFAULT_UNKNOWN_STATUS), addressBookFromFile.getStatusList().get(0));
+    }
+
+    @Test
+    public void toModelType_malformedAttributeCatalog_recoversBySkippingBadEntries() throws Exception {
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(MALFORMED_ATTRIBUTE_CATALOG_FILE,
+                JsonSerializableAddressBook.class).get();
+        AddressBook addressBookFromFile = dataFromFile.toModelType();
+
+        assertTrue(addressBookFromFile.hasTeam(new Team(Team.DEFAULT_UNASSIGNED_TEAM)));
+        assertTrue(addressBookFromFile.hasTeam(new Team("First Team")));
+        assertTrue(addressBookFromFile.hasTeam(new Team("Third Team")));
+        assertEquals(3, addressBookFromFile.getTeamList().size());
+
+        assertTrue(addressBookFromFile.hasPosition(new Position(Position.DEFAULT_UNASSIGNED_POSITION)));
+        assertTrue(addressBookFromFile.hasPosition(new Position("Forward")));
+        assertEquals(2, addressBookFromFile.getPositionList().size());
+
+        assertTrue(addressBookFromFile.hasStatus(new Status(Status.DEFAULT_UNKNOWN_STATUS)));
+        assertTrue(addressBookFromFile.hasStatus(new Status("Active")));
+        assertEquals(2, addressBookFromFile.getStatusList().size());
     }
 
 }
