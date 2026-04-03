@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEW_ATTRIBUTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OLD_ATTRIBUTE;
 
@@ -21,15 +20,8 @@ public class PositionEditCommandParser implements Parser<PositionEditCommand> {
      */
     @Override
     public PositionEditCommand parse(String args) throws ParseException {
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_OLD_ATTRIBUTE, PREFIX_NEW_ATTRIBUTE);
-
-        if (!argMultimap.getValue(PREFIX_OLD_ATTRIBUTE).isPresent()
-                || !argMultimap.getValue(PREFIX_NEW_ATTRIBUTE).isPresent()
-                || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionEditCommand.MESSAGE_USAGE));
-        }
-
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_OLD_ATTRIBUTE, PREFIX_NEW_ATTRIBUTE);
+        ArgumentMultimap argMultimap = AttributeParserUtil.parseRequiredOldAndNew(
+                args, PositionEditCommand.MESSAGE_USAGE);
 
         Position oldPosition = ParserUtil.parsePosition(argMultimap.getValue(PREFIX_OLD_ATTRIBUTE).get());
         Position newPosition = ParserUtil.parsePosition(argMultimap.getValue(PREFIX_NEW_ATTRIBUTE).get());
@@ -37,4 +29,3 @@ public class PositionEditCommandParser implements Parser<PositionEditCommand> {
         return new PositionEditCommand(oldPosition, newPosition);
     }
 }
-
