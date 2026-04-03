@@ -32,7 +32,8 @@ public class TrainingCommandParser implements Parser<Command> {
      */
     public TrainingCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DATE, PREFIX_PLAYER);
+                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DATE, PREFIX_PLAYER, PREFIX_STATUS,
+                        PREFIX_POSITION, PREFIX_TEAM);
         String preamble = argMultimap.getPreamble();
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_DATE)
@@ -44,9 +45,19 @@ public class TrainingCommandParser implements Parser<Command> {
         EventName eventName = ParserUtil.parseEventName(argMultimap.getValue(PREFIX_NAME).get());
         Date date = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DATE).get());
         List<String> playerNames = ParserUtil.parsePlayers(argMultimap.getAllValues(PREFIX_PLAYER));
-        Status status = ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get());
-        Team team = ParserUtil.parseTeam(argMultimap.getValue(PREFIX_TEAM).get());
-        Position position = ParserUtil.parsePosition(argMultimap.getValue(PREFIX_POSITION).get());
+
+        Team team = null;
+        if (argMultimap.getValue(PREFIX_TEAM).isPresent()) {
+            team = ParserUtil.parseTeam(argMultimap.getValue(PREFIX_TEAM).get());
+        }
+        Status status = null;
+        if (argMultimap.getValue(PREFIX_STATUS).isPresent()) {
+            status = ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get());
+        }
+        Position position = null;
+        if (argMultimap.getValue(PREFIX_POSITION).isPresent()) {
+            position = ParserUtil.parsePosition(argMultimap.getValue(PREFIX_POSITION).get());
+        }
 
         return new TrainingCommand(eventName, date, status, position, team, playerNames);
     }
