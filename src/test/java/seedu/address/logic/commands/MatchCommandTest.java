@@ -36,6 +36,9 @@ public class MatchCommandTest {
         MatchCommand command = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of(player.getName().toString())
         );
 
@@ -62,6 +65,9 @@ public class MatchCommandTest {
         MatchCommand command = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of(player.getName().toString())
         );
 
@@ -75,6 +81,9 @@ public class MatchCommandTest {
         MatchCommand command = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of("Fake Player")
         );
 
@@ -92,6 +101,9 @@ public class MatchCommandTest {
         MatchCommand command = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of("Staff Person")
         );
 
@@ -106,18 +118,27 @@ public class MatchCommandTest {
         MatchCommand command = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of("Player A")
         );
 
         MatchCommand sameCommand = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of("Player A")
         );
 
         MatchCommand differentCommand = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of("Player B")
         );
 
@@ -135,6 +156,9 @@ public class MatchCommandTest {
         MatchCommand command = new MatchCommand(
                 match.getEventName(),
                 match.getEventDate(),
+                null,
+                null,
+                null,
                 List.of("Player A", "Player B")
         );
 
