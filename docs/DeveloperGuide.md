@@ -252,6 +252,13 @@ Default catalogs are seeded in `SampleDataUtil`:
 * Status: `statusadd`, `statusedit`, `statusdelete`, `statuslist`
 * Position: `positionadd`, `positionedit`, `positiondelete`, `positionlist`
 
+The sequence diagram below uses `teamedit old/First Team new/Reserve Team` as the representative
+attribute catalog command flow. All attribute catalog commands share the same high-level
+parser-command-model pattern: `*add` inserts a catalog value, `*delete` removes one after guard
+checks, `*list` formats the current catalog for display, and `*edit` renames a catalog value.
+`teamedit` is shown because it is the richest representative case, while `status*` and `position*`
+follow the same interaction structure with attribute-specific validation/messages.
+
 Command behavior:
 * `*add` checks duplicates before inserting.
 * `*edit` checks target exists, rejects duplicate destination values, and blocks edits of protected defaults.
