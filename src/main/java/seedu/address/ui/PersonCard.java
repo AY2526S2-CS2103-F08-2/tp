@@ -8,6 +8,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import seedu.address.model.person.CalculatedStatField;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
 import seedu.address.model.person.PlayerStats;
@@ -58,12 +59,6 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane staff;
     @FXML
     private VBox statsBox;
-    @FXML
-    private Label statGoals;
-    @FXML
-    private Label statWins;
-    @FXML
-    private Label statLosses;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -94,9 +89,16 @@ public class PersonCard extends UiPart<Region> {
             Player player = (Player) person;
             PlayerStats stats = player.getStats();
 
-            statGoals.setText("Goals: " + StatField.GOALS.getValue(stats));
-            statWins.setText("Wins: " + StatField.WINS.getValue(stats));
-            statLosses.setText("Losses: " + StatField.LOSSES.getValue(stats));
+            for (StatField stat : StatField.values()) {
+                String name = stat.name().replaceAll("_", " ");
+                statsBox.getChildren().add(
+                        new Label(name + ": " + stat.getValue(stats)));
+            }
+            for (CalculatedStatField stat : CalculatedStatField.values()) {
+                String name = stat.name().replaceAll("_", " ");
+                statsBox.getChildren().add(
+                        new Label(name + ": " + String.format("%.2f", stat.getValue(stats))));
+            }
 
             statsBox.setManaged(true);
             statsBox.setVisible(true);
