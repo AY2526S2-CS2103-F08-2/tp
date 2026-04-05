@@ -81,10 +81,11 @@ public class SetCommand extends Command {
         if (!this.stat.isValid(this.value)) {
             throw new CommandException(stat.messageConstraints);
         }
-        PlayerStats playerStats = player.getStats();
-        stat.setValue(playerStats, this.value);
+        PlayerStats oldStats = player.getStats();
+        PlayerStats newStats = new PlayerStats(oldStats);
+        this.stat.setValue(newStats, this.value);
 
-        return player;
+        return new Player(player, newStats);
     }
 
     @Override

@@ -63,6 +63,17 @@ public class Player extends Person {
         this.stats = stats;
     }
 
+    /**
+     * Easily constructs a {@code Player} with new explicit {@code PlayerStats}.
+     * Use to conveniently update player stats.
+     */
+    public Player(Player player, PlayerStats stats) {
+        super(player.getName(), player.getPhone(), player.getEmail(), player.getAddress(), player.getTags(),
+                player.getRole(), player.getTeam(), player.getStatus(), player.getPosition());
+        assert stats != null;
+        this.stats = stats;
+    }
+
     public PlayerStats getStats() {
         return stats;
     }

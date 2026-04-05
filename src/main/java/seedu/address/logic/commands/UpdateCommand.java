@@ -66,8 +66,9 @@ public class UpdateCommand extends Command {
 
         Player player = (Player) person;
         int old = this.stat.getValue(player.getStats());
-        player = updatePlayerStat(player);
+        Player updatedPlayer = updatePlayerStat(player);
 
+        model.setPerson(player, updatedPlayer);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_SET_PLAYER_SUCCESS,
                 Messages.format(player), this.stat, old, old + this.value, this.value));
@@ -79,15 +80,16 @@ public class UpdateCommand extends Command {
      */
     private Player updatePlayerStat(Player player) throws CommandException {
         assert player != null;
-        PlayerStats playerStats = player.getStats();
-        int oldValue = this.stat.getValue(playerStats);
+        PlayerStats oldStats = player.getStats();
+        int oldValue = this.stat.getValue(oldStats);
         int newValue = oldValue + this.value;
         if (!this.stat.isValid(newValue)) {
             throw new CommandException(stat.messageConstraints);
         }
-        stat.setValue(playerStats, newValue);
+        PlayerStats newStats = new PlayerStats(oldStats);
+        this.stat.setValue(newStats, newValue);
 
-        return player;
+        return new Player(player, newStats);
     }
 
     @Override
