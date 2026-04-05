@@ -34,6 +34,9 @@ public class MatchCommandParserTest {
         MatchCommand expectedCommand = new MatchCommand(
                 new EventName(VALID_OPPONENT_NAME),
                 new Date(VALID_DATE),
+                null,
+                null,
+                null,
                 List.of(VALID_NAME_PLAYER_BEN)
         );
 
@@ -47,6 +50,9 @@ public class MatchCommandParserTest {
         MatchCommand expectedCommand = new MatchCommand(
                 new EventName(VALID_OPPONENT_NAME),
                 new Date(VALID_DATE),
+                null,
+                null,
+                null,
                 List.of()
         );
 
