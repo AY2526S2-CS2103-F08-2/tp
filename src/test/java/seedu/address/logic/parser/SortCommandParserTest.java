@@ -33,6 +33,27 @@ public class SortCommandParserTest {
     }
 
     @Test
+    public void parse_sortAllPersonsByTeam_returnsSortCommand() throws Exception {
+        SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.TEAM, "persons", false);
+        assertEquals(expected, parser.parse("by/team"));
+    }
+
+    @Test
+    public void parse_sortStaffByStatus_returnsSortCommand() throws Exception {
+        SortCommand expected = new SortCommand(
+                new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.STATUS, "staff", false);
+        assertEquals(expected, parser.parse("staff by/status"));
+    }
+
+    @Test
+    public void parse_sortPlayersByPositionDescending_returnsSortCommand() {
+        SortCommand expected = new SortCommand(
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.POSITION, "players", true);
+        assertParseSuccess(parser, "players by/position desc", expected);
+    }
+
+    @Test
     public void parse_caseInsensitive_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.NAME, "staff", false);

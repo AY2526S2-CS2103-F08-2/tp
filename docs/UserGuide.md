@@ -36,6 +36,10 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `sort players by/email desc` : Sorts only players by email in descending order.
 
+   * `sort by/team` : Sorts all persons by team in ascending order.
+
+   * `sort staff by/status` : Sorts only staff by status in ascending order.
+
    * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a player named `John Doe` to SoCcer Manager.
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
@@ -178,10 +182,16 @@ Format:
 Supported attributes:
 * `name`
 * `email`
+* `team`
+* `status`
+* `position`
 
 Examples:
 * `sort by/name`
 * `sort players by/email`
+* `sort by/team`
+* `sort by/status`
+* `sort players by/position desc`
 * `sort staff by/name desc`
 
 ### Player Stats
@@ -511,8 +521,8 @@ _Details coming soon ..._
 | **Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                         |
 | **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |
 | **Find**         | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                        |
-| **List**         | `list` / `list players` / `list staff`<br> e.g., `list players`                                                                                                                                                        |
-| **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                       |
+| **List**         | `list` / `list [players \| staff] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list players tm/First Team st/Active`                                                                                              |
+| **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> attributes: `name`, `email`, `team`, `status`, `position`<br> e.g., `sort by/team`, `sort players by/position desc` |
 | **Set**          | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                      |
 | **Update**       | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                 |
 | **Help**         | `help`                                                                                                                                                                                                                 |

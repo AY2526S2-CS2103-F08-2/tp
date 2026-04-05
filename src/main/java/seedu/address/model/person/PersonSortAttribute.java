@@ -12,6 +12,15 @@ public enum PersonSortAttribute {
             .thenComparing(person -> person.getEmail().value, String.CASE_INSENSITIVE_ORDER)),
     EMAIL("email", Comparator
             .comparing((Person person) -> person.getEmail().value, String.CASE_INSENSITIVE_ORDER)
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    TEAM("team", Comparator
+            .comparing((Person person) -> person.getTeam().value, String.CASE_INSENSITIVE_ORDER)
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    STATUS("status", Comparator
+            .comparing((Person person) -> person.getStatus().value, String.CASE_INSENSITIVE_ORDER)
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    POSITION("position", Comparator
+            .comparing((Person person) -> person.getPosition().value, String.CASE_INSENSITIVE_ORDER)
             .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER));
 
     private final String keyword;
