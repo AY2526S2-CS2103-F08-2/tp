@@ -1,7 +1,9 @@
 package seedu.address.model.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +14,7 @@ import seedu.address.model.event.Event;
 import seedu.address.model.event.EventName;
 import seedu.address.model.event.EventPlayerList;
 import seedu.address.model.event.EventType;
+import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -78,18 +81,43 @@ public class SampleDataUtil {
     }
 
     public static Event[] getSampleEvents() {
+        Person[] samplePersons = getSamplePersons();
+
+        Map<String, Integer> firstMatchGoals = new HashMap<>();
+
         return new Event[]{
-                Event.createEvent(new EventName("Manchester United"), new Date("2026-04-15 1600"),
-                        EventType.MATCH, new EventPlayerList(new HashSet<>(Arrays.asList(getSamplePersons()[0],
-                                getSamplePersons()[1], getSamplePersons()[2])))),
-                Event.createEvent(new EventName("Real Madrid"), new Date("2026-04-20 1220"),
-                        EventType.MATCH, new EventPlayerList(new HashSet<>())),
-                Event.createEvent(new EventName("Dribbling drills"), new Date("2026-02-12 1000"),
-                        EventType.TRAINING, new EventPlayerList(new HashSet<>(Arrays.asList(getSamplePersons()[0],
-                                getSamplePersons()[1])))),
-                Event.createEvent(new EventName("Defending drills"), new Date("2025-12-04 1800"),
-                        EventType.TRAINING, new EventPlayerList(new HashSet<>(Arrays.asList(getSamplePersons()[1],
-                                getSamplePersons()[2]))))
+                new Match(
+                        new EventName("Manchester United"),
+                        new Date("2026-04-15 1600"),
+                        new EventPlayerList(new HashSet<>(Arrays.asList(
+                                samplePersons[0], samplePersons[1], samplePersons[2]
+                        ))),
+                        firstMatchGoals,
+                        0
+                ),
+                new Match(
+                        new EventName("Real Madrid"),
+                        new Date("2026-04-20 1220"),
+                        new EventPlayerList(new HashSet<>()),
+                        new HashMap<>(),
+                        0
+                ),
+                Event.createEvent(
+                        new EventName("Dribbling drills"),
+                        new Date("2026-02-12 1000"),
+                        EventType.TRAINING,
+                        new EventPlayerList(new HashSet<>(Arrays.asList(
+                                samplePersons[0], samplePersons[1]
+                        )))
+                ),
+                Event.createEvent(
+                        new EventName("Defending drills"),
+                        new Date("2025-12-04 1800"),
+                        EventType.TRAINING,
+                        new EventPlayerList(new HashSet<>(Arrays.asList(
+                                samplePersons[1], samplePersons[2]
+                        )))
+                )
         };
     }
 

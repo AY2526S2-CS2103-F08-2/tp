@@ -26,6 +26,7 @@ import seedu.address.model.event.Event;
 import seedu.address.model.event.EventName;
 import seedu.address.model.event.EventPlayerList;
 import seedu.address.model.event.EventType;
+import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 
@@ -119,6 +120,18 @@ public class EventEditCommand extends Command {
         }
 
         EventPlayerList eventPlayerList = new EventPlayerList(playerList);
+
+        if (eventToEdit instanceof Match) {
+            Match matchToEdit = (Match) eventToEdit;
+
+            return new Match(
+                    updatedName,
+                    updatedEventDate,
+                    eventPlayerList,
+                    matchToEdit.getPlayerGoals(),
+                    matchToEdit.getOpponentGoals()
+            );
+        }
 
         return Event.createEvent(updatedName, updatedEventDate, updatedEventType, eventPlayerList);
     }

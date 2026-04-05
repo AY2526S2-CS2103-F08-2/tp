@@ -26,6 +26,7 @@ import seedu.address.logic.commands.EventEditCommand.EditEventDescriptor;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventType;
+import seedu.address.model.event.match.Match;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
 import seedu.address.model.person.Position;
@@ -120,20 +121,27 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) throws CommandException {
         addressBook.removePerson(target);
-        for (Event e : addressBook.getEventList()) {
-            if (e.getEventPlayerList().contains((Player) target)) {
-                EditEventDescriptor descriptor = new EditEventDescriptor();
-                descriptor.setEventType(e.getEventType());
-                descriptor.setEventName(e.getEventName());
-                descriptor.setEventDate(e.getEventDate());
-                Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
-                updatedPlayerNames.remove(target.getName().toString());
-                descriptor.setEventPlayerNames(updatedPlayerNames);
-                Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
-                this.setEvent(e, editedEvent);
+        if (target.getRole() == Role.PLAYER) {
+            for (Event e : addressBook.getEventList()) {
+                if (e.getEventPlayerList().contains(target)) {
+                    EditEventDescriptor descriptor = new EditEventDescriptor();
+                    descriptor.setEventType(e.getEventType());
+                    descriptor.setEventName(e.getEventName());
+                    descriptor.setEventDate(e.getEventDate());
+                    Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
+                    updatedPlayerNames.remove(target.getName().toString());
+                    descriptor.setEventPlayerNames(updatedPlayerNames);
+                    Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
+                    if (editedEvent instanceof Match) {
+                        Match editedMatch = ((Match) editedEvent).removePlayerGoals(target.getName().toString());
+                        this.setEvent(e, editedMatch);
+                    }
+                    else {
+                        this.setEvent(e, editedEvent);
+                    }
+                }
             }
         }
-
     }
 
     @Override

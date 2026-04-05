@@ -26,6 +26,8 @@ import seedu.address.logic.commands.PositionAddCommand;
 import seedu.address.logic.commands.PositionDeleteCommand;
 import seedu.address.logic.commands.PositionEditCommand;
 import seedu.address.logic.commands.PositionListCommand;
+import seedu.address.logic.commands.RecordGoalCommand;
+import seedu.address.logic.commands.RecordOpponentGoalCommand;
 import seedu.address.logic.commands.SetCommand;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.StatusAddCommand;
@@ -208,6 +210,12 @@ public class AddressBookParser {
         case EventEditCommand.COMMAND_WORD:
             command = new EventEditCommandParser().parse(arguments);
             break;
+
+        case RecordGoalCommand.COMMAND_WORD:
+            return new RecordGoalCommandParser().parse(arguments);
+
+        case RecordOpponentGoalCommand.COMMAND_WORD:
+            return new RecordOpponentGoalCommandParser().parse(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);

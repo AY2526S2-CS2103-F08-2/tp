@@ -21,5 +21,7 @@ public class CliSyntax {
     public static final Prefix PREFIX_TEAM = new Prefix("tm/");
     public static final Prefix PREFIX_STATUS = new Prefix("st/");
     public static final Prefix PREFIX_POSITION = new Prefix("pos/");
+    public static final Prefix PREFIX_GOALS = new Prefix("g/");
+    public static final Prefix PREFIX_OPPONENT_GOALS = new Prefix("og/");
 
 }

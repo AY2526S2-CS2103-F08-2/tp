@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.event.Event;
+import seedu.address.model.event.match.Match;
 
 /**
  * An UI component that displays information of a {@code Match}.
@@ -46,7 +47,11 @@ public class EventCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         date.setText("Match Date: " + event.getEventDate().toString());
         switch (event.getEventType()) {
-        case MATCH -> eventName.setText("vs " + event.getEventName().toString());
+        case MATCH -> {
+            Match match = (Match) event;
+            eventName.setText("Match: " + match.getTeamGoals() + "-" + match.getOpponentGoals() +
+                    " vs " + event.getEventName().toString());
+        }
         case TRAINING -> eventName.setText("Training: " + event.getEventName().toString());
         default -> eventName.setText("Event Name: " + event.getEventName().toString());
         }
