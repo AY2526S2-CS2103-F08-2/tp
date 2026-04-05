@@ -25,6 +25,7 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ListFilteredCommand;
 import seedu.address.logic.commands.ListRoleCommand;
 import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.commands.PositionAddCommand;
@@ -45,8 +46,12 @@ import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonMatchesListFiltersPredicate;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.RoleFilteredNameContainsKeywordsPredicate;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -144,6 +149,29 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_listInvalidRole_throwsParseException() {
         assertThrows(ParseException.class, () -> parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
+    }
+
+    @Test
+    public void parseCommand_listWithTeamFilter() throws Exception {
+        ListFilteredCommand expected = new ListFilteredCommand(
+                new PersonMatchesListFiltersPredicate(java.util.Optional.empty(),
+                        java.util.Optional.of(new Team("First Team")),
+                        java.util.Optional.empty(),
+                        java.util.Optional.empty()),
+                "persons matching team First Team");
+        assertEquals(expected, parser.parseCommand(ListCommand.COMMAND_WORD + " tm/First Team"));
+    }
+
+    @Test
+    public void parseCommand_listPlayersWithCombinedFilters() throws Exception {
+        ListFilteredCommand expected = new ListFilteredCommand(
+                new PersonMatchesListFiltersPredicate(java.util.Optional.of(Role.PLAYER),
+                        java.util.Optional.of(new Team("First Team")),
+                        java.util.Optional.of(new Status("Active")),
+                        java.util.Optional.of(new Position("Defender"))),
+                "players matching team First Team, status Active, position Defender");
+        assertEquals(expected, parser.parseCommand(
+                ListCommand.COMMAND_WORD + " players tm/First Team st/Active pos/Defender"));
     }
 
     @Test
