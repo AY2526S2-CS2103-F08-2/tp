@@ -44,10 +44,15 @@ public class EventCard extends UiPart<Region> {
         super(FXML);
         this.event = event;
         id.setText(displayedIndex + ". ");
-        date.setText("Match Date: " + event.getEventDate().toString());
         switch (event.getEventType()) {
-        case MATCH -> eventName.setText("vs " + event.getEventName().toString());
-        case TRAINING -> eventName.setText("Training: " + event.getEventName().toString());
+        case MATCH -> {
+            eventName.setText("Match: vs " + event.getEventName().toString());
+            date.setText("Match Date: " + event.getEventDate().toString());
+        }
+        case TRAINING -> {
+            eventName.setText("Training: " + event.getEventName().toString());
+            date.setText("Training Date: " + event.getEventDate().toString());
+        }
         default -> eventName.setText("Event Name: " + event.getEventName().toString());
         }
 
