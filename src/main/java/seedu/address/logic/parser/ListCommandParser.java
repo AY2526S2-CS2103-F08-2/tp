@@ -47,8 +47,9 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
         Optional<Team> team = parseOptionalTeam(argMultimap);
         Optional<Status> status = parseOptionalStatus(argMultimap);
         Optional<Position> position = parseOptionalPosition(argMultimap);
+        boolean hasAttributeFilters = team.isPresent() || status.isPresent() || position.isPresent();
 
-        if (team.isEmpty() && status.isEmpty() && position.isEmpty()) {
+        if (!hasAttributeFilters) {
             return new ListRoleCommand(new PersonHasRolePredicate(role.get()), getRoleDescription(role.get()));
         }
 
@@ -102,7 +103,6 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
         team.ifPresent(value -> parts.add("team " + value));
         status.ifPresent(value -> parts.add("status " + value));
         position.ifPresent(value -> parts.add("position " + value));
-        return String.join(" with ", parts.subList(0, Math.min(parts.size(), 1)))
-                + (parts.size() > 1 ? " matching " + String.join(", ", parts.subList(1, parts.size())) : "");
+        return parts.get(0) + " matching " + String.join(", ", parts.subList(1, parts.size()));
     }
 }

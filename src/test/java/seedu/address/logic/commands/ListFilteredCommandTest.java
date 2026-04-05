@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -70,12 +71,28 @@ public class ListFilteredCommandTest {
 
         ListFilteredCommand first = new ListFilteredCommand(firstPredicate, "persons matching team First Team");
         ListFilteredCommand second = new ListFilteredCommand(secondPredicate, "staff matching status Active");
+        ListFilteredCommand differentDescription = new ListFilteredCommand(firstPredicate,
+                "persons matching team Second Team");
 
         assertTrue(first.equals(first));
         assertTrue(first.equals(new ListFilteredCommand(firstPredicate, "persons matching team First Team")));
         assertFalse(first.equals(second));
+        assertFalse(first.equals(differentDescription));
         assertFalse(first.equals(1));
         assertFalse(first.equals(null));
+    }
+
+    @Test
+    public void toStringMethod() {
+        PersonMatchesListFiltersPredicate predicate = new PersonMatchesListFiltersPredicate(Optional.empty(),
+                Optional.of(new Team("First Team")), Optional.empty(), Optional.empty());
+        ListFilteredCommand command = new ListFilteredCommand(predicate, "persons matching team First Team");
+
+        String expected = new ToStringBuilder(command)
+                .add("predicate", predicate)
+                .add("description", "persons matching team First Team")
+                .toString();
+        assertTrue(command.toString().equals(expected));
     }
 
     private seedu.address.model.AddressBook buildAddressBookWithAttributes() {

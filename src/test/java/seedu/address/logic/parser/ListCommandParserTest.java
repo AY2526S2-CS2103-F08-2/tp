@@ -28,6 +28,12 @@ public class ListCommandParserTest {
     }
 
     @Test
+    public void parse_emptyArgs_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parse(""));
+        assertThrows(ParseException.class, () -> parser.parse("   "));
+    }
+
+    @Test
     public void parse_filtersOnly_returnsListFilteredCommand() throws Exception {
         ListFilteredCommand expected = new ListFilteredCommand(
                 new PersonMatchesListFiltersPredicate(Optional.empty(),
@@ -47,6 +53,28 @@ public class ListCommandParserTest {
                         Optional.of(new Position("Forward"))),
                 "staff matching status Active, position Forward");
         assertEquals(expected, parser.parse("staff st/Active pos/Forward"));
+    }
+
+    @Test
+    public void parse_statusOnly_returnsListFilteredCommand() throws Exception {
+        ListFilteredCommand expected = new ListFilteredCommand(
+                new PersonMatchesListFiltersPredicate(Optional.empty(),
+                        Optional.empty(),
+                        Optional.of(new Status("Active")),
+                        Optional.empty()),
+                "persons matching status Active");
+        assertEquals(expected, parser.parse("st/Active"));
+    }
+
+    @Test
+    public void parse_positionOnly_returnsListFilteredCommand() throws Exception {
+        ListFilteredCommand expected = new ListFilteredCommand(
+                new PersonMatchesListFiltersPredicate(Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.of(new Position("Forward"))),
+                "persons matching position Forward");
+        assertEquals(expected, parser.parse("pos/Forward"));
     }
 
     @Test
