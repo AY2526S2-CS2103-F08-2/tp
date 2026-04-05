@@ -2,6 +2,7 @@ package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 import static seedu.address.testutil.TypicalPersons.PLAYER_TYRONE;
@@ -18,6 +19,11 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
+import seedu.address.model.person.Role;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 
 public class JsonAddressBookStorageTest {
     private static final Path TEST_DATA_FOLDER = Paths.get("src", "test", "data", "JsonAddressBookStorageTest");
@@ -51,13 +57,68 @@ public class JsonAddressBookStorageTest {
     }
 
     @Test
-    public void readAddressBook_invalidPersonAddressBook_throwDataLoadingException() {
-        assertThrows(DataLoadingException.class, () -> readAddressBook("invalidPersonAddressBook.json"));
+    public void readAddressBook_invalidPersonAddressBook_malformedPersonIsSkipped() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("invalidPersonAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+        assertEquals(0, loadedAddressBook.getPersonList().size());
     }
 
     @Test
-    public void readAddressBook_invalidAndValidPersonAddressBook_throwDataLoadingException() {
-        assertThrows(DataLoadingException.class, () -> readAddressBook("invalidAndValidPersonAddressBook.json"));
+    public void readAddressBook_invalidAndValidPersonAddressBook_malformedPersonsAreSkipped() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("invalidAndValidPersonAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+        assertEquals(0, loadedAddressBook.getPersonList().size());
+    }
+
+    @Test
+    public void readAddressBook_malformedAndValidPersons_onlyValidPersonsLoaded() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("malformedAndValidPersonsAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+        assertEquals(1, loadedAddressBook.getPersonList().size());
+        assertEquals("Valid Player", loadedAddressBook.getPersonList().get(0).getName().toString());
+    }
+
+    @Test
+    public void readAddressBook_malformedAttributeCatalogAddressBook_loadsSuccessfully() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("malformedAttributeCatalogAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+
+        assertTrue(loadedAddressBook.hasTeam(new Team(Team.DEFAULT_UNASSIGNED_TEAM)));
+        assertTrue(loadedAddressBook.hasTeam(new Team("First Team")));
+        assertTrue(loadedAddressBook.hasTeam(new Team("Third Team")));
+        assertEquals(3, loadedAddressBook.getTeamList().size());
+
+        assertTrue(loadedAddressBook.hasPosition(new Position(Position.DEFAULT_UNASSIGNED_POSITION)));
+        assertTrue(loadedAddressBook.hasPosition(new Position("Forward")));
+        assertEquals(2, loadedAddressBook.getPositionList().size());
+
+        assertTrue(loadedAddressBook.hasStatus(new Status(Status.DEFAULT_UNKNOWN_STATUS)));
+        assertTrue(loadedAddressBook.hasStatus(new Status("Active")));
+        assertEquals(2, loadedAddressBook.getStatusList().size());
+    }
+
+    @Test
+    public void readAddressBook_personAttributesNotInCatalog_autoRegistersMissingCatalogValues() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("personAttributesNotInCatalogAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+
+        assertTrue(loadedAddressBook.hasTeam(new Team("Third Team")));
+        assertTrue(loadedAddressBook.hasPosition(new Position("Sweeper")));
+        assertTrue(loadedAddressBook.hasStatus(new Status("Injured")));
+        assertEquals(2, loadedAddressBook.getTeamList().size());
+        assertEquals(2, loadedAddressBook.getPositionList().size());
+        assertEquals(2, loadedAddressBook.getStatusList().size());
+    }
+
+    @Test
+    public void readAddressBook_staffWithNonDefaultPosition_normalizesToUnassignedPosition() throws Exception {
+        ReadOnlyAddressBook readOnlyAddressBook = readAddressBook("staffWithNonDefaultPositionAddressBook.json").get();
+        AddressBook loadedAddressBook = new AddressBook(readOnlyAddressBook);
+
+        Person staff = loadedAddressBook.getPersonList().get(0);
+        assertEquals(Role.STAFF, staff.getRole());
+        assertEquals(new Position(Position.DEFAULT_UNASSIGNED_POSITION), staff.getPosition());
+        assertEquals(1, loadedAddressBook.getPositionList().size());
     }
 
     @Test

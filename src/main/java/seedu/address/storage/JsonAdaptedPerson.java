@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -29,6 +31,7 @@ import seedu.address.model.tag.Tag;
 class JsonAdaptedPerson {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Person's %s field is missing!";
+    private static final Logger logger = LogsCenter.getLogger(JsonAdaptedPerson.class);
 
     private final String name;
     private final String phone;
@@ -164,14 +167,18 @@ class JsonAdaptedPerson {
         }
         Position modelPosition = parsePosition(position);
 
-        // for players only
-        if (role.equalsIgnoreCase("PLAYER")) {
+        if (modelRole == Role.PLAYER) {
             PlayerStats modelPlayerStats = (stats != null)
                     ? stats.toModelType()
                     : new PlayerStats(); // default zeros if stats missing from JSON
             return Person.createPerson(modelName, modelPhone, modelEmail,
                     modelAddress, modelTags, modelRole, modelPlayerStats,
                     modelTeam, modelStatus, modelPosition);
+        }
+
+        if (!modelPosition.isDefaultUnassignedPosition()) {
+            logger.warning("Auto-normalized non-default staff position to Unassigned Position for: " + modelName);
+            modelPosition = new Position(Position.DEFAULT_UNASSIGNED_POSITION);
         }
 
         return Person.createPerson(modelName, modelPhone, modelEmail,

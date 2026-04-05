@@ -294,9 +294,12 @@ When a catalog value is renamed (`teamedit`, `statusedit`, `positionedit`):
 `JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
 
 During load:
-* duplicate catalog entries are rejected,
-* protected default catalog values are auto-healed if missing from JSON, and
-* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`.
+* malformed/duplicate catalog entries are skipped with warning logs,
+* protected default catalog values are auto-healed if missing from JSON,
+* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`,
+* malformed person rows are skipped with warning logs,
+* valid person attributes missing from catalogs are auto-registered, and
+* non-default `position` values for `STAFF` are normalized to `Unassigned Position`.
 
 #### UI behavior
 
