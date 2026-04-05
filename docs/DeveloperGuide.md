@@ -778,8 +778,33 @@ testers are expected to do more *exploratory* testing.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Recovering from malformed attribute catalogs
 
-    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
 
-1. _{ more test cases …​ }_
+    1. Test case: Add `null` or a blank string such as `" "` to the `teams`, `statuses`, or `positions` array, then
+       launch the app.<br>
+       Expected: The app still launches. Malformed catalog entries are skipped, valid entries remain loaded, and
+       protected defaults are still present.
+
+    1. Test case: Remove `Unassigned Team`, `Unassigned Position`, or `Unknown` from the corresponding catalog array,
+       then launch the app.<br>
+       Expected: The app still launches and the missing protected default is auto-healed into the catalog.
+
+1. Recovering from inconsistent person attribute data
+
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
+
+    1. Test case: Edit a person record so its `team`, `status`, or `position` uses a valid value that is missing from
+       the corresponding catalog array, then launch the app.<br>
+       Expected: The app still launches and the missing valid value is auto-registered into the corresponding catalog.
+
+    1. Test case: Edit a staff record so it has a non-default `position`, then launch the app.<br>
+       Expected: The app still launches and that staff member is loaded with `Unassigned Position`.
+
+1. Severe file corruption
+
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
+
+    1. Test case: Break the JSON structure (for example, remove a comma or closing brace) and then launch the app.<br>
+       Expected: The corrupted file cannot be loaded and the app starts with an empty address book for that run.
