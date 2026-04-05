@@ -410,8 +410,9 @@ for the user.
 * If the command is not yet confirmed, `DeleteInteractionFlow` stores enough context to interpret the next input as
   either confirmation (`y`), cancellation (`n`), or a clash-selection index.
 * For index-based deletion, a follow-up `y` is rewritten internally to `delete INDEX confirm`.
-* For bulk deletion, a follow-up `y` or `n` is rewritten internally to `deletebulk y t/TAG` or
-  `deletebulk n t/TAG`.
+* For bulk deletion, a follow-up `y` or `n` is rewritten internally to
+  `deletebulk y [t/TAG | tm/TEAM | st/STATUS]` or `deletebulk n [t/TAG | tm/TEAM | st/STATUS]`,
+  preserving whichever criterion was originally used.
 
 The sequence diagram below shows the confirmed index-based delete path after the follow-up input has been rewritten into
 `delete 1 confirm`.
