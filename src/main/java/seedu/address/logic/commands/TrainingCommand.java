@@ -26,7 +26,7 @@ import seedu.address.model.person.Role;
  */
 public class TrainingCommand extends Command {
 
-    public static final String COMMAND_WORD = "training";
+    public static final String COMMAND_WORD = "trainingadd";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a training to the address book. "
                                                + "Parameters: "
