@@ -122,7 +122,7 @@ public class ModelManager implements Model {
         addressBook.removePerson(target);
         if (target.getRole() == Role.PLAYER) {
             for (Event e : addressBook.getEventList()) {
-                if (e.getEventPlayerList().contains((Player) target)) {
+                if (e.getEventPlayerList().contains(target)) {
                     EditEventDescriptor descriptor = new EditEventDescriptor();
                     descriptor.setEventType(e.getEventType());
                     descriptor.setEventName(e.getEventName());
