@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.DeleteBulkCommand;
 import seedu.address.logic.commands.DeleteBulkCommand.BulkDeletionDecision;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 public class DeleteBulkCommandParserTest {
@@ -22,6 +24,10 @@ public class DeleteBulkCommandParserTest {
                 new DeleteBulkCommand(new Tag("graduated"), BulkDeletionDecision.CONFIRM));
         assertParseSuccess(parser, " n t/graduated",
                 new DeleteBulkCommand(new Tag("graduated"), BulkDeletionDecision.CANCEL));
+        assertParseSuccess(parser, " tm/Reserve Team",
+                new DeleteBulkCommand(new Team("Reserve Team"), BulkDeletionDecision.UNDECIDED));
+        assertParseSuccess(parser, " st/Unavailable",
+                new DeleteBulkCommand(new Status("Unavailable"), BulkDeletionDecision.UNDECIDED));
     }
 
     @Test
@@ -33,5 +39,9 @@ public class DeleteBulkCommandParserTest {
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteBulkCommand.MESSAGE_USAGE));
         assertParseFailure(parser, " t/grad*",
                 seedu.address.model.tag.Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " t/graduated tm/Reserve Team",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteBulkCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " st/*",
+                seedu.address.model.person.Status.MESSAGE_CONSTRAINTS);
     }
 }

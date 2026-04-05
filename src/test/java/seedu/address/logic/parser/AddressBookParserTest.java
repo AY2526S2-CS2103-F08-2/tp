@@ -47,6 +47,8 @@ import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.RoleFilteredNameContainsKeywordsPredicate;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -88,6 +90,14 @@ public class AddressBookParserTest {
         DeleteBulkCommand command = (DeleteBulkCommand) parser.parseCommand(
                 DeleteBulkCommand.COMMAND_WORD + " t/graduated");
         assertEquals(new DeleteBulkCommand(new seedu.address.model.tag.Tag("graduated")), command);
+
+        DeleteBulkCommand teamCommand = (DeleteBulkCommand) parser.parseCommand(
+                DeleteBulkCommand.COMMAND_WORD + " tm/Reserve Team");
+        assertEquals(new DeleteBulkCommand(new Team("Reserve Team")), teamCommand);
+
+        DeleteBulkCommand statusCommand = (DeleteBulkCommand) parser.parseCommand(
+                DeleteBulkCommand.COMMAND_WORD + " st/Unavailable");
+        assertEquals(new DeleteBulkCommand(new Status("Unavailable")), statusCommand);
     }
 
     @Test
