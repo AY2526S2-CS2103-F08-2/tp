@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -60,6 +61,9 @@ public class DeleteBulkCommand extends Command {
             this.displayName = displayName;
         }
 
+        /**
+         * Returns the user-facing name of this bulk-deletion criterion type.
+         */
         public String getDisplayName() {
             return displayName;
         }
@@ -224,36 +228,57 @@ public class DeleteBulkCommand extends Command {
             this.value = value;
         }
 
+        /**
+         * Creates a bulk-deletion criterion for matching tags.
+         */
         public static BulkDeletionCriterion forTag(Tag tag) {
             requireNonNull(tag);
             assert !tag.tagName.isBlank() : "DeleteBulk tag must not be blank";
             return new BulkDeletionCriterion(BulkDeletionCriterionType.TAG, tag.tagName);
         }
 
+        /**
+         * Creates a bulk-deletion criterion for matching teams.
+         */
         public static BulkDeletionCriterion forTeam(Team team) {
             requireNonNull(team);
             assert !team.value.isBlank() : "DeleteBulk team must not be blank";
             return new BulkDeletionCriterion(BulkDeletionCriterionType.TEAM, team.value);
         }
 
+        /**
+         * Creates a bulk-deletion criterion for matching statuses.
+         */
         public static BulkDeletionCriterion forStatus(Status status) {
             requireNonNull(status);
             assert !status.value.isBlank() : "DeleteBulk status must not be blank";
             return new BulkDeletionCriterion(BulkDeletionCriterionType.STATUS, status.value);
         }
 
+        /**
+         * Returns the type of criterion represented by this object.
+         */
         public BulkDeletionCriterionType getType() {
             return type;
         }
 
+        /**
+         * Returns the raw value matched by this criterion.
+         */
         public String getValue() {
             return value;
         }
 
+        /**
+         * Returns the display name of this criterion's type.
+         */
         public String getDisplayName() {
             return type.getDisplayName();
         }
 
+        /**
+         * Returns the CLI argument fragment for reconstructing this criterion.
+         */
         public String toArgumentString() {
             return switch (type) {
             case TAG -> "t/" + value;
@@ -262,6 +287,9 @@ public class DeleteBulkCommand extends Command {
             };
         }
 
+        /**
+         * Returns a predicate that matches persons satisfying this criterion.
+         */
         public Predicate<Person> toPredicate() {
             return switch (type) {
             case TAG -> person -> person.getTags().stream()
