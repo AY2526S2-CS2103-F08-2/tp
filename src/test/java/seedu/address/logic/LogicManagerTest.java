@@ -34,6 +34,9 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Position;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
@@ -183,6 +186,10 @@ public class LogicManagerTest {
      * @param expectedMessage the message expected inside exception thrown by the Logic component
      */
     private void assertCommandFailureForExceptionFromStorage(IOException e, String expectedMessage) {
+        model.addTeam(new Team(Team.DEFAULT_UNASSIGNED_TEAM));
+        model.addStatus(new Status(Status.DEFAULT_UNKNOWN_STATUS));
+        model.addPosition(new Position(Position.DEFAULT_UNASSIGNED_POSITION));
+
         Path prefPath = temporaryFolder.resolve("ExceptionUserPrefs.json");
 
         // Inject LogicManager with an AddressBookStorage that throws the IOException e when saving
@@ -205,6 +212,9 @@ public class LogicManagerTest {
                 + EMAIL_DESC_PLAYER_AMY + ADDRESS_DESC_PLAYER_AMY + ROLE_DESC_PLAYER;
         Person expectedPerson = new PersonBuilder(PLAYER_AMY).withTags().build();
         ModelManager expectedModel = new ModelManager();
+        expectedModel.addTeam(new Team(Team.DEFAULT_UNASSIGNED_TEAM));
+        expectedModel.addStatus(new Status(Status.DEFAULT_UNKNOWN_STATUS));
+        expectedModel.addPosition(new Position(Position.DEFAULT_UNASSIGNED_POSITION));
         expectedModel.addPerson(expectedPerson);
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);
     }

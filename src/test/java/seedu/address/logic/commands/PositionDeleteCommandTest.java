@@ -14,6 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Position;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link PositionDeleteCommand}.
@@ -21,11 +22,13 @@ import seedu.address.model.person.Position;
 public class PositionDeleteCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullPosition_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new PositionDeleteCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_existingPosition_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -38,11 +41,33 @@ public class PositionDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (value not found)
     public void execute_missingPosition_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
         assertCommandFailure(new PositionDeleteCommand(new Position("Ghost Position")),
                 model, PositionDeleteCommand.MESSAGE_POSITION_NOT_FOUND);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
+    public void execute_defaultPosition_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new PositionDeleteCommand(new Position(Position.DEFAULT_UNASSIGNED_POSITION)),
+                model, PositionDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_POSITION);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (cannot delete in-use value)
+    public void execute_positionInUse_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        Position inUsePosition = new Position("Winger");
+        model.addPosition(inUsePosition);
+        model.addPerson(new PersonBuilder().withPosition("Winger").build());
+
+        assertCommandFailure(new PositionDeleteCommand(inUsePosition),
+                model, PositionDeleteCommand.MESSAGE_POSITION_IN_USE);
     }
 
     @Test
@@ -65,4 +90,3 @@ public class PositionDeleteCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

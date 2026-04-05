@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -24,12 +26,12 @@ import seedu.address.model.person.Team;
  */
 @JsonRootName(value = "addressbook")
 class JsonSerializableAddressBook {
-
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
     public static final String MESSAGE_DUPLICATE_EVENT = "Event list contains duplicate event(s).";
     public static final String MESSAGE_DUPLICATE_TEAM = "Teams list contains duplicate team(s).";
     public static final String MESSAGE_DUPLICATE_POSITION = "Positions list contains duplicate position(s).";
     public static final String MESSAGE_DUPLICATE_STATUS = "Statuses list contains duplicate status(es).";
+    private static final Logger logger = LogsCenter.getLogger(JsonSerializableAddressBook.class);
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedEvent> events = new ArrayList<>();
@@ -109,6 +111,8 @@ class JsonSerializableAddressBook {
             addressBook.addStatus(status);
         }
 
+        ensureDefaultAttributes(addressBook);
+
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
             Person person = jsonAdaptedPerson.toModelType();
             if (addressBook.hasPerson(person)) {
@@ -126,6 +130,49 @@ class JsonSerializableAddressBook {
             addressBook.addEvent(event);
         }
         return addressBook;
+    }
+
+    /**
+     * Ensures protected default attribute values always exist, even if source JSON omits them.
+     */
+    private void ensureDefaultAttributes(AddressBook addressBook) {
+        Team defaultTeam = new Team(Team.DEFAULT_UNASSIGNED_TEAM);
+        Position defaultPosition = new Position(Position.DEFAULT_UNASSIGNED_POSITION);
+        Status defaultStatus = new Status(Status.DEFAULT_UNKNOWN_STATUS);
+        boolean hasDefaultTeam = addressBook.hasTeam(defaultTeam);
+        boolean hasDefaultPosition = addressBook.hasPosition(defaultPosition);
+        boolean hasDefaultStatus = addressBook.hasStatus(defaultStatus);
+
+        List<Team> orderedTeams = new ArrayList<>();
+        orderedTeams.add(defaultTeam);
+        addressBook.getTeamList().stream()
+                .filter(team -> !team.equals(defaultTeam))
+                .forEach(orderedTeams::add);
+        addressBook.setTeams(orderedTeams);
+
+        List<Position> orderedPositions = new ArrayList<>();
+        orderedPositions.add(defaultPosition);
+        addressBook.getPositionList().stream()
+                .filter(position -> !position.equals(defaultPosition))
+                .forEach(orderedPositions::add);
+        addressBook.setPositions(orderedPositions);
+
+        List<Status> orderedStatuses = new ArrayList<>();
+        orderedStatuses.add(defaultStatus);
+        addressBook.getStatusList().stream()
+                .filter(status -> !status.equals(defaultStatus))
+                .forEach(orderedStatuses::add);
+        addressBook.setStatuses(orderedStatuses);
+
+        if (!hasDefaultTeam) {
+            logger.warning("Auto-healed missing default team: " + Team.DEFAULT_UNASSIGNED_TEAM);
+        }
+        if (!hasDefaultPosition) {
+            logger.warning("Auto-healed missing default position: " + Position.DEFAULT_UNASSIGNED_POSITION);
+        }
+        if (!hasDefaultStatus) {
+            logger.warning("Auto-healed missing default status: " + Status.DEFAULT_UNKNOWN_STATUS);
+        }
     }
 
 }

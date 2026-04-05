@@ -14,21 +14,23 @@ public class JsonAdaptedStatusTest {
     private static final String INVALID_STATUS = "#Status";
 
     @Test
+    // VALID_CASE + EP_VALID
     public void toModelType_validStatus_returnsStatus() throws Exception {
         JsonAdaptedStatus jsonAdaptedStatus = new JsonAdaptedStatus(VALID_STATUS);
         assertEquals(new Status(VALID_STATUS), jsonAdaptedStatus.toModelType());
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (invalid token format)
     public void toModelType_invalidStatus_throwsIllegalValueException() {
         JsonAdaptedStatus jsonAdaptedStatus = new JsonAdaptedStatus(INVALID_STATUS);
         assertThrows(IllegalValueException.class, Status.MESSAGE_CONSTRAINTS, jsonAdaptedStatus::toModelType);
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void toModelType_nullStatus_throwsIllegalValueException() {
         JsonAdaptedStatus jsonAdaptedStatus = new JsonAdaptedStatus((String) null);
         assertThrows(IllegalValueException.class, Status.MESSAGE_CONSTRAINTS, jsonAdaptedStatus::toModelType);
     }
 }
-

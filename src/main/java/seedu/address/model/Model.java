@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -100,7 +101,8 @@ public interface Model {
     void deleteTeam(Team team);
 
     /**
-     * Replaces {@code oldTeam} with {@code newTeam} in the team catalog.
+     * Replaces {@code oldTeam} with {@code newTeam} in the team catalog and updates all persons
+     * currently assigned {@code oldTeam} to {@code newTeam}.
      */
     void setTeam(Team oldTeam, Team newTeam);
 
@@ -128,7 +130,7 @@ public interface Model {
      */
     void setEvent(Event target, Event editedEvent);
 
-    /** Returns an unmodifiable view of the filtered person list */
+    /** Returns an unmodifiable view of the filtered and sorted person list */
     ObservableList<Person> getFilteredPersonList();
 
     /**
@@ -161,7 +163,8 @@ public interface Model {
     void deletePosition(Position position);
 
     /**
-     * Replaces {@code oldPosition} with {@code newPosition} in the position catalog.
+     * Replaces {@code oldPosition} with {@code newPosition} in the position catalog and updates all persons
+     * currently assigned {@code oldPosition} to {@code newPosition}.
      */
     void setPosition(Position oldPosition, Position newPosition);
 
@@ -187,7 +190,8 @@ public interface Model {
     void deleteStatus(Status status);
 
     /**
-     * Replaces {@code oldStatus} with {@code newStatus} in the status catalog.
+     * Replaces {@code oldStatus} with {@code newStatus} in the status catalog and updates all persons
+     * currently assigned {@code oldStatus} to {@code newStatus}.
      */
     void setStatus(Status oldStatus, Status newStatus);
 
@@ -197,6 +201,12 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Updates the sorting of the filtered person list using the given {@code comparator}.
+     * @throws NullPointerException if {@code comparator} is null.
+     */
+    void updateSortedPersonListComparator(Comparator<Person> comparator);
 
     /**
      * Returns the attendance rate of all players.

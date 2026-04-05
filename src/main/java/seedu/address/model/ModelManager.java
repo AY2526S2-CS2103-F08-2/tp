@@ -4,15 +4,21 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.EventEditCommand;
@@ -36,6 +42,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final SortedList<Person> sortedAndFilteredPersons;
     private final FilteredList<Event> eventList;
 
     /**
@@ -49,6 +56,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        sortedAndFilteredPersons = new SortedList<>(filteredPersons);
         eventList = new FilteredList<>(this.addressBook.getEventList());
     }
 
@@ -169,6 +177,9 @@ public class ModelManager implements Model {
     public void setTeam(Team oldTeam, Team newTeam) {
         requireAllNonNull(oldTeam, newTeam);
         addressBook.setTeam(oldTeam, newTeam);
+        cascadePersonAttributeRename(
+                person -> person.getTeam().equals(oldTeam),
+                person -> recreatePersonWithAttributes(person, newTeam, person.getStatus(), person.getPosition()));
     }
 
     @Override
@@ -187,24 +198,32 @@ public class ModelManager implements Model {
 
         addressBook.setEvent(target, editedEvent);
     }
+    //=========== Event List Accessors =======================================================================
 
     @Override
     public String getAttendanceReport() {
-        StringBuilder sb = new StringBuilder();
         ObservableList<Event> trainingList =
                 addressBook.getEventList().filtered(e -> e.getEventType() == EventType.TRAINING);
 
+        Map<String, Double> attendanceMap = new HashMap<>();
         for (Person p : addressBook.getPersonList().filtered(p -> p.getRole() == Role.PLAYER)) {
-            long appearances = trainingList.stream().filter(e -> e.getEventPlayerList().contains((Player) p)).count();
+            long appearances = trainingList.stream().filter(e -> e.getEventPlayerList().contains(p)).count();
             double rate = (double) appearances / trainingList.size() * 100;
-            sb.append(String.format("%s: %.1f%%\n", p.getName(), rate));
+            attendanceMap.put(p.getName().toString(), rate);
         }
+        StringBuilder sb = new StringBuilder();
+        attendanceMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .forEach(entry -> {
+                    sb.append(String.format("%-20s: %.1f%%\n", entry.getKey(), entry.getValue()));
+                });
+
         return sb.toString();
     }
     //=========== Match List Accessors =======================================================================
 
     /**
-     * Returns an unmodifiable view of the list of {@code Match} backed by the internal list of
+     * Returns an unmodifiable view of the list of {@code Event} backed by the internal list of
      * {@code versionedAddressBook}
      */
     @Override
@@ -215,12 +234,12 @@ public class ModelManager implements Model {
     //=========== Filtered Person List Accessors =============================================================
 
     /**
-     * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
+     * Returns an unmodifiable view of the filtered and sorted list of {@code Person} backed by the internal list of
      * {@code versionedAddressBook}
      */
     @Override
     public ObservableList<Person> getFilteredPersonList() {
-        return filteredPersons;
+        return sortedAndFilteredPersons;
     }
 
     @Override
@@ -258,6 +277,9 @@ public class ModelManager implements Model {
     public void setPosition(Position oldPosition, Position newPosition) {
         requireAllNonNull(oldPosition, newPosition);
         addressBook.setPosition(oldPosition, newPosition);
+        cascadePersonAttributeRename(
+                person -> person.getPosition().equals(oldPosition),
+                person -> recreatePersonWithAttributes(person, person.getTeam(), person.getStatus(), newPosition));
     }
 
     @Override
@@ -292,12 +314,51 @@ public class ModelManager implements Model {
     public void setStatus(Status oldStatus, Status newStatus) {
         requireAllNonNull(oldStatus, newStatus);
         addressBook.setStatus(oldStatus, newStatus);
+        cascadePersonAttributeRename(
+                person -> person.getStatus().equals(oldStatus),
+                person -> recreatePersonWithAttributes(person, person.getTeam(), newStatus, person.getPosition()));
+    }
+
+    /**
+     * Applies a person update function to every person that matches the given predicate.
+     * Uses a snapshot to avoid concurrent modification while replacing persons in the backing list.
+     */
+    private void cascadePersonAttributeRename(Predicate<Person> shouldUpdate, Function<Person, Person> updatePerson) {
+        requireAllNonNull(shouldUpdate, updatePerson);
+        List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
+        for (Person person : snapshot) {
+            if (shouldUpdate.test(person)) {
+                addressBook.setPerson(person, updatePerson.apply(person));
+            }
+        }
+    }
+
+    /**
+     * Recreates a person with updated Team/Status/Position while preserving all other fields.
+     * Preserves player stats for {@link Player} instances.
+     */
+    private Person recreatePersonWithAttributes(Person person, Team team, Status status, Position position) {
+        requireAllNonNull(person, team, status, position);
+        if (person instanceof Player) {
+            Player player = (Player) person;
+            return Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
+                    player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
+                    team, status, position);
+        }
+        return Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
+                person.getAddress(), person.getTags(), person.getRole(), team, status, position);
     }
 
     @Override
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
         filteredPersons.setPredicate(predicate);
+    }
+
+    @Override
+    public void updateSortedPersonListComparator(Comparator<Person> comparator) {
+        requireNonNull(comparator);
+        sortedAndFilteredPersons.setComparator(comparator);
     }
 
     @Override

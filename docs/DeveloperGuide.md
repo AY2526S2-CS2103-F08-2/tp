@@ -112,10 +112,11 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API
-call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking
+`execute("delete 1 confirm")` as an example. This is the confirmed follow-up command produced by the parser's
+multi-step delete interaction flow after the user first selects a player for deletion.
 
-![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `delete 1 confirm` Command](images/DeleteSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
@@ -141,6 +142,9 @@ How the parsing works:
   placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse
   the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a
   `Command` object.
+* `AddressBookParser` also keeps a `DeleteInteractionFlow` helper to support multi-step follow-up inputs for
+  `delete` and `deletebulk`. This allows inputs such as `y`, `n`, or a clash-selection index to be rewritten into a
+  concrete command before normal parsing continues.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser`
   interface so that they can be treated similarly where possible e.g, during testing.
 
@@ -149,12 +153,13 @@ How the parsing works:
 **API** : [
 `Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<img src="images/ModelClassDiagram.png" width="450" />
+<img src="images/PlayerStaffModelDiagram.png" width="450" />
 
 
 The `Model` component,
 
 * stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* `Person` is an abstract class that is extended by `Player` and `Staff` classes.
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which
   is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to
   this list so that the UI automatically updates when the data in the list change.
@@ -165,7 +170,7 @@ The `Model` component,
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
-<img src="images/BetterModelClassDiagram.png" width="450" />
+<img src="images/BetterPlayerStaffModelDiagram.png" width="450" />
 
 </div>
 
@@ -194,6 +199,108 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
+
+### Role-filtered list command
+
+The `list players` and `list staff` commands are handled by `AddressBookParser` via
+`ListRoleCommandParser`, which creates a `ListRoleCommand` with the corresponding role predicate.
+
+When executed, `ListRoleCommand` calls `Model#updateFilteredPersonList(...)` with
+`PersonHasRolePredicate(Role.PLAYER)` or `PersonHasRolePredicate(Role.STAFF)`, which updates the
+observable filtered list shown in the UI.
+
+The sequence diagram below illustrates the interaction flow using `execute("list players")` as the example.
+
+![Interactions for the `list players` Command](images/ListRoleSequenceDiagram.png)
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+</div>
+
+### Update player stats command
+
+The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
+which creates a `UpdateCommand` with the given parameters (`INDEX, STAT, VALUE`).
+
+After updating the player stats with the relevant setter function in `PlayerStats`, it refreshes the observable filtered list
+by calling `Model#updateFilteredPersonList(...)` with `PREDICATE_SHOW_ALL_PERSONS`.
+
+The sequence diagram below illustrates the interactions, taking a `execute("update 1 wins 5")` call as an example.
+
+![Interactions for the `update` Command](images/UpdateSequenceDiagram.png)
+
+### Attributes catalog and assignment
+
+The attributes feature introduces three catalog-backed value objects:
+`Team`, `Status`, and `Position`.
+
+At model level:
+* `AddressBook` stores separate unique catalogs (`UniqueTeamList`, `UniqueStatusList`, `UniquePositionList`)
+  in addition to persons and events.
+* `Model` / `ModelManager` expose catalog operations:
+  `has*`, `add*`, `set*`, `delete*`, and `get*List`.
+* `Person` stores `Team`, `Status`, and `Position` as immutable fields.
+
+Default catalogs are seeded in `SampleDataUtil`:
+* Team: `Unassigned Team`, `First Team`, `Second Team`
+* Position: `Unassigned Position`, `Goalkeeper`, `Defender`, `Midfielder`, `Forward`
+* Status: `Unknown`, `Active`, `Unavailable`
+
+#### Catalog command flow
+
+`AddressBookParser` routes each catalog command to its parser:
+* Team: `teamadd`, `teamedit`, `teamdelete`, `teamlist`
+* Status: `statusadd`, `statusedit`, `statusdelete`, `statuslist`
+* Position: `positionadd`, `positionedit`, `positiondelete`, `positionlist`
+
+Command behavior:
+* `*add` checks duplicates before inserting.
+* `*edit` checks target exists, rejects duplicate destination values, and blocks edits of protected defaults.
+* `*delete` checks target exists, blocks deletion of protected defaults, and blocks deletion if in use by any person.
+* `*list` returns numbered catalog output for display.
+* Catalog identity is case-insensitive (via attribute value equality), so matching/duplicate checks are case-insensitive.
+* Case-only renames are supported (e.g., `First Team` -> `first team`).
+
+Protected default values:
+* Team: `Unassigned Team`
+* Position: `Unassigned Position`
+* Status: `Unknown`
+
+#### Attribute assignment in person commands
+
+`add` and `edit` support person attributes via prefixes:
+* `tm/` for team
+* `st/` for status
+* `pos/` for position
+
+Validation and normalization:
+* If provided, attribute values must exist in their catalogs.
+* In `add`, omitted values use defaults.
+* In `edit`, omitted values keep the person's existing attribute values.
+* Input matching is case-insensitive through attribute value equality.
+* Stored display casing follows the matched catalog entry's exact casing.
+* Position is player-only:
+  * in `add`, staff cannot be assigned a non-default position.
+  * in `edit`, any provided `pos/` is rejected if the resulting role is `STAFF`.
+
+#### Rename cascade behavior
+
+When a catalog value is renamed (`teamedit`, `statusedit`, `positionedit`):
+* `ModelManager#setTeam`, `setStatus`, and `setPosition` update the catalog entry.
+* The same operations then rebuild and replace all persons currently assigned the old value.
+* For players, existing `PlayerStats` are preserved during rebuild.
+
+#### Storage behavior
+
+`JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
+
+During load:
+* duplicate catalog entries are rejected,
+* protected default catalog values are auto-healed if missing from JSON, and
+* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`.
+
+#### UI behavior
+
+`PersonCard` renders `Team`, `Status`, and `Position` labels only when the person has non-default values.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -294,6 +401,37 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 _{more aspects and alternatives to be added}_
 
+### Delete and bulk-delete confirmation flow
+
+The `delete` and `deletebulk` features use a parser-managed continuation flow so that follow-up inputs can stay short
+for the user.
+
+* For `delete`, an initial command can identify a player by list index or by matching name keywords.
+* If the command is not yet confirmed, `DeleteInteractionFlow` stores enough context to interpret the next input as
+  either confirmation (`y`), cancellation (`n`), or a clash-selection index.
+* For index-based deletion, a follow-up `y` is rewritten internally to `delete INDEX confirm`.
+* For bulk deletion, a follow-up `y` or `n` is rewritten internally to `deletebulk y t/TAG` or
+  `deletebulk n t/TAG`.
+
+The sequence diagram below shows the confirmed index-based delete path after the follow-up input has been rewritten into
+`delete 1 confirm`.
+
+![Delete confirmation flow in Logic](images/DeleteSequenceDiagram.png)
+
+### Sorting filtered lists
+
+`sort` is implemented as a `Logic`-to-`Model` operation that first sets the target scope and then applies a comparator
+to the filtered person list.
+
+* `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute, and the optional
+  `desc` modifier.
+* `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
+* `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
+
+The following sequence diagram illustrates `sort players by/email desc`.
+
+![Sort command flow in Logic](images/SortSequenceDiagram.png)
+
 ### \[Proposed\] Data archiving
 
 _{Explain here how the data archiving feature will be implemented}_
@@ -368,129 +506,124 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 (For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified
 otherwise)
 
-**Use case: UC00 - Add new player**  
+**Use case: UC00 - Add new person**  
 **MSS**
 
-1. Manager requests to add a player.
-2. SoCcer Manager requests player details (name, role, position, stats).
-3. Manager enters the details.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager adds player and shows success message.  
+1. Manager requests to add a person.
+2. Manager provides person details, including optional attribute values.
+3. SoCcer Manager validates person details and optional attribute constraints.
+4. SoCcer Manager adds the person and shows a confirmation message.  
    Use case ends.
 
 **Extensions**
 
-* 3a. Invalid details (e.g., invalid name).
+* 2a. Invalid person details (e.g., invalid name/phone/email/address).
+    * 2a1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
+
+* 2b. At least one optional provided attribute does not exist in the corresponding catalog.
+    * 2b1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
+
+* 2c. Manager assigns a non-default position to a staff member.
+    * 2c1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
+
+* 3a. Duplicate person detected.
     * 3a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
-* 3b. Duplicate name detected.
-    * 3b1. SoCcer Manager warns about duplicate and asks to proceed.  
-      Use case resumes at step 4.
-
 *a. At any time, manager cancels.  
 Use case ends.
 
-**Use case: UC01 - Record player training attendance**  
+**Use case: UC01 - Rename an attribute catalog value**  
 **MSS**
 
-1. Manager requests to list players for a specific training session.
-2. SoCcer Manager shows list of players for the session.
-3. Manager marks attendance for specific players.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager updates attendance records and shows confirmation.  
+1. Manager requests to rename an attribute catalog value.
+2. Manager provides the existing value and the replacement value.
+3. SoCcer Manager validates rename constraints.
+4. SoCcer Manager renames the catalog value.
+5. SoCcer Manager updates all persons currently assigned the original value.
+6. SoCcer Manager shows a success message.  
    Use case ends.
 
 **Extensions**
 
-* 2a. No players registered for session.
-    * 2a1. SoCcer Manager shows "No players for this session."  
+* 2a. Existing value does not exist in the catalog.
+    * 2a1. SoCcer Manager shows error message.  
       Use case ends.
 
-* 3a. Manager enters invalid player ID.
-    * 3a1. SoCcer Manager shows error: "Invalid player ID."  
+* 2b. Replacement value duplicates an existing catalog value.
+    * 2b1. SoCcer Manager shows error message.  
+      Use case ends.
+
+* 2c. Manager attempts to rename a protected default value.
+    * 2c1. SoCcer Manager shows error message.  
+      Use case ends.
+
+**Use case: UC02 - Delete an attribute catalog value**  
+**MSS**
+
+1. Manager requests to delete an attribute catalog value.
+2. Manager specifies the catalog value to delete.
+3. SoCcer Manager validates deletion constraints.
+4. SoCcer Manager deletes the catalog value.
+5. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Specified value does not exist in the catalog.
+    * 2a1. SoCcer Manager shows error message.  
+      Use case ends.
+
+* 3a. Manager attempts to delete a protected default value.
+    * 3a1. SoCcer Manager shows error message.  
+      Use case ends.
+
+* 3b. Specified value is currently assigned to one or more persons.
+    * 3b1. SoCcer Manager shows error message.  
+      Use case ends.
+
+**Use case: UC03 - Edit person attributes**  
+**MSS**
+
+1. Manager requests to edit a person.
+2. Manager provides one or more updated attribute values.
+3. SoCcer Manager validates the provided values against the corresponding catalogs.
+4. SoCcer Manager updates the person.
+5. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 3a. At least one provided attribute value does not exist in its catalog.
+    * 3a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
-* 3b. Manager marks multiple players at once.
-    * 3b1. SoCcer Manager processes all and requests confirmation.  
-      Use case resumes at step 4.
+* 3b. Resulting role is `STAFF` and manager provides a position value.
+    * 3b1. SoCcer Manager shows error message.  
+      Use case resumes at step 2.
 
-*a. At any time, manager requests to cancel.
-*a1. SoCcer Manager confirms cancellation.
-Use case ends.
-
-**Use case: UC02 - Draft a match team from stats**
+**Use case: UC04 - View persons by role**  
 **MSS**
 
-1. Manager requests to filter players by criteria (e.g., position=striker, goals>5).
-2. SoCcer Manager shows filtered list of eligible players sorted by stats.
-3. Manager selects players to add to match team.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager updates team assignments and shows new team list.  
+1. Manager requests to list persons by role.
+2. Manager provides the target role to filter by.
+3. SoCcer Manager validates the requested role.
+4. SoCcer Manager filters the visible person list by the requested role.
+5. SoCcer Manager shows the filtered list.  
    Use case ends.
 
 **Extensions**
 
-* 2a. No players match criteria.
-    * 2a1. SoCcer Manager shows "No players match. Try broader filters."  
-      Use case resumes at step 1.
+* 2a. Manager provides role keyword in mixed/upper case.
+    * 2a1. SoCcer Manager treats role keyword case-insensitively.  
+      Use case resumes at step 3.
 
-* 3a. Selected player is unavailable (injured).
-    * 3a1. SoCcer Manager warns about unavailability.
-    * 3a2. Manager chooses to skip or select alternative.  
-      Use case resumes at step 4.
-
-*a. At any time, manager cancels.  
-Use case ends.
-
-**Use case: UC03 - View low-attendance players**  
-**MSS**
-
-1. Manager requests players below attendance threshold.
-2. SoCcer Manager shows flagged players with attendance stats.
-3. Manager selects a player to view details.
-4. SoCcer Manager shows player details.  
-   Use case ends.
-
-**Extensions**
-
-* 2a. No players below threshold.
-    * 2a1. SoCcer Manager shows "All players meeting standards."  
+* 3a. Manager provides an unsupported role keyword.
+    * 3a1. SoCcer Manager shows an error message.  
       Use case ends.
-
-* 3a. Manager requests export of flagged list.
-    * 3a1. SoCcer Manager generates contact list for export.  
-      Use case ends.
-
-*a. At any time, manager cancels.  
-Use case ends.
-
-**Use case: UC04 - Delete player**  
-**MSS**
-
-1. Manager requests list of players.
-2. SoCcer Manager shows list with IDs.
-3. Manager requests to delete by ID.
-4. SoCcer Manager requests confirmation.
-5. Manager confirms.
-6. SoCcer Manager deletes player and shows success.  
-   Use case ends.
-
-**Extensions**
-
-* 2a. List empty.
-    * 2a1. "No players to delete." Ends.
-
-* 3a. Invalid ID.
-    * 3a1. Error: "Invalid ID."  
-      Resume step 2.
-
-* 4a. Manager cancels confirmation. Ends.
-
-*a. Cancel anytime. Ends.
 
 *{More to be added}*
 
@@ -568,6 +701,70 @@ testers are expected to do more *exploratory* testing.
        Expected: Similar to previous.
 
 1. _{ more test cases …​ }_
+
+### Attributes (catalog + assignment)
+
+1. Managing catalogs with default protections
+
+    1. Prerequisites: Fresh app state with default catalogs loaded.
+
+    1. Test case: `teamlist`<br>
+       Expected: Includes `Unassigned Team`, `First Team`, `Second Team`.
+
+    1. Test case: `teamdelete Unassigned Team`<br>
+       Expected: Rejected with a message indicating default team cannot be deleted.
+
+    1. Test case: `statusedit old/Unknown new/Available`<br>
+       Expected: Rejected with a message indicating default status cannot be edited.
+
+    1. Test case: `positionadd Winger` then `positiondelete Winger`<br>
+       Expected: Add succeeds, then delete succeeds.
+
+    1. Test case: `teamedit old/First Team new/first team`<br>
+       Expected: Command succeeds (case-only rename is accepted).
+
+1. In-use delete guards
+
+    1. Prerequisites: At least one person assigned `tm/First Team`.
+
+    1. Test case: `teamdelete First Team`<br>
+       Expected: Rejected because the catalog value is in use by persons.
+
+1. Person assignment and validation
+
+    1. Test case: `add n/Test Player r/player p/90000001 e/testp@example.com a/Test Addr tm/first team st/active pos/forward`<br>
+       Expected: Command succeeds and displayed person shows canonical casing (`First Team`, `Active`, `Forward`).
+
+    1. Test case: `add n/Test Staff r/staff p/90000002 e/tests@example.com a/Test Addr pos/Forward`<br>
+       Expected: Rejected because staff cannot be assigned non-default position.
+
+    1. Test case: `edit 1 tm/nonexistent`<br>
+       Expected: Rejected because attribute value is not present in catalog.
+
+1. Rename cascade to assigned persons
+
+    1. Prerequisites: At least one person currently assigned `tm/Second Team`.
+
+    1. Test case: `teamedit old/Second Team new/Reserve Team`<br>
+       Expected: Command succeeds and all persons previously assigned `Second Team` now display `Reserve Team`.
+
+### Role-scoped list
+
+1. Listing persons by role
+
+    1. Prerequisites: At least one player and one staff in the current address book.
+
+    1. Test case: `list players`<br>
+       Expected: Only players are shown. Status message indicates players were listed.
+
+    1. Test case: `list staff`<br>
+       Expected: Only staff are shown. Status message indicates staff were listed.
+
+    1. Test case: `list PLAYERS`<br>
+       Expected: Same result as `list players` (role keyword is case-insensitive).
+
+    1. Test case: `list coaches`<br>
+       Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
 
 ### Saving data
 

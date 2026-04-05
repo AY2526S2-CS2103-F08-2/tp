@@ -14,19 +14,21 @@ public class StatusAddCommandParserTest {
     private final StatusAddCommandParser parser = new StatusAddCommandParser();
 
     @Test
+    // VALID_CASE + EP_VALID
     public void parse_validArgs_returnsStatusAddCommand() {
         assertParseSuccess(parser, " Rehab ", new StatusAddCommand(new Status("Rehab")));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (invalid characters)
     public void parse_invalidArgs_throwsParseException() {
         assertParseFailure(parser, " #Rehab ", Status.MESSAGE_CONSTRAINTS);
     }
 
     @Test
+    // INVALID_CASE + BOUNDARY (blank input)
     public void parse_emptyArgs_throwsParseException() {
         assertParseFailure(parser, "   ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatusAddCommand.MESSAGE_USAGE));
     }
 }
-

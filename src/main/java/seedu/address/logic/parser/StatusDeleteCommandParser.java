@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-
 import seedu.address.logic.commands.StatusDeleteCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Status;
@@ -19,13 +17,8 @@ public class StatusDeleteCommandParser implements Parser<StatusDeleteCommand> {
      */
     @Override
     public StatusDeleteCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
-        if (trimmedArgs.isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatusDeleteCommand.MESSAGE_USAGE));
-        }
-
-        Status status = ParserUtil.parseStatus(trimmedArgs);
+        Status status = ParserUtil.parseStatus(
+                AttributeParserUtil.parseRequiredValue(args, StatusDeleteCommand.MESSAGE_USAGE));
         return new StatusDeleteCommand(status);
     }
 }
-

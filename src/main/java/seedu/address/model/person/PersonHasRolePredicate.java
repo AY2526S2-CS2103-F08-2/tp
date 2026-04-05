@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.Predicate;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -10,12 +12,20 @@ import seedu.address.commons.util.ToStringBuilder;
 public class PersonHasRolePredicate implements Predicate<Person> {
     private final Role role;
 
+    /**
+     * Creates a predicate that matches persons with the given {@code role}.
+     */
     public PersonHasRolePredicate(Role role) {
+        requireNonNull(role);
         this.role = role;
     }
 
+    /**
+     * Returns {@code true} if the given {@code person} has the target {@code role}.
+     */
     @Override
     public boolean test(Person person) {
+        requireNonNull(person);
         return person.getRole() == role && role != null;
     }
 
@@ -39,4 +49,3 @@ public class PersonHasRolePredicate implements Predicate<Person> {
         return new ToStringBuilder(this).add("role", role).toString();
     }
 }
-

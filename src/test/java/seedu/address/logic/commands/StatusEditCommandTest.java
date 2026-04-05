@@ -10,10 +10,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Status;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link StatusEditCommand}.
@@ -21,16 +23,19 @@ import seedu.address.model.person.Status;
 public class StatusEditCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullOldStatus_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new StatusEditCommand(null, new Status("Rehab")));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullNewStatus_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new StatusEditCommand(new Status("Active"), null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_validRename_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -44,6 +49,7 @@ public class StatusEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (old value not found)
     public void execute_oldStatusNotFound_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -52,11 +58,35 @@ public class StatusEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (duplicate after edit)
     public void execute_newStatusAlreadyExists_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
         assertCommandFailure(new StatusEditCommand(new Status("Active"), new Status("Unavailable")),
                 model, StatusEditCommand.MESSAGE_DUPLICATE_STATUS);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
+    public void execute_defaultStatus_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new StatusEditCommand(new Status(Status.DEFAULT_UNKNOWN_STATUS), new Status("Rehab")),
+                model, StatusEditCommand.MESSAGE_CANNOT_EDIT_DEFAULT_STATUS);
+    }
+
+    @Test
+    // COMBO + DEPENDENCY_RULE (rename cascades to assigned persons)
+    public void execute_validRename_updatesPersonsWithOldStatus() throws CommandException {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        model.addPerson(new PersonBuilder().withStatus("Active").build());
+
+        Status oldStatus = new Status("Active");
+        Status newStatus = new Status("Rehab");
+        new StatusEditCommand(oldStatus, newStatus).execute(model);
+
+        assertTrue(model.getPersonsMatching(person -> person.getStatus().equals(oldStatus)).isEmpty());
+        assertFalse(model.getPersonsMatching(person -> person.getStatus().equals(newStatus)).isEmpty());
     }
 
     @Test
@@ -79,4 +109,3 @@ public class StatusEditCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

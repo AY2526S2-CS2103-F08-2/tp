@@ -14,6 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Status;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link StatusDeleteCommand}.
@@ -21,11 +22,13 @@ import seedu.address.model.person.Status;
 public class StatusDeleteCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullStatus_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new StatusDeleteCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_existingStatus_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -38,11 +41,32 @@ public class StatusDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (value not found)
     public void execute_missingStatus_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
         assertCommandFailure(new StatusDeleteCommand(new Status("Ghost Status")),
                 model, StatusDeleteCommand.MESSAGE_STATUS_NOT_FOUND);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
+    public void execute_defaultStatus_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new StatusDeleteCommand(new Status(Status.DEFAULT_UNKNOWN_STATUS)),
+                model, StatusDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_STATUS);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (cannot delete in-use value)
+    public void execute_statusInUse_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        Status inUseStatus = new Status("Rehab");
+        model.addStatus(inUseStatus);
+        model.addPerson(new PersonBuilder().withStatus("Rehab").build());
+
+        assertCommandFailure(new StatusDeleteCommand(inUseStatus), model, StatusDeleteCommand.MESSAGE_STATUS_IN_USE);
     }
 
     @Test
@@ -65,4 +89,3 @@ public class StatusDeleteCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

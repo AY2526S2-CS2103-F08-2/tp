@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-
 import seedu.address.logic.commands.PositionAddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Position;
@@ -19,13 +17,8 @@ public class PositionAddCommandParser implements Parser<PositionAddCommand> {
      */
     @Override
     public PositionAddCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
-        if (trimmedArgs.isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PositionAddCommand.MESSAGE_USAGE));
-        }
-
-        Position position = ParserUtil.parsePosition(trimmedArgs);
+        Position position = ParserUtil.parsePosition(
+                AttributeParserUtil.parseRequiredValue(args, PositionAddCommand.MESSAGE_USAGE));
         return new PositionAddCommand(position);
     }
 }
-

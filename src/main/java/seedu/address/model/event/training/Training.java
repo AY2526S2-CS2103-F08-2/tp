@@ -16,8 +16,8 @@ public class Training extends Event {
     /**
      * Every field must be present and not null.
      */
-    public Training(EventName opponentName, Date matchDate, EventPlayerList eventPlayerList) {
-        super(opponentName, matchDate, EventType.TRAINING, eventPlayerList);
+    public Training(EventName trainingName, Date matchDate, EventPlayerList eventPlayerList) {
+        super(trainingName, matchDate, EventType.TRAINING, eventPlayerList);
     }
 
     @Override

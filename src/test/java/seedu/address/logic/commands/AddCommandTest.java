@@ -10,11 +10,13 @@ import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.Messages;
@@ -26,6 +28,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Position;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.Team;
 import seedu.address.testutil.PersonBuilder;
@@ -57,6 +60,66 @@ public class AddCommandTest {
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
         assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_teamNotInCatalog_throwsCommandException() {
+        Person person = new PersonBuilder().withTeam("Ghost Team").build();
+        AddCommand addCommand = new AddCommand(person);
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        modelStub.hasTeam = false;
+
+        assertThrows(CommandException.class,
+                AddCommand.MESSAGE_TEAM_NOT_IN_CATALOG, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_statusNotInCatalog_throwsCommandException() {
+        Person person = new PersonBuilder().withStatus("Ghost Status").build();
+        AddCommand addCommand = new AddCommand(person);
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        modelStub.hasStatus = false;
+
+        assertThrows(CommandException.class,
+                AddCommand.MESSAGE_STATUS_NOT_IN_CATALOG, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_positionNotInCatalog_throwsCommandException() {
+        Person person = new PersonBuilder().withPosition("Ghost Position").build();
+        AddCommand addCommand = new AddCommand(person);
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        modelStub.hasPosition = false;
+
+        assertThrows(CommandException.class,
+                AddCommand.MESSAGE_POSITION_NOT_IN_CATALOG, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_staffWithNonDefaultPosition_throwsCommandException() {
+        Person person = new PersonBuilder().withRole(Role.STAFF).withPosition("Forward").build();
+        AddCommand addCommand = new AddCommand(person);
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+
+        assertThrows(CommandException.class,
+                AddCommand.MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_attributeCaseDiffersFromCatalog_usesCatalogCasing() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        Person person = new PersonBuilder()
+                .withTeam("first team")
+                .withStatus("active")
+                .withPosition("forward")
+                .build();
+
+        new AddCommand(person).execute(modelStub);
+        Person added = modelStub.personsAdded.get(0);
+
+        assertEquals("First Team", added.getTeam().value);
+        assertEquals("Active", added.getStatus().value);
+        assertEquals("Forward", added.getPosition().value);
     }
 
     @Test
@@ -154,8 +217,9 @@ public class AddCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        @Override
         public boolean hasTeam(Team team) {
-            throw new AssertionError("This method should not be called.");
+            return true;
         }
 
         @Override
@@ -175,7 +239,7 @@ public class AddCommandTest {
 
         @Override
         public boolean hasStatus(Status status) {
-            throw new AssertionError("This method should not be called.");
+            return true;
         }
 
         @Override
@@ -218,13 +282,17 @@ public class AddCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        @Override
         public ObservableList<Team> getTeamList() {
-            throw new AssertionError("This method should not be called.");
+            return FXCollections.observableArrayList(
+                    new Team(Team.DEFAULT_UNASSIGNED_TEAM),
+                    new Team("First Team"),
+                    new Team("Second Team"));
         }
 
         @Override
         public boolean hasPosition(Position position) {
-            throw new AssertionError("This method should not be called.");
+            return true;
         }
 
         @Override
@@ -244,12 +312,18 @@ public class AddCommandTest {
 
         @Override
         public ObservableList<Position> getPositionList() {
-            throw new AssertionError("This method should not be called.");
+            return FXCollections.observableArrayList(
+                    new Position(Position.DEFAULT_UNASSIGNED_POSITION),
+                    new Position("Forward"),
+                    new Position("Defender"));
         }
 
         @Override
         public ObservableList<Status> getStatusList() {
-            throw new AssertionError("This method should not be called.");
+            return FXCollections.observableArrayList(
+                    new Status(Status.DEFAULT_UNKNOWN_STATUS),
+                    new Status("Active"),
+                    new Status("Unavailable"));
         }
 
         @Override
@@ -264,6 +338,11 @@ public class AddCommandTest {
 
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateSortedPersonListComparator(Comparator<Person> comparator) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -296,6 +375,9 @@ public class AddCommandTest {
      */
     private class ModelStubAcceptingPersonAdded extends ModelStub {
         final ArrayList<Person> personsAdded = new ArrayList<>();
+        private boolean hasTeam = true;
+        private boolean hasStatus = true;
+        private boolean hasPosition = true;
 
         @Override
         public boolean hasPerson(Person person) {
@@ -307,6 +389,24 @@ public class AddCommandTest {
         public void addPerson(Person person) {
             requireNonNull(person);
             personsAdded.add(person);
+        }
+
+        @Override
+        public boolean hasTeam(Team team) {
+            requireNonNull(team);
+            return hasTeam;
+        }
+
+        @Override
+        public boolean hasStatus(Status status) {
+            requireNonNull(status);
+            return hasStatus;
+        }
+
+        @Override
+        public boolean hasPosition(Position position) {
+            requireNonNull(position);
+            return hasPosition;
         }
 
         @Override

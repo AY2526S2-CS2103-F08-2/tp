@@ -1,11 +1,17 @@
 package seedu.address.model.util;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventPlayerList;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -71,6 +77,22 @@ public class SampleDataUtil {
         };
     }
 
+    public static Event[] getSampleEvents() {
+        return new Event[]{
+                Event.createEvent(new EventName("Manchester United"), new Date("2026-04-15 1600"),
+                        EventType.MATCH, new EventPlayerList(new HashSet<>(Arrays.asList(getSamplePersons()[0],
+                                getSamplePersons()[1], getSamplePersons()[2])))),
+                Event.createEvent(new EventName("Real Madrid"), new Date("2026-04-20 1220"),
+                        EventType.MATCH, new EventPlayerList(new HashSet<>())),
+                Event.createEvent(new EventName("Dribbling drills"), new Date("2026-02-12 1000"),
+                        EventType.TRAINING, new EventPlayerList(new HashSet<>(Arrays.asList(getSamplePersons()[0],
+                                getSamplePersons()[1])))),
+                Event.createEvent(new EventName("Defending drills"), new Date("2025-12-04 1800"),
+                        EventType.TRAINING, new EventPlayerList(new HashSet<>(Arrays.asList(getSamplePersons()[1],
+                                getSamplePersons()[2]))))
+        };
+    }
+
     public static ReadOnlyAddressBook getSampleAddressBook() {
         AddressBook sampleAb = new AddressBook();
         for (Team defaultTeam : getDefaultTeams()) {
@@ -84,6 +106,9 @@ public class SampleDataUtil {
         }
         for (Person samplePerson : getSamplePersons()) {
             sampleAb.addPerson(samplePerson);
+        }
+        for (Event sampleEvent : getSampleEvents()) {
+            sampleAb.addEvent(sampleEvent);
         }
         return sampleAb;
     }

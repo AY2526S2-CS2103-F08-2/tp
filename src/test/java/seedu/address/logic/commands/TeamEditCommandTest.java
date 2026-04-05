@@ -10,6 +10,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -21,29 +22,33 @@ import seedu.address.model.person.Team;
 public class TeamEditCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullOldTeam_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new TeamEditCommand(null, new Team("Reserve Team")));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullNewTeam_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new TeamEditCommand(new Team("First Team"), null));
     }
 
     @Test
-    public void execute_validRename_success() {
+    // VALID_CASE + EP_VALID
+    public void execute_validRename_success() throws CommandException {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
 
         Team oldTeam = new Team("First Team");
         Team newTeam = new Team("Reserve Team");
-        expectedModel.setTeam(oldTeam, newTeam);
+        new TeamEditCommand(oldTeam, newTeam).execute(expectedModel);
 
         assertCommandSuccess(new TeamEditCommand(oldTeam, newTeam), model,
                 String.format(TeamEditCommand.MESSAGE_SUCCESS, oldTeam, newTeam), expectedModel);
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (old value not found)
     public void execute_oldTeamNotFound_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -52,11 +57,21 @@ public class TeamEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (duplicate after edit)
     public void execute_newTeamAlreadyExists_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
         assertCommandFailure(new TeamEditCommand(new Team("First Team"), new Team("Second Team")),
                 model, TeamEditCommand.MESSAGE_DUPLICATE_TEAM);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
+    public void execute_defaultTeam_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new TeamEditCommand(new Team(Team.DEFAULT_UNASSIGNED_TEAM), new Team("Reserve Team")),
+                model, TeamEditCommand.MESSAGE_CANNOT_EDIT_DEFAULT_TEAM);
     }
 
     @Test
@@ -80,4 +95,3 @@ public class TeamEditCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

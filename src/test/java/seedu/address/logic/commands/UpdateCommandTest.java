@@ -11,6 +11,7 @@ import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -300,6 +301,11 @@ public class UpdateCommandTest {
 
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateSortedPersonListComparator(Comparator<Person> comparator) {
             throw new AssertionError("This method should not be called.");
         }
 

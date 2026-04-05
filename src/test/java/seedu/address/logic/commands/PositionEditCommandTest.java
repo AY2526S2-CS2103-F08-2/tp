@@ -10,10 +10,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Position;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link PositionEditCommand}.
@@ -21,16 +23,19 @@ import seedu.address.model.person.Position;
 public class PositionEditCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullOldPosition_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new PositionEditCommand(null, new Position("Winger")));
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullNewPosition_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new PositionEditCommand(new Position("Forward"), null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_validRename_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -44,6 +49,7 @@ public class PositionEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (old value not found)
     public void execute_oldPositionNotFound_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -52,11 +58,36 @@ public class PositionEditCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (duplicate after edit)
     public void execute_newPositionAlreadyExists_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
         assertCommandFailure(new PositionEditCommand(new Position("Defender"), new Position("Forward")),
                 model, PositionEditCommand.MESSAGE_DUPLICATE_POSITION);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
+    public void execute_defaultPosition_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(
+                new PositionEditCommand(new Position(Position.DEFAULT_UNASSIGNED_POSITION), new Position("Winger")),
+                model, PositionEditCommand.MESSAGE_CANNOT_EDIT_DEFAULT_POSITION);
+    }
+
+    @Test
+    // COMBO + DEPENDENCY_RULE (rename cascades to assigned persons)
+    public void execute_validRename_updatesPersonsWithOldPosition() throws CommandException {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        model.addPerson(new PersonBuilder().withPosition("Defender").build());
+
+        Position oldPosition = new Position("Defender");
+        Position newPosition = new Position("Center Back");
+        new PositionEditCommand(oldPosition, newPosition).execute(model);
+
+        assertTrue(model.getPersonsMatching(person -> person.getPosition().equals(oldPosition)).isEmpty());
+        assertFalse(model.getPersonsMatching(person -> person.getPosition().equals(newPosition)).isEmpty());
     }
 
     @Test
@@ -82,4 +113,3 @@ public class PositionEditCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

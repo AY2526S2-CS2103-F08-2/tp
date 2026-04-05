@@ -21,11 +21,13 @@ import seedu.address.model.person.Team;
 public class TeamAddCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullTeam_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new TeamAddCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_newTeam_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -38,6 +40,7 @@ public class TeamAddCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (duplicate catalog entry)
     public void execute_duplicateTeam_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Team duplicateTeam = new Team("First Team");
@@ -65,4 +68,3 @@ public class TeamAddCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

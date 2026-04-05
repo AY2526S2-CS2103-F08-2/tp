@@ -2,9 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import javafx.collections.ObservableList;
 import seedu.address.model.Model;
-import seedu.address.model.person.Team;
 
 /**
  * Lists all teams in the catalog to the user.
@@ -20,19 +18,6 @@ public class TeamListCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        ObservableList<Team> teams = model.getTeamList();
-
-        if (teams.isEmpty()) {
-            return new CommandResult(MESSAGE_EMPTY);
-        }
-
-        StringBuilder builder = new StringBuilder("Teams:");
-        for (int i = 0; i < teams.size(); i++) {
-            builder.append(System.lineSeparator())
-                    .append(i + 1)
-                    .append(". ")
-                    .append(teams.get(i));
-        }
-        return new CommandResult(builder.toString());
+        return AttributeCatalogFormatter.formatCatalogList(model.getTeamList(), "Teams:", MESSAGE_EMPTY);
     }
 }

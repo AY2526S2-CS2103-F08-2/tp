@@ -14,6 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Team;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests for {@link TeamDeleteCommand}.
@@ -21,11 +22,13 @@ import seedu.address.model.person.Team;
 public class TeamDeleteCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullTeam_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new TeamDeleteCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_existingTeam_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -38,11 +41,32 @@ public class TeamDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (value not found)
     public void execute_missingTeam_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
         assertCommandFailure(new TeamDeleteCommand(new Team("Ghost Team")),
                 model, TeamDeleteCommand.MESSAGE_TEAM_NOT_FOUND);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
+    public void execute_defaultTeam_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+
+        assertCommandFailure(new TeamDeleteCommand(new Team(Team.DEFAULT_UNASSIGNED_TEAM)),
+                model, TeamDeleteCommand.MESSAGE_CANNOT_DELETE_DEFAULT_TEAM);
+    }
+
+    @Test
+    // INVALID_CASE + DEPENDENCY_RULE (cannot delete in-use value)
+    public void execute_teamInUse_throwsCommandException() {
+        Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
+        Team inUseTeam = new Team("Reserve Team");
+        model.addTeam(inUseTeam);
+        model.addPerson(new PersonBuilder().withTeam("Reserve Team").build());
+
+        assertCommandFailure(new TeamDeleteCommand(inUseTeam), model, TeamDeleteCommand.MESSAGE_TEAM_IN_USE);
     }
 
     @Test
@@ -65,4 +89,3 @@ public class TeamDeleteCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

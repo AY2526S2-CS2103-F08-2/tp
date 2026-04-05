@@ -25,6 +25,7 @@ public class TeamListCommandTest {
     }
 
     @Test
+    // BOUNDARY (non-empty catalog state)
     public void execute_nonEmptyCatalog_success() {
         String expectedMessage = String.join(System.lineSeparator(),
                 "Teams:",
@@ -35,6 +36,7 @@ public class TeamListCommandTest {
     }
 
     @Test
+    // BOUNDARY (empty catalog state)
     public void execute_emptyCatalog_returnsEmptyMessage() {
         Model emptyModel = new ModelManager();
         Model expectedEmptyModel = new ModelManager(emptyModel.getAddressBook(), new UserPrefs());
