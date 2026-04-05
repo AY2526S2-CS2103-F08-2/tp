@@ -427,7 +427,7 @@ The sequence diagram below shows the confirmed index-based delete path after the
 to the filtered person list.
 
 * `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute
-  (`name`, `email`, `team`, `status`, or `position`), and the optional `desc` modifier.
+  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 

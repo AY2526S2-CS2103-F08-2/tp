@@ -54,6 +54,27 @@ public class SortCommandParserTest {
     }
 
     @Test
+    public void parse_sortPlayersByGoals_returnsSortCommand() throws Exception {
+        SortCommand expected = new SortCommand(
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.GOALS, "players", false);
+        assertEquals(expected, parser.parse("players by/goals"));
+    }
+
+    @Test
+    public void parse_sortAllPersonsByWins_returnsSortCommand() throws Exception {
+        SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.WINS, "persons", false);
+        assertEquals(expected, parser.parse("by/wins"));
+    }
+
+    @Test
+    public void parse_sortPlayersByLossesDescending_returnsSortCommand() {
+        SortCommand expected = new SortCommand(
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.LOSSES, "players", true);
+        assertParseSuccess(parser, "players by/losses desc", expected);
+    }
+
+    @Test
     public void parse_caseInsensitive_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.NAME, "staff", false);
@@ -81,7 +102,6 @@ public class SortCommandParserTest {
         assertParseFailure(parser, "name", expectedMessage);
         assertParseFailure(parser, "persons by/name", expectedMessage);
         assertParseFailure(parser, "players name", expectedMessage);
-        assertParseFailure(parser, "players by/goals", expectedMessage);
         assertParseFailure(parser, "players by/name by/email", expectedMessage);
         assertParseFailure(parser, "players by/name desc extra", expectedMessage);
         assertParseFailure(parser, "by/name asc", expectedMessage);

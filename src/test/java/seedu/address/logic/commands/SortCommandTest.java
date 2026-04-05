@@ -17,6 +17,7 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonHasRolePredicate;
 import seedu.address.model.person.PersonSortAttribute;
+import seedu.address.model.person.Player;
 import seedu.address.model.person.Role;
 import seedu.address.testutil.PersonBuilder;
 
@@ -62,6 +63,15 @@ public class SortCommandTest {
     @BeforeEach
     public void setUp() {
         AddressBook addressBook = new AddressBook();
+        Player playerZoe = (Player) PLAYER_ZOE;
+        playerZoe.getStats().setGoalsScored(5);
+        playerZoe.getStats().setMatchesWon(4);
+        playerZoe.getStats().setMatchesLost(1);
+
+        Player playerBeth = (Player) PLAYER_BETH;
+        playerBeth.getStats().setGoalsScored(2);
+        playerBeth.getStats().setMatchesWon(1);
+        playerBeth.getStats().setMatchesLost(3);
         addressBook.addPerson(PLAYER_ZOE);
         addressBook.addPerson(STAFF_MIA);
         addressBook.addPerson(PLAYER_BETH);
@@ -151,6 +161,48 @@ public class SortCommandTest {
 
         assertCommandSuccess(command, model,
                 String.format(SortCommand.MESSAGE_SUCCESS, "players", "position", SortCommand.ORDER_ASCENDING),
+                expectedModel);
+        assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_sortPlayersByGoals_success() {
+        SortCommand command = new SortCommand(
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.GOALS, "players", false);
+
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.PLAYER));
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.GOALS.getComparator());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "players", "goals", SortCommand.ORDER_ASCENDING),
+                expectedModel);
+        assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_sortAllPersonsByWins_success() {
+        SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.WINS, "persons", false);
+
+        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.WINS.getComparator());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "persons", "wins", SortCommand.ORDER_ASCENDING),
+                expectedModel);
+        assertEquals(List.of(STAFF_ADAM, STAFF_MIA, PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_sortPlayersByLossesDescending_success() {
+        SortCommand command = new SortCommand(
+                new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.LOSSES, "players", true);
+
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.PLAYER));
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.LOSSES.getComparator().reversed());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "players", "losses", SortCommand.ORDER_DESCENDING),
                 expectedModel);
         assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
     }

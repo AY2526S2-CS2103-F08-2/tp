@@ -40,6 +40,8 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `sort staff by/status` : Sorts only staff by status in ascending order.
 
+   * `sort players by/goals desc` : Sorts only players by goals in descending order.
+
    * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a player named `John Doe` to SoCcer Manager.
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
@@ -185,6 +187,9 @@ Supported attributes:
 * `team`
 * `status`
 * `position`
+* `goals`
+* `wins`
+* `losses`
 
 Examples:
 * `sort by/name`
@@ -192,6 +197,8 @@ Examples:
 * `sort by/team`
 * `sort by/status`
 * `sort players by/position desc`
+* `sort by/wins desc`
+* `sort players by/goals desc`
 * `sort staff by/name desc`
 
 ### Player Stats
@@ -522,7 +529,7 @@ _Details coming soon ..._
 | **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |
 | **Find**         | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                        |
 | **List**         | `list` / `list [players \| staff] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list players tm/First Team st/Active`                                                                                              |
-| **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> attributes: `name`, `email`, `team`, `status`, `position`<br> e.g., `sort by/team`, `sort players by/position desc` |
+| **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> attributes: `name`, `email`, `team`, `status`, `position`, `goals`, `wins`, `losses`<br> e.g., `sort by/team`, `sort players by/goals desc` |
 | **Set**          | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                      |
 | **Update**       | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                 |
 | **Help**         | `help`                                                                                                                                                                                                                 |
