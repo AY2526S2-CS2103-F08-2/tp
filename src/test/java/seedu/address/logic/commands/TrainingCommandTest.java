@@ -68,7 +68,7 @@ public class TrainingCommandTest {
 
         assertThrows(CommandException.class,
                 String.format(TrainingCommand.MESSAGE_PERSON_DOES_NOT_EXIST,
-                        "Unknown " + "Player"), () -> trainingCommand.execute(modelStub));
+                        "Unknown Player"), () -> trainingCommand.execute(modelStub));
     }
 
     @Test
