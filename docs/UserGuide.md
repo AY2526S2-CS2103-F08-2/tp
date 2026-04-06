@@ -159,14 +159,29 @@ Examples:
 * `list players`
 * `list staff`
 
+### Marking attendance for trainings: `attendancemark`
+
+Marks attendance for specified players for the specified event.
+
+Format: `attendancemark INDEX [pl/PLAYER_NAME]…​`
+
+Notes:
+- The event index provided must be a valid index.
+- The players provided must exist in the addressbook and also be part of the event player list.
+- Players who are not present have (NP) beside their name in the event player list. Those who are present have (P) instead.
+
+Examples:
+- `attendancemark 1 pl/Alex Yeoh`
+- `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
+
 ### Viewing attendance for trainings: `attendance`
 
-Shows a summary of player attendance for trainings for every player in the address book.
+Shows a summary of player attendance for events for every player in the address book.
 
 Format: `attendance`
 
 Notes: 
-- There must be at least 1 training and 1 player in the address book.
+- There must be at least 1 event and 1 player in the address book.
 - The attendance rates are rounded to one decimal place.
 - Sorted in descending order, highest attendance rate shown at the top.
 
