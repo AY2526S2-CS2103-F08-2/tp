@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -119,17 +120,19 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) throws CommandException {
         addressBook.removePerson(target);
-        for (Event e : addressBook.getEventList()) {
-            if (e.getEventPlayerList().contains((Player) target)) {
-                EditEventDescriptor descriptor = new EditEventDescriptor();
-                descriptor.setEventType(e.getEventType());
-                descriptor.setEventName(e.getEventName());
-                descriptor.setEventDate(e.getEventDate());
-                Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
-                updatedPlayerNames.remove(target.getName().toString());
-                descriptor.setEventPlayerNames(updatedPlayerNames);
-                Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
-                this.setEvent(e, editedEvent);
+        if (target.getRole() == Role.PLAYER) {
+            for (Event e : addressBook.getEventList()) {
+                if (e.getEventPlayerList().contains(target)) {
+                    EditEventDescriptor descriptor = new EditEventDescriptor();
+                    descriptor.setEventType(e.getEventType());
+                    descriptor.setEventName(e.getEventName());
+                    descriptor.setEventDate(e.getEventDate());
+                    Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
+                    updatedPlayerNames.remove(target.getName().toString());
+                    descriptor.setEventPlayerNames(updatedPlayerNames);
+                    Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
+                    this.setEvent(e, editedEvent);
+                }
             }
         }
 
@@ -176,24 +179,9 @@ public class ModelManager implements Model {
     public void setTeam(Team oldTeam, Team newTeam) {
         requireAllNonNull(oldTeam, newTeam);
         addressBook.setTeam(oldTeam, newTeam);
-
-        List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
-        for (Person person : snapshot) {
-            if (person.getTeam().equals(oldTeam)) {
-                Person updatedPerson;
-                if (person instanceof Player) {
-                    Player player = (Player) person;
-                    updatedPerson = Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
-                            player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
-                            newTeam, player.getStatus(), player.getPosition());
-                } else {
-                    updatedPerson = Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
-                            person.getAddress(), person.getTags(), person.getRole(),
-                            newTeam, person.getStatus(), person.getPosition());
-                }
-                addressBook.setPerson(person, updatedPerson);
-            }
-        }
+        cascadePersonAttributeRename(
+                person -> person.getTeam().equals(oldTeam),
+                person -> recreatePersonWithAttributes(person, newTeam, person.getStatus(), person.getPosition()));
     }
 
     @Override
@@ -291,24 +279,9 @@ public class ModelManager implements Model {
     public void setPosition(Position oldPosition, Position newPosition) {
         requireAllNonNull(oldPosition, newPosition);
         addressBook.setPosition(oldPosition, newPosition);
-
-        List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
-        for (Person person : snapshot) {
-            if (person.getPosition().equals(oldPosition)) {
-                Person updatedPerson;
-                if (person instanceof Player) {
-                    Player player = (Player) person;
-                    updatedPerson = Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
-                            player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
-                            player.getTeam(), player.getStatus(), newPosition);
-                } else {
-                    updatedPerson = Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
-                            person.getAddress(), person.getTags(), person.getRole(),
-                            person.getTeam(), person.getStatus(), newPosition);
-                }
-                addressBook.setPerson(person, updatedPerson);
-            }
-        }
+        cascadePersonAttributeRename(
+                person -> person.getPosition().equals(oldPosition),
+                person -> recreatePersonWithAttributes(person, person.getTeam(), person.getStatus(), newPosition));
     }
 
     @Override
@@ -343,24 +316,39 @@ public class ModelManager implements Model {
     public void setStatus(Status oldStatus, Status newStatus) {
         requireAllNonNull(oldStatus, newStatus);
         addressBook.setStatus(oldStatus, newStatus);
+        cascadePersonAttributeRename(
+                person -> person.getStatus().equals(oldStatus),
+                person -> recreatePersonWithAttributes(person, person.getTeam(), newStatus, person.getPosition()));
+    }
 
+    /**
+     * Applies a person update function to every person that matches the given predicate.
+     * Uses a snapshot to avoid concurrent modification while replacing persons in the backing list.
+     */
+    private void cascadePersonAttributeRename(Predicate<Person> shouldUpdate, Function<Person, Person> updatePerson) {
+        requireAllNonNull(shouldUpdate, updatePerson);
         List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
         for (Person person : snapshot) {
-            if (person.getStatus().equals(oldStatus)) {
-                Person updatedPerson;
-                if (person instanceof Player) {
-                    Player player = (Player) person;
-                    updatedPerson = Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
-                            player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
-                            player.getTeam(), newStatus, player.getPosition());
-                } else {
-                    updatedPerson = Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
-                            person.getAddress(), person.getTags(), person.getRole(),
-                            person.getTeam(), newStatus, person.getPosition());
-                }
-                addressBook.setPerson(person, updatedPerson);
+            if (shouldUpdate.test(person)) {
+                addressBook.setPerson(person, updatePerson.apply(person));
             }
         }
+    }
+
+    /**
+     * Recreates a person with updated Team/Status/Position while preserving all other fields.
+     * Preserves player stats for {@link Player} instances.
+     */
+    private Person recreatePersonWithAttributes(Person person, Team team, Status status, Position position) {
+        requireAllNonNull(person, team, status, position);
+        if (person instanceof Player) {
+            Player player = (Player) person;
+            return Person.createPerson(player.getName(), player.getPhone(), player.getEmail(),
+                    player.getAddress(), player.getTags(), player.getRole(), player.getStats(),
+                    team, status, position);
+        }
+        return Person.createPerson(person.getName(), person.getPhone(), person.getEmail(),
+                person.getAddress(), person.getTags(), person.getRole(), team, status, position);
     }
 
     @Override

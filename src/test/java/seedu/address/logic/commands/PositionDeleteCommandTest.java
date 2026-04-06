@@ -22,11 +22,13 @@ import seedu.address.testutil.PersonBuilder;
 public class PositionDeleteCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullPosition_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new PositionDeleteCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_existingPosition_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -39,6 +41,7 @@ public class PositionDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (value not found)
     public void execute_missingPosition_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -47,6 +50,7 @@ public class PositionDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
     public void execute_defaultPosition_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -55,6 +59,7 @@ public class PositionDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + DEPENDENCY_RULE (cannot delete in-use value)
     public void execute_positionInUse_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Position inUsePosition = new Position("Winger");

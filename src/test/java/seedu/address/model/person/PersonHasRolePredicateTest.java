@@ -32,6 +32,7 @@ public class PersonHasRolePredicateTest {
     }
 
     @Test
+    // EP_VALID (matching role partition)
     public void test_personHasMatchingRole_returnsTrue() {
         // player predicate matches player
         PersonHasRolePredicate predicate = new PersonHasRolePredicate(Role.PLAYER);
@@ -43,6 +44,7 @@ public class PersonHasRolePredicateTest {
     }
 
     @Test
+    // EP_VALID (non-matching role partition)
     public void test_personHasNonMatchingRole_returnsFalse() {
         // player predicate does not match staff
         PersonHasRolePredicate predicate = new PersonHasRolePredicate(Role.PLAYER);
@@ -54,15 +56,16 @@ public class PersonHasRolePredicateTest {
     }
 
     @Test
+    // REGRESSION_GUARD (explicit role mapping for players)
     public void test_personHasPlayerRole_returnsTrue() {
         PersonHasRolePredicate playerPredicate = new PersonHasRolePredicate(Role.PLAYER);
         assertTrue(playerPredicate.test(new PersonBuilder().withRole(Role.PLAYER).build()));
     }
 
     @Test
+    // REGRESSION_GUARD (explicit role mapping for staff)
     public void test_personHasStaffRole_returnsTrue() {
         PersonHasRolePredicate staffPredicate = new PersonHasRolePredicate(Role.STAFF);
         assertTrue(staffPredicate.test(new PersonBuilder().withRole(Role.STAFF).build()));
     }
 }
-

@@ -66,8 +66,9 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
-  e.g. if the command specifies `help 123`, it will be interpreted as `help`.
+* Extraneous parameters for some commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
+  e.g. if the command specifies `help 123`, it will be interpreted as `help`.<br>
+  Some fixed-format commands such as `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
@@ -85,7 +86,7 @@ Format: `help`
 
 Adds a player/staff to SoCcer Manager.
 
-Format: `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)
@@ -93,9 +94,20 @@ A person can have any number of tags (including 0)
 
 ❗The role of the contact **must be specified** (`r/player` or `r/staff`).
 
+Notes:
+* `tm/TEAM`, `st/STATUS`, and `pos/POSITION` are optional.
+* If omitted, defaults are used: `Unassigned Team`, `Unknown`, `Unassigned Position`.
+* If provided, `TEAM`/`STATUS`/`POSITION` must already exist in their respective catalogs
+  (see [Attributes](#attributes)).
+* For person assignment, input is normalized to the matched catalog entry's exact casing
+  (e.g., if `teamlist` contains `third team`, then `tm/Third Team` is stored as `third team`).
+  This applies to `add`/`edit` person commands.
+* `pos/` is only applicable to players; staff cannot be assigned a non-default position.
+
 Examples:
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
 * `add n/Betsy Crowe r/staff t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street tm/First Team st/Active pos/Forward`
 
 ### Adding a match: `match`
 
@@ -202,6 +214,26 @@ Examples:
 ### Attributes
 
 SoCcer Manager starts with sample team, status, and position catalog entries in a fresh setup.
+
+Default catalogs:
+* Team: `Unassigned Team`, `First Team`, `Second Team`
+* Position: `Unassigned Position`, `Goalkeeper`, `Defender`, `Midfielder`, `Forward`
+* Status: `Unknown`, `Active`, `Unavailable`
+
+Catalog behavior:
+* Protected defaults cannot be edited or deleted (`Unassigned Team`, `Unassigned Position`, `Unknown`).
+* Deletion is blocked when the value is currently assigned to any person.
+* Renaming a catalog value automatically updates all persons currently assigned that value.
+* When creating catalog entries (`teamadd`/`statusadd`/`positionadd`), entered display casing is preserved.
+  Matching and uniqueness checks remain case-insensitive.
+* Team, status, and position names must be non-blank and may contain only letters/numbers, spaces, and hyphens.
+
+Role applicability:
+* `Team` and `Status` apply to both players and staff.
+* `Position` is player-only; staff always use `Unassigned Position`.
+
+Display behavior:
+* Person cards show `Team`, `Status`, and `Position` only when the value is non-default.
 
 For attribute catalog commands, value matching is case-insensitive. This means both `*edit` and `*delete`
 commands work regardless of letter case (for example, `teamdelete reserve team` matches `Reserve Team`).
@@ -321,11 +353,16 @@ Examples:
 
 Edits an existing person in SoCcer Manager.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
+* If provided, `tm/TEAM`, `st/STATUS`, and `pos/POSITION` must already exist in their respective catalogs.
+* For person assignment, input is normalized to the matched catalog entry's exact casing
+  (e.g., if `teamlist` contains `third team`, then `tm/Third Team` is stored as `third team`).
+* `pos/` is only applicable to players.
+* If the resulting role is `staff`, any provided `pos/` is rejected.
 * When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
 * You can remove all the person’s tags by typing `t/` without
     specifying any tags after it.
@@ -437,7 +474,7 @@ SoCcer Manager data are saved in the hard disk automatically after any command t
 SoCcer Manager data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your changes to the data file makes its format invalid, SoCcer Manager will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
+If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
@@ -465,14 +502,14 @@ _Details coming soon ..._
 
 | Action           | Format, Examples                                                                                                                                                                                                       |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Add**          | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`                                   |
+| **Add**          | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 tm/First Team st/Active t/friend` |
 | **Match**        | `match n/OPPONENT_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `match n/Mancherster United d/2026-05-15 1600 pl/John Doe`                                                                                                |
 | **Training**     | `training n/TRAINING_NAME d/DATE [pl/PLAYER_NAME]…​` <br> e.g., `training n/Warm Up d/2026-06-16 1700 pl/John Doe`                                                                                                     |
 | **Attendance**   | `attendance`                                                                                                                                                                                                           |
 | **Clear**        | `clear`                                                                                                                                                                                                                |
 | **Delete**       | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)                                                                              |
 | **Delete Bulk**  | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)                                                                                                                                                |
-| **Edit**         | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`                                                                                   |
+| **Edit**         | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                         |
 | **Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                         |
 | **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |
 | **Find**         | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                        |
@@ -480,8 +517,8 @@ _Details coming soon ..._
 | **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                       |
 | **Set**          | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                      |
 | **Update**       | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                 |
+| **Help**         | `help`                                                                                                                                                                                                                 |
 | **Attributes**   | team, status, and position catalog commands                                                                                                                                                                            |
 | **Team**         | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`                                |
 | **Status**       | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`                              |
 | **Position**     | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back` |
-| **Help**         | `help`                                                                                                                                                                                                                 |

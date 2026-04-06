@@ -22,11 +22,13 @@ import seedu.address.testutil.PersonBuilder;
 public class StatusDeleteCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullStatus_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new StatusDeleteCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_existingStatus_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -39,6 +41,7 @@ public class StatusDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (value not found)
     public void execute_missingStatus_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -47,6 +50,7 @@ public class StatusDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + DEPENDENCY_RULE (protected default)
     public void execute_defaultStatus_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
 
@@ -55,6 +59,7 @@ public class StatusDeleteCommandTest {
     }
 
     @Test
+    // INVALID_CASE + DEPENDENCY_RULE (cannot delete in-use value)
     public void execute_statusInUse_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Status inUseStatus = new Status("Rehab");

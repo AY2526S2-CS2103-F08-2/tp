@@ -21,11 +21,13 @@ import seedu.address.model.person.Status;
 public class StatusAddCommandTest {
 
     @Test
+    // INVALID_CASE + EP_INVALID (null input)
     public void constructor_nullStatus_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new StatusAddCommand(null));
     }
 
     @Test
+    // VALID_CASE + EP_VALID
     public void execute_newStatus_success() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -38,6 +40,7 @@ public class StatusAddCommandTest {
     }
 
     @Test
+    // INVALID_CASE + EP_INVALID (duplicate catalog entry)
     public void execute_duplicateStatus_throwsCommandException() {
         Model model = new ModelManager(getSampleAddressBook(), new UserPrefs());
         Status duplicateStatus = new Status("Active");
@@ -65,4 +68,3 @@ public class StatusAddCommandTest {
         assertEquals(expected, command.toString());
     }
 }
-

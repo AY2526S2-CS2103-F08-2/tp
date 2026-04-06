@@ -1,0 +1,16 @@
+{
+  "persons" : [ {
+    "name" : "John Doe",
+    "phone" : "98765432",
+    "email" : "john@example.com",
+    "address" : "123, Test Street",
+    "tags" : [ ],
+    "role" : "PLAYER",
+    "team" : "Third Team",
+    "status" : "Injured",
+    "position" : "Sweeper"
+  } ],
+  "teams" : [ ],
+  "positions" : [ ],
+  "statuses" : [ ]
+}

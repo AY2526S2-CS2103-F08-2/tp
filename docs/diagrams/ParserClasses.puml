@@ -11,6 +11,7 @@ package "Parser classes"{
 Class "<<interface>>\nParser" as Parser
 Class AddressBookParser
 Class XYZCommandParser
+Class DeleteInteractionFlow
 Class CliSyntax
 Class ParserUtil
 Class ArgumentMultimap
@@ -22,6 +23,7 @@ Class HiddenOutside #FFFFFF
 HiddenOutside ..> AddressBookParser
 
 AddressBookParser .down.> XYZCommandParser: <<create>>
+AddressBookParser --> DeleteInteractionFlow : stores state in
 
 XYZCommandParser ..> XYZCommand : <<create>>
 AddressBookParser ..> Command : <<use>>

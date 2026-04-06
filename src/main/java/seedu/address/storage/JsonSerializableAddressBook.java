@@ -87,37 +87,30 @@ class JsonSerializableAddressBook {
         AddressBook addressBook = new AddressBook();
         Map<String, Person> personMap = new HashMap<>();
 
-        for (JsonAdaptedTeam jsonAdaptedTeam : teams) {
-            Team team = jsonAdaptedTeam.toModelType();
-            if (addressBook.hasTeam(team)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_TEAM);
-            }
-            addressBook.addTeam(team);
-        }
-
-        for (JsonAdaptedPosition jsonAdaptedPosition : positions) {
-            Position position = jsonAdaptedPosition.toModelType();
-            if (addressBook.hasPosition(position)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_POSITION);
-            }
-            addressBook.addPosition(position);
-        }
-
-        for (JsonAdaptedStatus jsonAdaptedStatus : statuses) {
-            Status status = jsonAdaptedStatus.toModelType();
-            if (addressBook.hasStatus(status)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_STATUS);
-            }
-            addressBook.addStatus(status);
-        }
+        loadTeamCatalog(addressBook);
+        loadPositionCatalog(addressBook);
+        loadStatusCatalog(addressBook);
 
         ensureDefaultAttributes(addressBook);
 
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
-            Person person = jsonAdaptedPerson.toModelType();
+            if (jsonAdaptedPerson == null) {
+                logger.warning("Skipping malformed person entry: null value.");
+                continue;
+            }
+
+            Person person;
+            try {
+                person = jsonAdaptedPerson.toModelType();
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed person entry: " + ive.getMessage());
+                continue;
+            }
+
             if (addressBook.hasPerson(person)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
+            ensurePersonAttributesInCatalog(addressBook, person);
             addressBook.addPerson(person);
             personMap.put(person.getName().toString(), person);
         }
@@ -130,6 +123,72 @@ class JsonSerializableAddressBook {
             addressBook.addEvent(event);
         }
         return addressBook;
+    }
+
+    /**
+     * Loads team catalog entries from JSON, skipping malformed or duplicate values.
+     */
+    private void loadTeamCatalog(AddressBook addressBook) {
+        for (JsonAdaptedTeam jsonAdaptedTeam : teams) {
+            if (jsonAdaptedTeam == null) {
+                logger.warning("Skipping malformed team entry: null value.");
+                continue;
+            }
+            try {
+                Team team = jsonAdaptedTeam.toModelType();
+                if (addressBook.hasTeam(team)) {
+                    logger.warning("Skipping duplicate team entry: " + team);
+                    continue;
+                }
+                addressBook.addTeam(team);
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed team entry: " + ive.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Loads position catalog entries from JSON, skipping malformed or duplicate values.
+     */
+    private void loadPositionCatalog(AddressBook addressBook) {
+        for (JsonAdaptedPosition jsonAdaptedPosition : positions) {
+            if (jsonAdaptedPosition == null) {
+                logger.warning("Skipping malformed position entry: null value.");
+                continue;
+            }
+            try {
+                Position position = jsonAdaptedPosition.toModelType();
+                if (addressBook.hasPosition(position)) {
+                    logger.warning("Skipping duplicate position entry: " + position);
+                    continue;
+                }
+                addressBook.addPosition(position);
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed position entry: " + ive.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Loads status catalog entries from JSON, skipping malformed or duplicate values.
+     */
+    private void loadStatusCatalog(AddressBook addressBook) {
+        for (JsonAdaptedStatus jsonAdaptedStatus : statuses) {
+            if (jsonAdaptedStatus == null) {
+                logger.warning("Skipping malformed status entry: null value.");
+                continue;
+            }
+            try {
+                Status status = jsonAdaptedStatus.toModelType();
+                if (addressBook.hasStatus(status)) {
+                    logger.warning("Skipping duplicate status entry: " + status);
+                    continue;
+                }
+                addressBook.addStatus(status);
+            } catch (IllegalValueException ive) {
+                logger.warning("Skipping malformed status entry: " + ive.getMessage());
+            }
+        }
     }
 
     /**
@@ -172,6 +231,29 @@ class JsonSerializableAddressBook {
         }
         if (!hasDefaultStatus) {
             logger.warning("Auto-healed missing default status: " + Status.DEFAULT_UNKNOWN_STATUS);
+        }
+    }
+
+    /**
+     * Ensures a person's assigned attributes are present in catalogs. Missing valid values are auto-registered.
+     */
+    private void ensurePersonAttributesInCatalog(AddressBook addressBook, Person person) {
+        Team team = person.getTeam();
+        if (!addressBook.hasTeam(team)) {
+            addressBook.addTeam(team);
+            logger.warning("Auto-registered missing team from person record: " + team);
+        }
+
+        Position position = person.getPosition();
+        if (!addressBook.hasPosition(position)) {
+            addressBook.addPosition(position);
+            logger.warning("Auto-registered missing position from person record: " + position);
+        }
+
+        Status status = person.getStatus();
+        if (!addressBook.hasStatus(status)) {
+            addressBook.addStatus(status);
+            logger.warning("Auto-registered missing status from person record: " + status);
         }
     }
 

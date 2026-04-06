@@ -31,7 +31,7 @@ public class EventEditCommandTest {
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
-        Event editedEvent = new EventBuilder().build();
+        Event editedEvent = new EventBuilder().withEventType("MATCH").build();
         EditEventDescriptor descriptor = new EditEventDescriptorBuilder(editedEvent).build();
         EventEditCommand eventEditCommand = new EventEditCommand(INDEX_FIRST_EVENT, descriptor);
 

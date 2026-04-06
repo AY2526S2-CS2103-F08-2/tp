@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEW_ATTRIBUTE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OLD_ATTRIBUTE;
 
@@ -21,15 +20,7 @@ public class TeamEditCommandParser implements Parser<TeamEditCommand> {
      */
     @Override
     public TeamEditCommand parse(String args) throws ParseException {
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_OLD_ATTRIBUTE, PREFIX_NEW_ATTRIBUTE);
-
-        if (!argMultimap.getValue(PREFIX_OLD_ATTRIBUTE).isPresent()
-                || !argMultimap.getValue(PREFIX_NEW_ATTRIBUTE).isPresent()
-                || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, TeamEditCommand.MESSAGE_USAGE));
-        }
-
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_OLD_ATTRIBUTE, PREFIX_NEW_ATTRIBUTE);
+        ArgumentMultimap argMultimap = AttributeParserUtil.parseRequiredOldAndNew(args, TeamEditCommand.MESSAGE_USAGE);
 
         Team oldTeam = ParserUtil.parseTeam(argMultimap.getValue(PREFIX_OLD_ATTRIBUTE).get());
         Team newTeam = ParserUtil.parseTeam(argMultimap.getValue(PREFIX_NEW_ATTRIBUTE).get());
@@ -37,4 +28,3 @@ public class TeamEditCommandParser implements Parser<TeamEditCommand> {
         return new TeamEditCommand(oldTeam, newTeam);
     }
 }
-
