@@ -650,6 +650,18 @@ Use case ends.
     * 3a1. SoCcer Manager shows an error message.  
       Use case ends.
 
+**Use case: UC05 - Add new training**  
+**MSS**
+
+1. Manager wants to record a new training session.
+2. Manager provides the name of the training session, date, and players that attended the training.
+3. SoCcer Manager checks that the players exist in the address book.
+4. SoCcer Manager adds the training session with the specified name, date, and players.
+
+**Extensions**
+
+* 2a. Manager provides an attribute.
+    * 2a1. SoCcer Manager
 *{More to be added}*
 
 ### Non-Functional Requirements
