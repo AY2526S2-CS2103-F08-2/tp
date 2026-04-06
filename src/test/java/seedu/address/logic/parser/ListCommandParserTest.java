@@ -24,7 +24,7 @@ public class ListCommandParserTest {
     @Test
     public void parse_roleOnly_returnsListRoleCommand() throws Exception {
         ListRoleCommand expected = new ListRoleCommand(new PersonHasRolePredicate(Role.PLAYER), "players");
-        assertEquals(expected, parser.parse("players"));
+        assertEquals(expected, parser.parse("r/player"));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ListCommandParserTest {
                         Optional.of(new Status("Active")),
                         Optional.of(new Position("Forward"))),
                 "staff matching status Active, position Forward");
-        assertEquals(expected, parser.parse("staff st/Active pos/Forward"));
+        assertEquals(expected, parser.parse("r/staff st/Active pos/Forward"));
     }
 
     @Test
@@ -80,6 +80,7 @@ public class ListCommandParserTest {
     @Test
     public void parse_invalidScope_throwsParseException() {
         assertThrows(ParseException.class, () -> parser.parse("coaches tm/First Team"));
+        assertThrows(ParseException.class, () -> parser.parse("r/coaches tm/First Team"));
     }
 
     @Test

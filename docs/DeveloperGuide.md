@@ -202,16 +202,17 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Role-filtered list command
 
-The `list players` and `list staff` commands are handled by `AddressBookParser` via
-`ListRoleCommandParser`, which creates a `ListRoleCommand` with the corresponding role predicate.
+The `list` command is handled by `AddressBookParser` via `ListCommandParser`.
+For role-only input such as `list r/player` or `list r/staff`, `ListCommandParser`
+creates a `ListRoleCommand` with the corresponding role predicate.
 
 When executed, `ListRoleCommand` calls `Model#updateFilteredPersonList(...)` with
 `PersonHasRolePredicate(Role.PLAYER)` or `PersonHasRolePredicate(Role.STAFF)`, which updates the
 observable filtered list shown in the UI.
 
-The sequence diagram below illustrates the interaction flow using `execute("list players")` as the example.
+The sequence diagram below illustrates the interaction flow using `execute("list r/player")` as the example.
 
-![Interactions for the `list players` Command](images/ListRoleSequenceDiagram.png)
+![Interactions for the `list r/player` Command](images/ListRoleSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
@@ -754,16 +755,16 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: At least one player and one staff in the current address book.
 
-    1. Test case: `list players`<br>
+    1. Test case: `list r/player`<br>
        Expected: Only players are shown. Status message indicates players were listed.
 
-    1. Test case: `list staff`<br>
+    1. Test case: `list r/staff`<br>
        Expected: Only staff are shown. Status message indicates staff were listed.
 
-    1. Test case: `list PLAYERS`<br>
-       Expected: Same result as `list players` (role keyword is case-insensitive).
+    1. Test case: `list r/PLAYER`<br>
+       Expected: Same result as `list r/player` (role keyword is case-insensitive).
 
-    1. Test case: `list coaches`<br>
+    1. Test case: `list r/coaches`<br>
        Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
 
 ### Saving data

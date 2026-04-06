@@ -138,17 +138,17 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_listPlayers() throws Exception {
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " players") instanceof ListRoleCommand);
+        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " r/player") instanceof ListRoleCommand);
     }
 
     @Test
     public void parseCommand_listStaff() throws Exception {
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " staff") instanceof ListRoleCommand);
+        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " r/staff") instanceof ListRoleCommand);
     }
 
     @Test
     public void parseCommand_listInvalidRole_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
+        assertThrows(ParseException.class, () -> parser.parseCommand(ListCommand.COMMAND_WORD + " r/coach"));
     }
 
     @Test
@@ -171,7 +171,7 @@ public class AddressBookParserTest {
                         java.util.Optional.of(new Position("Defender"))),
                 "players matching team First Team, status Active, position Defender");
         assertEquals(expected, parser.parseCommand(
-                ListCommand.COMMAND_WORD + " players tm/First Team st/Active pos/Defender"));
+                ListCommand.COMMAND_WORD + " r/player tm/First Team st/Active pos/Defender"));
     }
 
     @Test

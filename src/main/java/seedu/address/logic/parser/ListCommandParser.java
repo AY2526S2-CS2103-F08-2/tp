@@ -2,6 +2,7 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_POSITION;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 
@@ -24,8 +25,8 @@ import seedu.address.model.person.Team;
  */
 public class ListCommandParser implements Parser<seedu.address.logic.commands.Command> {
 
-    private static final String ARGUMENT_PLAYERS = "players";
-    private static final String ARGUMENT_STAFF = "staff";
+    private static final String DESCRIPTION_PLAYERS = "players";
+    private static final String DESCRIPTION_STAFF = "staff";
     private static final String DESCRIPTION_PERSONS = "persons";
 
     @Override
@@ -36,18 +37,26 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
         }
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(" " + trimmedArgs, PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
+                ArgumentTokenizer.tokenize(" " + trimmedArgs, PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
         try {
-            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
+            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
         } catch (ParseException pe) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
         }
 
-        Optional<Role> role = parseRoleScope(argMultimap.getPreamble().trim());
+        if (!argMultimap.getPreamble().trim().isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
+        }
+
+        Optional<Role> role = parseOptionalRole(argMultimap);
         Optional<Team> team = parseOptionalTeam(argMultimap);
         Optional<Status> status = parseOptionalStatus(argMultimap);
         Optional<Position> position = parseOptionalPosition(argMultimap);
         boolean hasAttributeFilters = team.isPresent() || status.isPresent() || position.isPresent();
+
+        if (role.isEmpty() && !hasAttributeFilters) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
+        }
 
         if (!hasAttributeFilters) {
             return new ListRoleCommand(new PersonHasRolePredicate(role.get()), getRoleDescription(role.get()));
@@ -58,17 +67,11 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
         return new ListFilteredCommand(predicate, buildDescription(role, team, status, position));
     }
 
-    private Optional<Role> parseRoleScope(String preamble) throws ParseException {
-        if (preamble.isEmpty()) {
+    private Optional<Role> parseOptionalRole(ArgumentMultimap argMultimap) throws ParseException {
+        if (!argMultimap.getValue(PREFIX_ROLE).isPresent()) {
             return Optional.empty();
         }
-        if (ARGUMENT_PLAYERS.equalsIgnoreCase(preamble)) {
-            return Optional.of(Role.PLAYER);
-        }
-        if (ARGUMENT_STAFF.equalsIgnoreCase(preamble)) {
-            return Optional.of(Role.STAFF);
-        }
-        throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
+        return Optional.of(ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get()));
     }
 
     private Optional<Team> parseOptionalTeam(ArgumentMultimap argMultimap) throws ParseException {
@@ -93,7 +96,7 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
     }
 
     private String getRoleDescription(Role role) {
-        return role == Role.PLAYER ? ARGUMENT_PLAYERS : ARGUMENT_STAFF;
+        return role == Role.PLAYER ? DESCRIPTION_PLAYERS : DESCRIPTION_STAFF;
     }
 
     private String buildDescription(Optional<Role> role, Optional<Team> team,

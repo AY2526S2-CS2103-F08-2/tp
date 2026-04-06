@@ -28,9 +28,9 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `list` : Lists all persons.
 
-   * `list players` : Lists only players.
+   * `list r/player` : Lists only players.
 
-   * `list staff` : Lists only staff.
+   * `list r/staff` : Lists only staff.
 
    * `sort by/name` : Sorts all persons by name in ascending order.
 
@@ -138,21 +138,25 @@ Examples:
 
 ### Listing persons: `list`
 
-Shows persons in SoCcer Manager, optionally filtered by role.
+Shows persons in SoCcer Manager, optionally filtered by role, team, status, and position.
 
 Format:
 * `list` (shows all persons)
-* `list players` (shows only players)
-* `list staff` (shows only staff)
+* `list r/ROLE`
+* `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`
 
 Notes:
-* Role arguments are case-insensitive. e.g. `list PLAYERS`, `list Staff`.
-* Invalid role arguments are rejected. Use only `players` or `staff`.
+* `r/`, `tm/`, `st/`, and `pos/` can be combined in a single `list` command.
+* Role values are case-insensitive. e.g. `list r/PLAYER`, `list r/Staff`.
+* If `r/` is omitted, matching persons from all roles are shown.
+* Invalid role arguments are rejected. Use only `r/player` or `r/staff`.
 
 Examples:
 * `list`
-* `list players`
-* `list staff`
+* `list r/player`
+* `list r/staff`
+* `list tm/First Team`
+* `list r/player st/Active pos/Defender`
 
 ### Viewing attendance for trainings: `attendance`
 
@@ -511,7 +515,7 @@ _Details coming soon ..._
 | **Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                         |
 | **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |
 | **Find**         | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                        |
-| **List**         | `list` / `list players` / `list staff`<br> e.g., `list players`                                                                                                                                                        |
+| **List**         | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                     |
 | **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                       |
 | **Set**          | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                      |
 | **Update**       | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                 |

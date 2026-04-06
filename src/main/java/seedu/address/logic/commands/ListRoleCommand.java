@@ -14,11 +14,9 @@ public class ListRoleCommand extends Command {
     public static final String COMMAND_WORD = "list";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Lists persons, optionally filtered by role, team, status, and position.\n"
-            + "Parameters: [players | staff] [tm/TEAM] [st/STATUS] [pos/POSITION]\n"
-            + "Examples: " + COMMAND_WORD + " players, "
-            + COMMAND_WORD + " tm/First Team, "
-            + COMMAND_WORD + " players tm/First Team st/Active";
+            + ": Lists all persons of the specified role.\n"
+            + "Parameters: r/player | r/staff (omit to list all)\n"
+            + "Example: " + COMMAND_WORD + " r/player";
 
     public static final String MESSAGE_SUCCESS = "Listed all %s";
 
@@ -60,4 +58,3 @@ public class ListRoleCommand extends Command {
         return new ToStringBuilder(this).add("predicate", predicate).toString();
     }
 }
-

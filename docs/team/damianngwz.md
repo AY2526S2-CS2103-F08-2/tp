@@ -9,7 +9,7 @@ AddressBook - Level 3 is a desktop address book application used for teaching So
 
 Given below are my contributions to the project.
 
-* **New Feature**: Added role-scoped listing commands (`list players`, `list staff`).
+* **New Feature**: Added role-scoped listing commands (`list r/player`, `list r/staff`).
     * **What it does**: Extends the `list` command so users can filter the visible person list directly by role, while preserving the original `list` command as the all-persons view.
     * **Justification**: Team workflows are frequently role-specific. Coaches regularly switch between player operations and staff operations, so a direct role-scoped list reduces command friction and improves navigation speed.
     * **Highlights**: Implemented end-to-end parser-command-predicate integration (`AddressBookParser` -> `ListRoleCommandParser` -> `ListRoleCommand` -> `PersonHasRolePredicate`) with case-insensitive role handling and strict invalid-role rejection. This role-filtering foundation was later reused/extended in role-scoped filtering enhancements (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#76](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/76), PR [#95](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/95)).
