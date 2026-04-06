@@ -1,6 +1,7 @@
 package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_PLAYER_AMY;
@@ -13,7 +14,9 @@ import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,6 +127,58 @@ public class LogicManagerTest {
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void importCsv_validCsv_returnsSummaryMessage() throws Exception {
+        Path csvFile = createCsvFile("validImport.csv",
+                "name,role,address,phone,email,tags",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain;striker");
+        String result = logic.importCsv(csvFile);
+
+        assertTrue(result.contains("Rows processed: 1"));
+        assertTrue(result.contains("Successfully imported: 1"));
+        assertTrue(result.contains("Failed: 0"));
+        assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void importCsv_invalidHeader_throwsCommandException() throws Exception {
+        Path csvFile = createCsvFile("invalidHeader.csv",
+                "name,address,phone,email,tags",
+                "Alex Tan,12 Clementi Road,91234567,alex.tan@example.com,captain");
+
+        assertThrows(CommandException.class, () -> logic.importCsv(csvFile));
+    }
+
+    @Test
+    public void importCsv_nonexistentFile_throwsCommandException() {
+        Path csvFile = Path.of("this-file-should-not-exist-12345.csv");
+
+        assertThrows(CommandException.class, () -> logic.importCsv(csvFile));
+    }
+
+    @Test
+    public void importCsv_mixedRows_returnsPartialSummary() throws Exception {
+        Path csvFile = createCsvFile("mixedImport.csv",
+                "name,role,address,phone,email,tags",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain;striker",
+                "Bad Role,coach,45 Jurong West Ave 3,92345678,bad.role@example.com,manager",
+                "Bad Email,staff,22 Tampines Street 11,95678901,not-an-email,physio",
+                "Grace Koh,staff,14 Hougang Ave 8,97890123,grace.koh@example.com,analyst");
+
+        String result = logic.importCsv(csvFile);
+
+        assertTrue(result.contains("Rows processed: 4"));
+        assertTrue(result.contains("Successfully imported: 2"));
+        assertTrue(result.contains("Failed: 2"));
+        assertEquals(2, model.getFilteredPersonList().size());
+    }
+
+    private Path createCsvFile(String fileName, String... lines) throws IOException {
+        Path file = temporaryFolder.resolve(fileName);
+        Files.write(file, List.of(lines));
+        return file;
     }
 
     /**

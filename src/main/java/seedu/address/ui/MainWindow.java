@@ -1,5 +1,6 @@
 package seedu.address.ui;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -171,6 +173,36 @@ public class MainWindow extends UiPart<Stage> {
         primaryStage.hide();
     }
 
+    /**
+     * Opens the file chooser dialog.
+     */
+    @FXML
+    private void handleOpenFileChooser() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select CSV File");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+
+        if (selectedFile == null) {
+            resultDisplay.setFeedbackToUser("CSV import cancelled.");
+            return;
+        }
+        if (!selectedFile.getName().toLowerCase().endsWith(".csv")) {
+            resultDisplay.setFeedbackToUser("This is not a CSV file! (expecting file extension to be .csv)");
+            return;
+        }
+
+        resultDisplay.setFeedbackToUser("Selected file: " + selectedFile.getAbsolutePath());
+        try {
+            String feedback = logic.importCsv(selectedFile.toPath());
+            resultDisplay.setFeedbackToUser(feedback);
+        } catch (CommandException e) {
+            resultDisplay.setFeedbackToUser(e.getMessage());
+        }
+    }
+
     public PersonListPanel getPersonListPanel() {
         return personListPanel;
     }
@@ -192,6 +224,10 @@ public class MainWindow extends UiPart<Stage> {
 
             if (commandResult.isExit()) {
                 handleExit();
+            }
+
+            if (commandResult.isOpenFileChooser()) {
+                handleOpenFileChooser();
             }
 
             return commandResult;

@@ -704,7 +704,100 @@ Use case ends.
     * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
-**Use case: UC09 - Add new training**  
+## Use case: UC09 - Set or update a player’s recorded performance stat
+**MSS**
+
+1. Manager requests to modify a player’s recorded performance stat.
+2. Manager specifies the displayed player index, the stat field, and the new value or increment value.
+3. SoCcer Manager validates the index and stat request.
+4. SoCcer Manager checks that the specified person is a player.
+5. SoCcer Manager validates that the resulting stat value satisfies the stat constraints.
+6. SoCcer Manager updates the player’s stat.
+7. SoCcer Manager refreshes the player details shown in the UI, including any calculated stats derived from the updated values.
+8. SoCcer Manager shows a success message.
+   Use case ends.
+
+**Extensions**
+
+* 3a. Manager specifies an invalid displayed index.
+    * 3a1. SoCcer Manager shows an error message.
+      Use case ends.
+
+* 4a. Specified person is not a player.
+    * 4a1. SoCcer Manager shows an error message.
+      Use case ends.
+
+* 5a. Manager specifies an invalid stat field.
+    * 5a1. SoCcer Manager shows an error message.
+      Use case ends.
+
+* 5b. Manager provides a value that causes the stat to become invalid.
+    * 5b1. SoCcer Manager shows an error message.
+      Use case ends.
+
+* 2a. Manager uses `set`.
+    * 2a1. SoCcer Manager replaces the stat with the specified value.
+      Use case resumes at step 7.
+
+* 2b. Manager uses `update`.
+    * 2b1. SoCcer Manager increments the stat by the specified value.
+      Use case resumes at step 7.
+
+## Use case: UC10 - Automatically display calculated stats for a player
+**MSS**
+
+1. Manager views the player list or player details in the UI.
+2. SoCcer Manager retrieves each player’s recorded stats.
+3. SoCcer Manager computes the calculated stats for each player.
+4. SoCcer Manager displays the calculated stats under each player in the UI.
+   Use case ends.
+
+**Extensions**
+
+* 2a. Person shown is not a player.
+    * 2a1. SoCcer Manager does not display player statistics for that person.
+      Use case ends.
+
+* 3a. A calculated stat depends on the number of games played, but the player has played zero games.
+    * 3a1. SoCcer Manager avoids division by zero and displays the default calculated value.
+      Use case resumes at step 4.
+
+**Use case: UC11 - Batch import persons from a CSV file**  
+**MSS**
+
+1. Manager requests to batch import persons from a CSV file.
+2. SoCcer Manager opens a file selection dialog.
+3. Manager selects a CSV file.
+4. SoCcer Manager validates the CSV header.
+5. SoCcer Manager reads each row in the CSV file.
+6. SoCcer Manager validates and imports each valid row as a person.
+7. SoCcer Manager skips invalid rows and records the reason for each skipped row.
+8. SoCcer Manager shows a summary of imported and skipped rows.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager cancels file selection.
+    * 2a1. SoCcer Manager aborts the import.  
+      Use case ends.
+
+* 4a. CSV file has missing or unexpected fields in the header.
+    * 4a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 6a. A row contains invalid person data.
+    * 6a1. SoCcer Manager skips the row and records the failure reason.  
+      Use case resumes at step 6.
+
+* 6b. A row duplicates an existing person or another valid row in the same import.
+    * 6b1. SoCcer Manager skips the row and records the failure reason.  
+      Use case resumes at step 6.
+
+* 8a. No valid rows are imported.
+    * 8a1. SoCcer Manager shows a summary indicating that all rows were skipped.  
+      Use case ends.
+
+**Use case: UC12 - Add new training**  
 **MSS**
 
 1. Manager wants to record a new training session.

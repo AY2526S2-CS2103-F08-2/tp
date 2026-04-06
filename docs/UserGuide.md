@@ -533,6 +533,20 @@ Exits the program.
 
 Format: `exit`
 
+### Import CSV : `importcsv`
+
+Imports contacts from a given CSV file. Expects the CSV file to follow format strictly.
+
+> _Expected Headers (in order):_ name, role, address, phone, email, tags 
+
+**If headers are invalid, CSV importing will fail.**
+
+If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
+
+The relevant error messages per row will be displayed.
+
+Format: `importcsv`
+
 ### Saving the data
 
 SoCcer Manager data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
@@ -592,3 +606,4 @@ _Details coming soon ..._
 | **Team**            | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`                                               |
 | **Status**          | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`                                             |
 | **Position**        | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back`                |
+| **Import CSV**      | `importcsv`                                                                                                                                                                                                                           |                                                                                                                                                                                                                                     |
