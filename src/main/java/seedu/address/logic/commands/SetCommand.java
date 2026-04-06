@@ -65,8 +65,9 @@ public class SetCommand extends Command {
 
         Player player = (Player) person;
         int old = this.stat.getValue(player.getStats());
-        player = setPlayerStat(player);
+        Player updatedPlayer = setPlayerStat(player);
 
+        model.setPerson(player, updatedPlayer);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_SET_PLAYER_SUCCESS,
                 Messages.format(player), this.stat, old, this.value));

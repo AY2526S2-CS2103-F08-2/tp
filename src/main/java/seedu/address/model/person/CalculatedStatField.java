@@ -16,7 +16,7 @@ public enum CalculatedStatField {
             // deal with zero division
             return 0.0;
         }
-        return (double) (stats.getMatchesWon() / total);
+        return (double) stats.getMatchesWon() / total;
     }),
 
     GOALS_PER_GAME(stats -> {
@@ -25,7 +25,7 @@ public enum CalculatedStatField {
             // deal with zero division
             return 0.0;
         }
-        return (double) (stats.getGoalsScored() / total);
+        return (double) stats.getGoalsScored() / total;
     });
 
     private final Function<PlayerStats, Double> getter;
