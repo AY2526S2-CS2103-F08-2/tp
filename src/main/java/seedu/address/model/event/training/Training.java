@@ -16,8 +16,21 @@ public class Training extends Event {
     /**
      * Every field must be present and not null.
      */
-    public Training(EventName trainingName, Date matchDate, EventPlayerList eventPlayerList) {
-        super(trainingName, matchDate, EventType.TRAINING, eventPlayerList);
+    public Training(EventName eventName, Date eventDate, EventPlayerList eventPlayerList) {
+        super(eventName, eventDate, EventType.TRAINING, eventPlayerList);
+    }
+
+    /**
+     * Overloaded constructor.
+     *
+     * @param eventName
+     * @param eventDate
+     * @param eventPlayerList
+     * @param attendedPlayerList
+     */
+    public Training(EventName eventName, Date eventDate, EventPlayerList eventPlayerList,
+            EventPlayerList attendedPlayerList) {
+        super(eventName, eventDate, EventType.TRAINING, eventPlayerList, attendedPlayerList);
     }
 
     @Override

@@ -20,6 +20,19 @@ public class Match extends Event {
         super(opponentName, matchDate, EventType.MATCH, eventPlayerList);
     }
 
+    /**
+     * Overloaded constructor.
+     *
+     * @param opponentName
+     * @param matchDate
+     * @param eventPlayerList
+     * @param attendedPlayerList
+     */
+    public Match(EventName opponentName, Date matchDate, EventPlayerList eventPlayerList,
+            EventPlayerList attendedPlayerList) {
+        super(opponentName, matchDate, EventType.MATCH, eventPlayerList, attendedPlayerList);
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)

@@ -25,7 +25,6 @@ import seedu.address.logic.commands.EventEditCommand;
 import seedu.address.logic.commands.EventEditCommand.EditEventDescriptor;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Event;
-import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
 import seedu.address.model.person.Position;
@@ -204,13 +203,13 @@ public class ModelManager implements Model {
 
     @Override
     public String getAttendanceReport() {
-        ObservableList<Event> trainingList =
-                addressBook.getEventList().filtered(e -> e.getEventType() == EventType.TRAINING);
+        ObservableList<Event> eventList = addressBook.getEventList();
 
         Map<String, Double> attendanceMap = new HashMap<>();
         for (Person p : addressBook.getPersonList().filtered(p -> p.getRole() == Role.PLAYER)) {
-            long appearances = trainingList.stream().filter(e -> e.getEventPlayerList().contains(p)).count();
-            double rate = (double) appearances / trainingList.size() * 100;
+            long requiredToAttend = eventList.stream().filter(e -> e.getEventPlayerList().contains(p)).count();
+            long actualAttended = eventList.stream().filter(e -> e.getAttendedPlayerList().contains(p)).count();
+            double rate = (double) actualAttended / requiredToAttend * 100;
             attendanceMap.put(p.getName().toString(), rate);
         }
         StringBuilder sb = new StringBuilder();

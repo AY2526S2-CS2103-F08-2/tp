@@ -11,7 +11,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 import java.util.List;
 import java.util.stream.Stream;
 
-import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.TrainingCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.event.Date;
@@ -23,7 +22,7 @@ import seedu.address.model.person.Team;
 /**
  * Parses input arguments and creates a new TrainingCommand object
  */
-public class TrainingCommandParser implements Parser<Command> {
+public class TrainingCommandParser implements Parser<TrainingCommand> {
 
     /**
      * Parses the given {@code String} of arguments in the context of the TrainingCommand
