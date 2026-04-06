@@ -76,15 +76,15 @@ public class TrainingCommand extends Command {
                 throw new CommandException(String.format(MESSAGE_NOT_A_PLAYER, playerName));
             }
 
+            if (playerList.contains(person)) {
+                throw new CommandException(String.format(MESSAGE_ADD_DUPLICATE_PLAYER, playerName));
+            }
+
             playerList.add(person);
         }
 
         EventPlayerList eventPlayerList = new EventPlayerList(playerList);
         Event toAdd = Event.createEvent(eventName, date, EventType.TRAINING, eventPlayerList);
-
-        if (model.hasEvent(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_TRAINING);
-        }
 
         if (model.hasEvent(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_TRAINING);
