@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListFilteredCommand;
 import seedu.address.logic.commands.ListRoleCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -25,6 +26,14 @@ import seedu.address.model.person.Team;
  */
 public class ListCommandParser implements Parser<seedu.address.logic.commands.Command> {
 
+    public static final String MESSAGE_USAGE = ListCommand.COMMAND_WORD
+            + ": Lists persons, optionally filtered by role, team, status, and position.\n"
+            + "Parameters: [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]\n"
+            + "Examples: " + ListCommand.COMMAND_WORD + "\n"
+            + "          " + ListCommand.COMMAND_WORD + " r/player\n"
+            + "          " + ListCommand.COMMAND_WORD + " tm/First Team\n"
+            + "          " + ListCommand.COMMAND_WORD + " r/player st/Active pos/Defender";
+
     private static final String DESCRIPTION_PLAYERS = "players";
     private static final String DESCRIPTION_STAFF = "staff";
     private static final String DESCRIPTION_PERSONS = "persons";
@@ -33,7 +42,7 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
     public seedu.address.logic.commands.Command parse(String args) throws ParseException {
         String trimmedArgs = args.trim();
         if (trimmedArgs.isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE));
         }
 
         ArgumentMultimap argMultimap =
@@ -41,11 +50,11 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
         try {
             argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
         } catch (ParseException pe) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE));
         }
 
         if (!argMultimap.getPreamble().trim().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE));
         }
 
         Optional<Role> role = parseOptionalRole(argMultimap);
@@ -55,7 +64,7 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
         boolean hasAttributeFilters = team.isPresent() || status.isPresent() || position.isPresent();
 
         if (role.isEmpty() && !hasAttributeFilters) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListRoleCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE));
         }
 
         if (!hasAttributeFilters) {
