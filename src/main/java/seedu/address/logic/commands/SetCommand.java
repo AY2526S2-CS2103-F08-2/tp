@@ -30,7 +30,7 @@ public class SetCommand extends Command {
             + "VALUE"
             + "\nExample: " + COMMAND_WORD + " 1 goals 10";
 
-    public static final String MESSAGE_SET_PLAYER_SUCCESS = "Set %1$s %2$s: %3$s -> %4$s";
+    public static final String MESSAGE_SET_PLAYER_SUCCESS = "Set %1$s\n%2$s: %3$s -> %4$s";
     public static final String MESSAGE_NOT_PLAYER = "This person must be a player.";
 
     private final Index index;
