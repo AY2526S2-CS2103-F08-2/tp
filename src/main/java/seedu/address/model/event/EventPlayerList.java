@@ -99,7 +99,8 @@ public class EventPlayerList implements Iterable<Person> {
         }
 
         EventPlayerList otherEventPlayerList = (EventPlayerList) other;
-        return uniquePersonList.equals(otherEventPlayerList.uniquePersonList);
+        return new HashSet<>(uniquePersonList.asUnmodifiableObservableList())
+                .equals(new HashSet<>(otherEventPlayerList.asUnmodifiableObservableList()));
     }
 
     @Override
