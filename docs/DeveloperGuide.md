@@ -426,12 +426,12 @@ The sequence diagram below shows the confirmed index-based delete path after the
 `sort` is implemented as a `Logic`-to-`Model` operation that first sets the target scope and then applies a comparator
 to the filtered person list.
 
-* `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute
+* `SortCommandParser` parses the scope (`r/player`, `r/staff`, or all persons), the `by/...` attribute
   (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
-The following sequence diagram illustrates `sort players by/email desc`.
+The following sequence diagram illustrates `sort r/player by/email desc`.
 
 ![Sort command flow in Logic](images/SortSequenceDiagram.png)
 

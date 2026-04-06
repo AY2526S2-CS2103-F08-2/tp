@@ -29,7 +29,7 @@ public class SortCommandParserTest {
     public void parse_sortPlayersByEmail_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.EMAIL, "players", false);
-        assertEquals(expected, parser.parse("players by/email"));
+        assertEquals(expected, parser.parse("r/player by/email"));
     }
 
     @Test
@@ -43,21 +43,21 @@ public class SortCommandParserTest {
     public void parse_sortStaffByStatus_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.STATUS, "staff", false);
-        assertEquals(expected, parser.parse("staff by/status"));
+        assertEquals(expected, parser.parse("r/staff by/status"));
     }
 
     @Test
     public void parse_sortPlayersByPositionDescending_returnsSortCommand() {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.POSITION, "players", true);
-        assertParseSuccess(parser, "players by/position desc", expected);
+        assertParseSuccess(parser, "r/player by/position desc", expected);
     }
 
     @Test
     public void parse_sortPlayersByGoals_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.GOALS, "players", false);
-        assertEquals(expected, parser.parse("players by/goals"));
+        assertEquals(expected, parser.parse("r/player by/goals"));
     }
 
     @Test
@@ -71,14 +71,14 @@ public class SortCommandParserTest {
     public void parse_sortPlayersByLossesDescending_returnsSortCommand() {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.LOSSES, "players", true);
-        assertParseSuccess(parser, "players by/losses desc", expected);
+        assertParseSuccess(parser, "r/player by/losses desc", expected);
     }
 
     @Test
     public void parse_caseInsensitive_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.NAME, "staff", false);
-        assertEquals(expected, parser.parse("STAFF by/NAME"));
+        assertEquals(expected, parser.parse("r/STAFF by/NAME"));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class SortCommandParserTest {
     public void parse_descendingOrder_returnsSortCommand() {
         SortCommand expected = new SortCommand(new PersonHasRolePredicate(Role.PLAYER),
                 PersonSortAttribute.NAME, "players", true);
-        assertParseSuccess(parser, "players by/name desc", expected);
+        assertParseSuccess(parser, "r/player by/name desc", expected);
     }
 
     @Test
@@ -101,11 +101,12 @@ public class SortCommandParserTest {
         assertParseFailure(parser, "", expectedMessage);
         assertParseFailure(parser, "name", expectedMessage);
         assertParseFailure(parser, "persons by/name", expectedMessage);
-        assertParseFailure(parser, "players name", expectedMessage);
-        assertParseFailure(parser, "players by/name by/email", expectedMessage);
-        assertParseFailure(parser, "players by/name desc extra", expectedMessage);
+        assertParseFailure(parser, "players by/name", expectedMessage);
+        assertParseFailure(parser, "r/player name", expectedMessage);
+        assertParseFailure(parser, "r/player by/name by/email", expectedMessage);
+        assertParseFailure(parser, "r/player by/name desc extra", expectedMessage);
         assertParseFailure(parser, "by/name asc", expectedMessage);
-        assertParseFailure(parser, "players by/name descending", expectedMessage);
-        assertParseFailure(parser, "players desc by/name", expectedMessage);
+        assertParseFailure(parser, "r/player by/name descending", expectedMessage);
+        assertParseFailure(parser, "r/player desc by/name", expectedMessage);
     }
 }
