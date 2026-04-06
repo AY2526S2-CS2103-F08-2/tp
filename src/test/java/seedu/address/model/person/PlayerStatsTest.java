@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import org.junit.jupiter.api.Test;
 
@@ -99,6 +100,17 @@ public class PlayerStatsTest {
         assertNotEquals(stats, "not a PlayerStats");
     }
 
+    @Test
+    public void equals_copyConstructorResult_returnsTrue() {
+        PlayerStats original = new PlayerStats();
+        original.setGoalsScored(5);
+        original.setMatchesWon(3);
+        original.setMatchesLost(1);
+
+        PlayerStats copy = new PlayerStats(original);
+        assertEquals(original, copy);
+    }
+
     // ======================== toString() ========================
 
     @Test
@@ -114,5 +126,66 @@ public class PlayerStatsTest {
         stats.setMatchesWon(2);
         stats.setMatchesLost(1);
         assertEquals("{ goalsScored = 3, matchesWon = 2, matchesLost = 1 }", stats.toString());
+    }
+
+    // ======================== Copy constructor ========================
+
+    @Test
+    public void copyConstructor_copiesAllFields() {
+        PlayerStats original = new PlayerStats();
+        original.setGoalsScored(10);
+        original.setMatchesWon(5);
+        original.setMatchesLost(3);
+
+        PlayerStats copy = new PlayerStats(original);
+
+        assertEquals(original.getGoalsScored(), copy.getGoalsScored());
+        assertEquals(original.getMatchesWon(), copy.getMatchesWon());
+        assertEquals(original.getMatchesLost(), copy.getMatchesLost());
+    }
+
+    @Test
+    public void copyConstructor_returnsDistinctObject() {
+        PlayerStats original = new PlayerStats();
+        PlayerStats copy = new PlayerStats(original);
+        assertNotSame(original, copy);
+    }
+
+    @Test
+    public void copyConstructor_mutatingCopyDoesNotAffectOriginal() {
+        PlayerStats original = new PlayerStats();
+        original.setGoalsScored(10);
+        original.setMatchesWon(5);
+        original.setMatchesLost(3);
+
+        PlayerStats copy = new PlayerStats(original);
+        copy.setGoalsScored(99);
+        copy.setMatchesWon(99);
+        copy.setMatchesLost(99);
+
+        assertEquals(10, original.getGoalsScored());
+        assertEquals(5, original.getMatchesWon());
+        assertEquals(3, original.getMatchesLost());
+    }
+
+    @Test
+    public void copyConstructor_mutatingOriginalDoesNotAffectCopy() {
+        PlayerStats original = new PlayerStats();
+        original.setGoalsScored(10);
+
+        PlayerStats copy = new PlayerStats(original);
+        original.setGoalsScored(99);
+
+        assertEquals(10, copy.getGoalsScored());
+    }
+
+    @Test
+    public void copyConstructor_defaultStats_copiesZeroValues() {
+        PlayerStats original = new PlayerStats();
+        PlayerStats copy = new PlayerStats(original);
+
+        assertEquals(0, copy.getGoalsScored());
+        assertEquals(0, copy.getMatchesWon());
+        assertEquals(0, copy.getMatchesLost());
     }
 }
