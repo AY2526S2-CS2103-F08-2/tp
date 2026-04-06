@@ -2,6 +2,7 @@ package seedu.address.model.event;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -20,9 +21,10 @@ public abstract class Event {
 
     // Data fields
     protected final EventPlayerList eventPlayerList;
+    protected final EventPlayerList attendedPlayerList;
 
     /**
-     * Every field must be present and not null.
+     * Every field must be present and not null. Attendee list is default empty.
      */
     protected Event(EventName eventName, Date eventDate, EventType eventType, EventPlayerList eventPlayerList) {
         requireAllNonNull(eventName, eventDate, eventType, eventPlayerList);
@@ -30,6 +32,20 @@ public abstract class Event {
         this.eventDate = eventDate;
         this.eventType = eventType;
         this.eventPlayerList = eventPlayerList;
+        this.attendedPlayerList = new EventPlayerList(new HashSet<>());
+    }
+
+    /**
+     * Overloaded constructor. Every field must be present and not null. Attendee list is passed to constructor.
+     */
+    public Event(EventName eventName, Date eventDate, EventType eventType, EventPlayerList eventPlayerList,
+            EventPlayerList attendedPlayerList) {
+        requireAllNonNull(eventName, eventDate, eventType, eventPlayerList, attendedPlayerList);
+        this.eventName = eventName;
+        this.eventDate = eventDate;
+        this.eventType = eventType;
+        this.eventPlayerList = eventPlayerList;
+        this.attendedPlayerList = attendedPlayerList;
     }
 
     /**
@@ -48,6 +64,23 @@ public abstract class Event {
         };
     }
 
+    /**
+     * Factory method for creating event, with existing attendees.
+     * @param eventName
+     * @param eventDate
+     * @param eventType
+     * @param eventPlayerList
+     * @param attendedPlayerList
+     * @return {@code Event}
+     */
+    public static Event createEventWithAttendees(EventName eventName, Date eventDate, EventType eventType,
+            EventPlayerList eventPlayerList, EventPlayerList attendedPlayerList) {
+        return switch (eventType) {
+        case MATCH -> new Match(eventName, eventDate, eventPlayerList, attendedPlayerList);
+        case TRAINING -> new Training(eventName, eventDate, eventPlayerList, attendedPlayerList);
+        };
+    }
+
     public Date getEventDate() {
         return eventDate;
     }
@@ -58,6 +91,10 @@ public abstract class Event {
 
     public EventPlayerList getEventPlayerList() {
         return eventPlayerList;
+    }
+
+    public EventPlayerList getAttendedPlayerList() {
+        return attendedPlayerList;
     }
 
     public EventType getEventType() {

@@ -63,7 +63,8 @@ public class EventCard extends UiPart<Region> {
                 .asUnmodifiableObservableList()
                 .stream()
                 .sorted(Comparator.comparing(person -> person.getName().fullName))
-                .map(person -> person.getName().fullName)
+                .map(person -> person.getName().fullName + ((event.getAttendedPlayerList().contains(person)) ? " (P)"
+                        : " (NP)"))
                 .collect(Collectors.joining(", "));
 
         playerList.setText("Players: " + players);

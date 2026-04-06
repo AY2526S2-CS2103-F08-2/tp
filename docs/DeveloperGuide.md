@@ -704,6 +704,23 @@ Use case ends.
     * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
+**Use case: UC09 - Add new training**  
+**MSS**
+
+1. Manager wants to record a new training session.
+2. Manager provides the name of the training session, date, and players that attended the training.
+3. SoCcer Manager checks that the players exist in the address book.
+4. SoCcer Manager adds the training session with the specified name, date, and players.
+
+**Extensions**
+
+* 2a. Manager provides an attribute.
+    * 2a1. SoCcer Manager checks that the attribute exists.
+    * 2a2. SoCcer Manager finds all the players with the attribute.
+      Use case resumes at step 3.
+
+*{More to be added}*
+
 ### Non-Functional Requirements
 
 1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
@@ -953,3 +970,7 @@ testers are expected to do more *exploratory* testing.
    as a result, visually similar values such as `First Team` and `First  Team` can coexist as distinct
    catalog entries. A planned enhancement is to normalize repeated internal whitespace during attribute parsing so that
    equivalent attribute values are treated consistently during duplicate checks, storage, and person assignment.
+2. **Allow user to unmark attendance for specific events:**
+   Currently, users are only able to mark the attendance of players for events. They cannot reverse this and unmark someone
+   who attended. This could potentially be useful if the user accidentally marks someone as attended or the player only attends
+   for a short amount of time and the user wants to remove their attendance.
