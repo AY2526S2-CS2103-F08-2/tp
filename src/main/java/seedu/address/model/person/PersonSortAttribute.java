@@ -12,6 +12,24 @@ public enum PersonSortAttribute {
             .thenComparing(person -> person.getEmail().value, String.CASE_INSENSITIVE_ORDER)),
     EMAIL("email", Comparator
             .comparing((Person person) -> person.getEmail().value, String.CASE_INSENSITIVE_ORDER)
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    TEAM("team", Comparator
+            .comparing((Person person) -> person.getTeam().value, String.CASE_INSENSITIVE_ORDER)
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    STATUS("status", Comparator
+            .comparing((Person person) -> person.getStatus().value, String.CASE_INSENSITIVE_ORDER)
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    POSITION("position", Comparator
+            .comparing((Person person) -> person.getPosition().value, String.CASE_INSENSITIVE_ORDER)
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    GOALS("goals", Comparator
+            .comparingInt((Person person) -> getStatValue(person, StatField.GOALS))
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    WINS("wins", Comparator
+            .comparingInt((Person person) -> getStatValue(person, StatField.WINS))
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    LOSSES("losses", Comparator
+            .comparingInt((Person person) -> getStatValue(person, StatField.LOSSES))
             .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER));
 
     private final String keyword;
@@ -38,5 +56,13 @@ public enum PersonSortAttribute {
                 .filter(attribute -> attribute.keyword.equalsIgnoreCase(keyword))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported sort attribute: " + keyword));
+    }
+
+    private static int getStatValue(Person person, StatField statField) {
+        if (!(person instanceof Player)) {
+            return 0;
+        }
+
+        return statField.getValue(((Player) person).getStats());
     }
 }

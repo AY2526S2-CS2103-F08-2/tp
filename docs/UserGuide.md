@@ -34,7 +34,13 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `sort by/name` : Sorts all persons by name in ascending order.
 
-   * `sort players by/email desc` : Sorts only players by email in descending order.
+   * `sort r/player by/email desc` : Sorts only players by email in descending order.
+
+   * `sort by/team` : Sorts all persons by team in ascending order.
+
+   * `sort r/staff by/status` : Sorts only staff by status in ascending order.
+
+   * `sort r/player by/goals desc` : Sorts only players by goals in descending order.
 
    * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a player named `John Doe` to SoCcer Manager.
 
@@ -172,18 +178,29 @@ Sorts persons in the UI by a supported attribute.
 
 Format:
 * `sort by/ATTRIBUTE`
-* `sort players by/ATTRIBUTE`
-* `sort staff by/ATTRIBUTE`
+* `sort r/player by/ATTRIBUTE`
+* `sort r/staff by/ATTRIBUTE`
 * Add optional `desc` at the end for descending order
 
 Supported attributes:
 * `name`
 * `email`
+* `team`
+* `status`
+* `position`
+* `goals`
+* `wins`
+* `losses`
 
 Examples:
 * `sort by/name`
-* `sort players by/email`
-* `sort staff by/name desc`
+* `sort r/player by/email`
+* `sort by/team`
+* `sort by/status`
+* `sort r/player by/position desc`
+* `sort by/wins desc`
+* `sort r/player by/goals desc`
+* `sort r/staff by/name desc`
 
 ### Player Stats
 Every **player** will have stats that denote their individual performance. 
@@ -515,8 +532,8 @@ _Details coming soon ..._
 | **Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                         |
 | **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |
 | **Find**         | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                        |
-| **List**         | `list` / `list players` / `list staff`<br> e.g., `list players`                                                                                                                                                        |
-| **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                       |
+| **List**         | `list` / `list [players \| staff] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list players tm/First Team st/Active`                                                                                              |
+| **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort r/player by/ATTRIBUTE [desc]` / `sort r/staff by/ATTRIBUTE [desc]`<br> attributes: `name`, `email`, `team`, `status`, `position`, `goals`, `wins`, `losses`<br> e.g., `sort by/team`, `sort r/player by/goals desc` |
 | **Set**          | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                      |
 | **Update**       | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                 |
 | **Help**         | `help`                                                                                                                                                                                                                 |
