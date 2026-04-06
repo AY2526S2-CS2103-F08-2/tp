@@ -1,5 +1,7 @@
 package seedu.address.testutil;
 
+import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
+
 import java.util.Set;
 
 import seedu.address.model.event.Date;
@@ -8,7 +10,6 @@ import seedu.address.model.event.EventName;
 import seedu.address.model.event.EventPlayerList;
 import seedu.address.model.event.EventType;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Role;
 
 /**
  * A utility class to help with building Event objects.
@@ -18,8 +19,7 @@ public class EventBuilder {
     public static final String DEFAULT_MATCH_NAME = "Barcelona";
     public static final String DEFAULT_MATCH_TYPE = "MATCH";
     public static final String DEFAULT_DATE = "2025-01-01 1000";
-    public static final Person DEFAULT_PERSON = new PersonBuilder().withRole(Role.PLAYER).build();
-    public static final EventPlayerList DEFAULT_EVENT_PLAYER_LIST = new EventPlayerList(Set.of(DEFAULT_PERSON));
+    public static final EventPlayerList DEFAULT_EVENT_PLAYER_LIST = new EventPlayerList(Set.of(PLAYER_AMY));
 
     private EventName eventName;
     private EventType eventType;

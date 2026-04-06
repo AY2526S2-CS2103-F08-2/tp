@@ -1,5 +1,7 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
+
 import seedu.address.logic.commands.ListRoleCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.PersonHasRolePredicate;
@@ -10,11 +12,11 @@ import seedu.address.model.person.Role;
  */
 public class ListRoleCommandParser implements Parser<ListRoleCommand> {
 
-    public static final String VALID_ARG_PLAYER = "players";
+    public static final String VALID_ARG_PLAYER = "player";
     public static final String VALID_ARG_STAFF = "staff";
     public static final String MESSAGE_INVALID_ROLE =
-            "Invalid command format. Use 'list' to view all, 'list players' to view players,"
-            + " or 'list staff' to view staff.";
+            "Invalid command format. Use 'list' to view all, 'list r/player' to view players,"
+            + " or 'list r/staff' to view staff.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the ListRoleCommand
@@ -24,8 +26,11 @@ public class ListRoleCommandParser implements Parser<ListRoleCommand> {
     @Override
     public ListRoleCommand parse(String args) throws ParseException {
         String trimmedArgs = args.trim().toLowerCase();
+        if (!trimmedArgs.startsWith(PREFIX_ROLE.getPrefix())) {
+            throw new ParseException(MESSAGE_INVALID_ROLE);
+        }
 
-        switch (trimmedArgs) {
+        switch (trimmedArgs.substring(PREFIX_ROLE.getPrefix().length())) {
         case VALID_ARG_PLAYER:
             return new ListRoleCommand(new PersonHasRolePredicate(Role.PLAYER), "players");
         case VALID_ARG_STAFF:
@@ -35,4 +40,3 @@ public class ListRoleCommandParser implements Parser<ListRoleCommand> {
         }
     }
 }
-

@@ -14,10 +14,10 @@ box Model MODEL_COLOR_T1
 participant "m:Model" as Model MODEL_COLOR
 end box
 
-[-> LogicManager : execute("list players")
+[-> LogicManager : execute("list r/player")
 activate LogicManager
 
-LogicManager -> AddressBookParser : parseCommand("list players")
+LogicManager -> AddressBookParser : parseCommand("list r/player")
 activate AddressBookParser
 
 create ListRoleCommandParser
@@ -27,7 +27,7 @@ activate ListRoleCommandParser
 ListRoleCommandParser --> AddressBookParser
 deactivate ListRoleCommandParser
 
-AddressBookParser -> ListRoleCommandParser : parse("players")
+AddressBookParser -> ListRoleCommandParser : parse("r/player")
 activate ListRoleCommandParser
 
 create ListRoleCommand

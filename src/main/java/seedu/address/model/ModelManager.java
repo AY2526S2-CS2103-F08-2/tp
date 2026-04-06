@@ -120,17 +120,19 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) throws CommandException {
         addressBook.removePerson(target);
-        for (Event e : addressBook.getEventList()) {
-            if (e.getEventPlayerList().contains((Player) target)) {
-                EditEventDescriptor descriptor = new EditEventDescriptor();
-                descriptor.setEventType(e.getEventType());
-                descriptor.setEventName(e.getEventName());
-                descriptor.setEventDate(e.getEventDate());
-                Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
-                updatedPlayerNames.remove(target.getName().toString());
-                descriptor.setEventPlayerNames(updatedPlayerNames);
-                Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
-                this.setEvent(e, editedEvent);
+        if (target.getRole() == Role.PLAYER) {
+            for (Event e : addressBook.getEventList()) {
+                if (e.getEventPlayerList().contains(target)) {
+                    EditEventDescriptor descriptor = new EditEventDescriptor();
+                    descriptor.setEventType(e.getEventType());
+                    descriptor.setEventName(e.getEventName());
+                    descriptor.setEventDate(e.getEventDate());
+                    Set<String> updatedPlayerNames = new HashSet<>(e.getEventPlayerList().getPlayerNames());
+                    updatedPlayerNames.remove(target.getName().toString());
+                    descriptor.setEventPlayerNames(updatedPlayerNames);
+                    Event editedEvent = EventEditCommand.createEditedEvent(e, descriptor, this);
+                    this.setEvent(e, editedEvent);
+                }
             }
         }
 
