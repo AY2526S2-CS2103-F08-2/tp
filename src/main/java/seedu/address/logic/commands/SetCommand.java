@@ -30,7 +30,7 @@ public class SetCommand extends Command {
             + "VALUE"
             + "\nExample: " + COMMAND_WORD + " 1 goals 10";
 
-    public static final String MESSAGE_SET_PLAYER_SUCCESS = "Set %1$s %2$s: %3$s -> %4$s";
+    public static final String MESSAGE_SET_PLAYER_SUCCESS = "Set %1$s\n%2$s: %3$s -> %4$s";
     public static final String MESSAGE_NOT_PLAYER = "This person must be a player.";
 
     private final Index index;
@@ -65,8 +65,9 @@ public class SetCommand extends Command {
 
         Player player = (Player) person;
         int old = this.stat.getValue(player.getStats());
-        player = setPlayerStat(player);
+        Player updatedPlayer = setPlayerStat(player);
 
+        model.setPerson(player, updatedPlayer);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_SET_PLAYER_SUCCESS,
                 Messages.format(player), this.stat, old, this.value));
@@ -81,10 +82,11 @@ public class SetCommand extends Command {
         if (!this.stat.isValid(this.value)) {
             throw new CommandException(stat.messageConstraints);
         }
-        PlayerStats playerStats = player.getStats();
-        stat.setValue(playerStats, this.value);
+        PlayerStats oldStats = player.getStats();
+        PlayerStats newStats = new PlayerStats(oldStats);
+        this.stat.setValue(newStats, this.value);
 
-        return player;
+        return new Player(player, newStats);
     }
 
     @Override

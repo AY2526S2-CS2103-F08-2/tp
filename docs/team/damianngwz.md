@@ -9,10 +9,10 @@ AddressBook - Level 3 is a desktop address book application used for teaching So
 
 Given below are my contributions to the project.
 
-* **New Feature**: Added role-scoped listing commands (`list players`, `list staff`).
+* **New Feature**: Added role-scoped listing commands (`list r/player`, `list r/staff`).
     * **What it does**: Extends the `list` command so users can filter the visible person list directly by role, while preserving the original `list` command as the all-persons view.
     * **Justification**: Team workflows are frequently role-specific. Coaches regularly switch between player operations and staff operations, so a direct role-scoped list reduces command friction and improves navigation speed.
-    * **Highlights**: Implemented end-to-end parser-command-predicate integration (`AddressBookParser` -> `ListRoleCommandParser` -> `ListRoleCommand` -> `PersonHasRolePredicate`) with case-insensitive role handling and strict invalid-role rejection. This role-filtering foundation was later reused/extended in role-scoped filtering enhancements (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#76](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/76), PR [#95](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/95)).
+    * **Highlights**: Implemented parser-command-predicate integration for role-scoped list filtering (`AddressBookParser` -> `ListCommandParser` -> `ListRoleCommand` -> `PersonHasRolePredicate`) with case-insensitive role handling and strict invalid-role rejection. This role-filtering foundation was later reused and extended for composite list filtering and unified `list`-syntax enhancements (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#76](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/76), PR [#95](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/95), PR [#161](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/161)).
     * **Credits**: Followed the abstraction boundaries and command workflow patterns used in AB3 (`Parser` -> `Command` -> `Model` with predicate-based filtered list updates) to keep feature integration consistent with the existing architecture.
 
 * **New Feature**: Added attributes subsystem (`Team`, `Status`, `Position`) with catalog commands and person assignment.

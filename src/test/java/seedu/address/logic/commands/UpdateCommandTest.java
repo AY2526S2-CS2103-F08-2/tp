@@ -92,11 +92,15 @@ public class UpdateCommandTest {
         UpdateCommand command = new UpdateCommand(INDEX_FIRST_PERSON, StatField.WINS, increment);
         CommandResult commandResult = command.execute(modelStub);
 
+        // command uses old player reference for the message, fetch updated from stub for stat assertion
+        Player updatedPlayer = (Player) modelStub.filteredPersons.get(0);
+
         assertEquals(String.format(UpdateCommand.MESSAGE_SET_PLAYER_SUCCESS,
                         Messages.format(player), StatField.WINS, oldWins, expectedWins, increment),
                 commandResult.getFeedbackToUser());
-        assertEquals(expectedWins, player.getStats().getMatchesWon());
+        assertEquals(expectedWins, updatedPlayer.getStats().getMatchesWon());
         assertTrue(modelStub.updateFilteredPersonListCalled);
+        assertTrue(modelStub.setPersonCalled);
     }
 
     @Test
@@ -321,6 +325,7 @@ public class UpdateCommandTest {
     private class ModelStubWithFilteredList extends ModelStub {
         private final ObservableList<Person> filteredPersons = FXCollections.observableArrayList();
         private boolean updateFilteredPersonListCalled = false;
+        private boolean setPersonCalled = false;
 
         ModelStubWithFilteredList(Person... persons) {
             filteredPersons.addAll(Arrays.asList(persons));
@@ -329,6 +334,13 @@ public class UpdateCommandTest {
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return filteredPersons;
+        }
+
+        @Override
+        public void setPerson(Person target, Person editedPerson) {
+            int index = filteredPersons.indexOf(target);
+            filteredPersons.set(index, editedPerson);
+            setPersonCalled = true;
         }
 
         @Override

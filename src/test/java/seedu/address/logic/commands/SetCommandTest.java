@@ -59,11 +59,15 @@ public class SetCommandTest {
         SetCommand command = new SetCommand(INDEX_FIRST_PERSON, StatField.GOALS, newGoals);
         CommandResult commandResult = command.execute(modelStub);
 
+        // command uses old player reference for the message, fetch updated from stub for stat assertion
+        Player updatedPlayer = (Player) modelStub.filteredPersons.get(0);
+
         assertEquals(String.format(SetCommand.MESSAGE_SET_PLAYER_SUCCESS,
                         Messages.format(player), StatField.GOALS, oldGoals, newGoals),
                 commandResult.getFeedbackToUser());
-        assertEquals(newGoals, player.getStats().getGoalsScored());
+        assertEquals(newGoals, updatedPlayer.getStats().getGoalsScored());
         assertTrue(modelStub.updateFilteredPersonListCalled);
+        assertTrue(modelStub.setPersonCalled);
     }
 
     @Test
@@ -118,6 +122,9 @@ public class SetCommandTest {
      * A default model stub that has all methods failing.
      */
     private class ModelStub implements Model {
+        private boolean updateFilteredPersonListCalled = false;
+        private boolean setPersonCalled = false;
+
         @Override
         public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
             throw new AssertionError("This method should not be called.");
@@ -185,17 +192,17 @@ public class SetCommandTest {
 
         @Override
         public void addTeam(Team team) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void deleteTeam(Team team) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void setTeam(Team oldTeam, Team newTeam) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
@@ -205,17 +212,17 @@ public class SetCommandTest {
 
         @Override
         public void deleteEvent(Event target) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void addEvent(Event event) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void setEvent(Event target, Event editedEvent) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
@@ -245,17 +252,17 @@ public class SetCommandTest {
 
         @Override
         public void addPosition(Position position) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void deletePosition(Position position) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void setPosition(Position oldPosition, Position newPosition) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
@@ -275,22 +282,22 @@ public class SetCommandTest {
 
         @Override
         public void addStatus(Status status) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void deleteStatus(Status status) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void setStatus(Status oldStatus, Status newStatus) {
-
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
-            throw new AssertionError("This method should not be called.");
+            updateFilteredPersonListCalled = true;
         }
 
         @Override
@@ -310,6 +317,7 @@ public class SetCommandTest {
     private class ModelStubWithFilteredList extends ModelStub {
         private final ObservableList<Person> filteredPersons = FXCollections.observableArrayList();
         private boolean updateFilteredPersonListCalled = false;
+        private boolean setPersonCalled = false;
 
         ModelStubWithFilteredList(Person... persons) {
             filteredPersons.addAll(Arrays.asList(persons));
@@ -318,6 +326,13 @@ public class SetCommandTest {
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return filteredPersons;
+        }
+
+        @Override
+        public void setPerson(Person target, Person editedPerson) {
+            int index = filteredPersons.indexOf(target);
+            filteredPersons.set(index, editedPerson);
+            setPersonCalled = true;
         }
 
         @Override

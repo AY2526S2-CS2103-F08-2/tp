@@ -22,9 +22,11 @@ import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.EventDeleteCommand;
 import seedu.address.logic.commands.EventEditCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ListFilteredCommand;
 import seedu.address.logic.commands.ListRoleCommand;
 import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.commands.PositionAddCommand;
@@ -45,6 +47,8 @@ import seedu.address.logic.commands.UpdateCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonMatchesListFiltersPredicate;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.RoleFilteredNameContainsKeywordsPredicate;
 import seedu.address.model.person.Status;
@@ -131,6 +135,12 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_filter() throws Exception {
+        assertTrue(parser.parseCommand("filter goals/>10") instanceof FilterCommand);
+        assertTrue(parser.parseCommand("filter r/player pos/Forward goals/>10") instanceof FilterCommand);
+    }
+
+    @Test
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
@@ -143,24 +153,48 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_listPlayers() throws Exception {
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " players") instanceof ListRoleCommand);
+        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " r/player") instanceof ListRoleCommand);
     }
 
     @Test
     public void parseCommand_listStaff() throws Exception {
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " staff") instanceof ListRoleCommand);
+        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " r/staff") instanceof ListRoleCommand);
     }
 
     @Test
     public void parseCommand_listInvalidRole_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
+        assertThrows(ParseException.class, () -> parser.parseCommand(ListCommand.COMMAND_WORD + " r/coach"));
+    }
+
+    @Test
+    public void parseCommand_listWithTeamFilter() throws Exception {
+        ListFilteredCommand expected = new ListFilteredCommand(
+                new PersonMatchesListFiltersPredicate(java.util.Optional.empty(),
+                        java.util.Optional.of(new Team("First Team")),
+                        java.util.Optional.empty(),
+                        java.util.Optional.empty()),
+                "persons matching team First Team");
+        assertEquals(expected, parser.parseCommand(ListCommand.COMMAND_WORD + " tm/First Team"));
+    }
+
+    @Test
+    public void parseCommand_listPlayersWithCombinedFilters() throws Exception {
+        ListFilteredCommand expected = new ListFilteredCommand(
+                new PersonMatchesListFiltersPredicate(java.util.Optional.of(Role.PLAYER),
+                        java.util.Optional.of(new Team("First Team")),
+                        java.util.Optional.of(new Status("Active")),
+                        java.util.Optional.of(new Position("Defender"))),
+                "players matching team First Team, status Active, position Defender");
+        assertEquals(expected, parser.parseCommand(
+                ListCommand.COMMAND_WORD + " r/player tm/First Team st/Active pos/Defender"));
     }
 
     @Test
     public void parseCommand_sort() throws Exception {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/name") instanceof SortCommand);
-        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email") instanceof SortCommand);
-        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email desc") instanceof SortCommand);
+        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " r/player by/email") instanceof SortCommand);
+        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " r/player by/email desc")
+                instanceof SortCommand);
     }
 
     @Test

@@ -3,11 +3,14 @@ package seedu.address.ui;
 import java.util.Comparator;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import seedu.address.model.person.CalculatedStatField;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
 import seedu.address.model.person.PlayerStats;
@@ -59,11 +62,9 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private VBox statsBox;
     @FXML
-    private Label statGoals;
+    private Separator statsSeparatorTop;
     @FXML
-    private Label statWins;
-    @FXML
-    private Label statLosses;
+    private Separator statsSeparatorBottom;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -94,13 +95,50 @@ public class PersonCard extends UiPart<Region> {
             Player player = (Player) person;
             PlayerStats stats = player.getStats();
 
-            statGoals.setText("Goals: " + StatField.GOALS.getValue(stats));
-            statWins.setText("Wins: " + StatField.WINS.getValue(stats));
-            statLosses.setText("Losses: " + StatField.LOSSES.getValue(stats));
+            for (StatField stat : StatField.values()) {
+                String name = stat.name().replaceAll("_", " ");
+                Label label = new Label(name + ": " + stat.getValue(stats));
+                label.getStyleClass().add("stat-label");
+                statsBox.getChildren().add(label);
+            }
+            for (CalculatedStatField stat : CalculatedStatField.values()) {
+                String name = stat.name().replaceAll("_", " ");
+                double value = stat.getValue(stats);
+                Label nameLabel = new Label(name + ": ");
+                nameLabel.getStyleClass().add("stat-label");
+                Label valueLabel = new Label(String.format("%.2f", value));
+                valueLabel.getStyleClass().add("stat-label");
 
-            statsBox.setManaged(true);
-            statsBox.setVisible(true);
+                // colour for winrate
+                if (stat == CalculatedStatField.WIN_RATE) {
+                    valueLabel.setText(valueLabel.getText() + "%");
+                    boolean hasPlayed = stats.getMatchesWon() + stats.getMatchesLost() != 0;
+                    if (!hasPlayed) {
+                        valueLabel.setStyle("-fx-text-fill: gray;");
+                    } else if (value >= 60) {
+                        valueLabel.setStyle("-fx-text-fill: green;");
+                    } else if (value >= 40) {
+                        valueLabel.setStyle("-fx-text-fill: orange;");
+                    } else {
+                        valueLabel.setStyle("-fx-text-fill: red;");
+                    }
+                }
+
+                HBox row = new HBox(nameLabel, valueLabel);
+                statsBox.getChildren().add(row);
+            }
+
+            showElement(statsBox);
+            showElement(statsSeparatorTop);
+            showElement(statsSeparatorBottom);
         }
+    }
+
+
+    /** Helper to show element, assumes default is hidden */
+    private void showElement(Node node) {
+        node.setManaged(true);
+        node.setVisible(true);
     }
 
     private void setAttributeLabel(Label label, String fieldName, Team teamValue, boolean isDefault) {
@@ -122,7 +160,6 @@ public class PersonCard extends UiPart<Region> {
             return;
         }
         label.setText(fieldName + ": " + value);
-        label.setManaged(true);
-        label.setVisible(true);
+        showElement(label);
     }
 }

@@ -6,7 +6,7 @@ box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":ListCommandParser" as ListCommandParser LOGIC_COLOR
-participant "lr:ListRoleCommand" as ListRoleCommand LOGIC_COLOR
+participant "lf:ListFilteredCommand" as ListFilteredCommand LOGIC_COLOR
 participant "r:CommandResult" as CommandResult LOGIC_COLOR
 end box
 
@@ -14,10 +14,10 @@ box Model MODEL_COLOR_T1
 participant "m:Model" as Model MODEL_COLOR
 end box
 
-[-> LogicManager : execute("list r/player")
+[-> LogicManager : execute("list r/player st/Active pos/Defender")
 activate LogicManager
 
-LogicManager -> AddressBookParser : parseCommand("list r/player")
+LogicManager -> AddressBookParser : parseCommand("list r/player st/Active pos/Defender")
 activate AddressBookParser
 
 create ListCommandParser
@@ -27,41 +27,40 @@ activate ListCommandParser
 ListCommandParser --> AddressBookParser
 deactivate ListCommandParser
 
-AddressBookParser -> ListCommandParser : parse(" r/player")
+AddressBookParser -> ListCommandParser : parse(" r/player st/Active pos/Defender")
 activate ListCommandParser
 
-create ListRoleCommand
-ListCommandParser -> ListRoleCommand
-activate ListRoleCommand
+create ListFilteredCommand
+ListCommandParser -> ListFilteredCommand
+activate ListFilteredCommand
 
-ListRoleCommand --> ListCommandParser
-deactivate ListRoleCommand
+ListFilteredCommand --> ListCommandParser
+deactivate ListFilteredCommand
 
-ListCommandParser --> AddressBookParser : lr
+ListCommandParser --> AddressBookParser : lf
 deactivate ListCommandParser
-'Hidden arrow to position the destroy marker below the end of the activation bar.
 ListCommandParser -[hidden]-> AddressBookParser
 destroy ListCommandParser
 
-AddressBookParser --> LogicManager : lr
+AddressBookParser --> LogicManager : lf
 deactivate AddressBookParser
 
-LogicManager -> ListRoleCommand : execute(m)
-activate ListRoleCommand
+LogicManager -> ListFilteredCommand : execute(m)
+activate ListFilteredCommand
 
-ListRoleCommand -> Model : updateFilteredPersonList(rolePredicate)
+ListFilteredCommand -> Model : updateFilteredPersonList(compositePredicate)
 activate Model
-Model --> ListRoleCommand
+Model --> ListFilteredCommand
 deactivate Model
 
 create CommandResult
-ListRoleCommand -> CommandResult
+ListFilteredCommand -> CommandResult
 activate CommandResult
-CommandResult --> ListRoleCommand
+CommandResult --> ListFilteredCommand
 deactivate CommandResult
 
-ListRoleCommand --> LogicManager : r
-deactivate ListRoleCommand
+ListFilteredCommand --> LogicManager : r
+deactivate ListFilteredCommand
 
 [<--LogicManager
 deactivate LogicManager
