@@ -158,7 +158,8 @@ How the parsing works:
 
 The `Model` component,
 
-* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the address book domain data, including `Person` objects, `Event` objects, and the
+  `Team`/`Status`/`Position` attribute catalogs.
 * `Person` is an abstract class that is extended by `Player` and `Staff` classes.
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which
   is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to
@@ -167,6 +168,10 @@ The `Model` component,
   `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they
   should make sense on their own without depending on other components)
+
+The overview model diagrams in this section focus on the person-role structure and intentionally omit
+event and attribute-catalog details to keep the diagrams readable. Those details are documented later
+in the feature-specific implementation sections.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
@@ -259,6 +264,8 @@ checks, `*list` formats the current catalog for display, and `*edit` renames a c
 `teamedit` is shown because it is the richest representative case, while `status*` and `position*`
 follow the same interaction structure with attribute-specific validation/messages.
 
+![Interactions for the `teamedit` Command](images/AttributeEditSequenceDiagram.png)
+
 Command behavior:
 * `*add` checks duplicates before inserting.
 * `*edit` checks target exists, rejects duplicate destination values, and blocks edits of protected defaults.
@@ -295,6 +302,13 @@ When a catalog value is renamed (`teamedit`, `statusedit`, `positionedit`):
 * `ModelManager#setTeam`, `setStatus`, and `setPosition` update the catalog entry.
 * The same operations then rebuild and replace all persons currently assigned the old value.
 * For players, existing `PlayerStats` are preserved during rebuild.
+
+The sequence diagram below focuses on the internal model-level rename cascade after command-level
+validation has already succeeded. `setTeam(...)` is shown as the representative example, while the
+internal replacement steps are intentionally shown in a simplified form to keep the diagram focused.
+`setStatus(...)` and `setPosition(...)` follow the same model-level flow.
+
+![Model-level attribute rename cascade](images/AttributeRenameCascadeSequenceDiagram.png)
 
 #### Storage behavior
 
