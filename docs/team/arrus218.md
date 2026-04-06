@@ -13,7 +13,7 @@ Given below are my contributions to the project.
   * What it does: allows the user to add new training sessions to the address book, directly supplying a list of players or adding all players with a specific attribute.
   * Justification: This feature improves the product significantly because it aids the user in managing training sessions in an app designed for a soccer academy. It is expected that there will be many training sessions and this helps to manage and track them.
   * Highlights: This feature makes use of the Event superclass so that similar code between matches and training can be abstracted, preventing repeated code. This also allows shared behaviour.
-  * Credits: Made us of AB3 existing parser and command design to implement this feature.
+  * Credits: Made use of AB3 existing parser and command design to implement this feature.
 
 * **New Feature**: Added the ability to mark attendance for events.
   * What it does: allows the user to mark the attendance of specific players for the specified event.
