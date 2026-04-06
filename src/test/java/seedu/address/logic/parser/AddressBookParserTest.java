@@ -22,6 +22,7 @@ import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.EventDeleteCommand;
 import seedu.address.logic.commands.EventEditCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
@@ -118,6 +119,12 @@ public class AddressBookParserTest {
         FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " r/player amy");
         assertEquals(new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(
                 Role.PLAYER, Arrays.asList("amy"))), command);
+    }
+
+    @Test
+    public void parseCommand_filter() throws Exception {
+        assertTrue(parser.parseCommand("filter goals/>10") instanceof FilterCommand);
+        assertTrue(parser.parseCommand("filter r/player pos/Forward goals/>10") instanceof FilterCommand);
     }
 
     @Test
