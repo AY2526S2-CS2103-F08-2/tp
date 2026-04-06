@@ -158,7 +158,8 @@ How the parsing works:
 
 The `Model` component,
 
-* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the address book domain data, including `Person` objects, `Event` objects, and the
+  `Team`/`Status`/`Position` attribute catalogs.
 * `Person` is an abstract class that is extended by `Player` and `Staff` classes.
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which
   is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to
@@ -167,6 +168,10 @@ The `Model` component,
   `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they
   should make sense on their own without depending on other components)
+
+The overview model diagrams in this section focus on the person-role structure and intentionally omit
+event and attribute-catalog details to keep the diagrams readable. Those details are documented later
+in the feature-specific implementation sections.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
@@ -202,19 +207,52 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Role-filtered list command
 
-The `list players` and `list staff` commands are handled by `AddressBookParser` via
-`ListRoleCommandParser`, which creates a `ListRoleCommand` with the corresponding role predicate.
+For role-filtered `list` input, `AddressBookParser` delegates to `ListCommandParser`.
+A bare `list` command still returns `ListCommand` directly.
+For role-only input such as `list r/player` or `list r/staff`,
+`ListCommandParser` creates a `ListRoleCommand` with the corresponding role predicate.
 
 When executed, `ListRoleCommand` calls `Model#updateFilteredPersonList(...)` with
 `PersonHasRolePredicate(Role.PLAYER)` or `PersonHasRolePredicate(Role.STAFF)`, which updates the
 observable filtered list shown in the UI.
 
-The sequence diagram below illustrates the interaction flow using `execute("list players")` as the example.
+The sequence diagram below illustrates the interaction flow using `execute("list r/player")` as the example.
 
-![Interactions for the `list players` Command](images/ListRoleSequenceDiagram.png)
+![Interactions for the `list r/player` Command](images/ListRoleSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
+
+### Structured filter command
+
+The `filter` command is implemented as a predicate-based list narrowing operation.
+
+* `FilterCommandParser` parses optional role, team, status, and position criteria, together with optional numeric
+  comparisons for `goals`, `wins`, and `losses`.
+* Parsed criteria are assembled into `PersonMatchesFilterPredicate`, which combines all supplied filters with
+  AND semantics.
+* `FilterCommand` applies that predicate through `Model#updateFilteredPersonList(...)`.
+* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, or `losses` filters.
+
+The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
+
+![Filter command flow in Logic](images/FilterSequenceDiagram.png)
+### Attribute-filtered list command
+
+For attribute-filtered input such as `list tm/First Team` or
+`list r/player st/Active pos/Defender`, `ListCommandParser` creates a
+`ListFilteredCommand` instead of a `ListRoleCommand`.
+
+Implementation details:
+* `ListCommandParser` tokenizes the optional `r/`, `tm/`, `st/`, and `pos/` prefixes.
+* If only `r/` is present, it returns `ListRoleCommand` to preserve the simpler role-only flow.
+* If any attribute filter is present, it builds a `PersonMatchesListFiltersPredicate` with the
+  provided optional role, team, status, and position values.
+* `ListFilteredCommand` then calls `Model#updateFilteredPersonList(...)` with that composite
+  predicate, updating the observable filtered list shown in the UI.
+
+The corresponding sequence-diagram source for the filtered path is recorded in
+`docs/diagrams/ListFilteredSequenceDiagram.puml`.
 
 ### Update player stats command
 
@@ -247,10 +285,21 @@ Default catalogs are seeded in `SampleDataUtil`:
 
 #### Catalog command flow
 
-`AddressBookParser` routes each catalog command to its parser:
+`AddressBookParser` routes attribute catalog `*add`, `*edit`, and `*delete` commands to their
+dedicated parsers. The three `*list` catalog commands are validated and created directly in
+`AddressBookParser` because they do not take arguments:
 * Team: `teamadd`, `teamedit`, `teamdelete`, `teamlist`
 * Status: `statusadd`, `statusedit`, `statusdelete`, `statuslist`
 * Position: `positionadd`, `positionedit`, `positiondelete`, `positionlist`
+
+The sequence diagram below uses `teamedit old/First Team new/Reserve Team` as the representative
+attribute catalog command flow. All attribute catalog commands share the same high-level
+command-model pattern: `*add` inserts a catalog value, `*delete` removes one after guard
+checks, `*list` formats the current catalog for display, and `*edit` renames a catalog value.
+`teamedit` is shown because it is the richest representative case, while `status*` and `position*`
+follow the same interaction structure with attribute-specific validation/messages.
+
+![Interactions for the `teamedit` Command](images/AttributeEditSequenceDiagram.png)
 
 Command behavior:
 * `*add` checks duplicates before inserting.
@@ -275,7 +324,8 @@ Protected default values:
 Validation and normalization:
 * If provided, attribute values must exist in their catalogs.
 * In `add`, omitted values use defaults.
-* In `edit`, omitted values keep the person's existing attribute values.
+* In `edit`, omitted values keep the person's existing attribute values, unless the resulting role
+  becomes `STAFF`, in which case `position` is normalized to `Unassigned Position`.
 * Input matching is case-insensitive through attribute value equality.
 * Stored display casing follows the matched catalog entry's exact casing.
 * Position is player-only:
@@ -289,117 +339,28 @@ When a catalog value is renamed (`teamedit`, `statusedit`, `positionedit`):
 * The same operations then rebuild and replace all persons currently assigned the old value.
 * For players, existing `PlayerStats` are preserved during rebuild.
 
+The sequence diagram below focuses on the internal model-level rename cascade after command-level
+validation has already succeeded. `setTeam(...)` is shown as the representative example, while the
+internal replacement steps are intentionally shown in a simplified form to keep the diagram focused.
+`setStatus(...)` and `setPosition(...)` follow the same model-level flow.
+
+![Model-level attribute rename cascade](images/AttributeRenameCascadeSequenceDiagram.png)
+
 #### Storage behavior
 
 `JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
 
 During load:
-* duplicate catalog entries are rejected,
-* protected default catalog values are auto-healed if missing from JSON, and
-* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`.
+* malformed/duplicate catalog entries are skipped with warning logs,
+* protected default catalog values are auto-healed if missing from JSON,
+* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`,
+* malformed person rows are skipped with warning logs,
+* valid person attributes missing from catalogs are auto-registered, and
+* non-default `position` values for `STAFF` are normalized to `Unassigned Position`.
 
 #### UI behavior
 
 `PersonCard` renders `Team`, `Status`, and `Position` labels only when the person has non-default values.
-
-### \[Proposed\] Undo/redo feature
-
-#### Proposed Implementation
-
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo
-history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the
-following operations:
-
-* `VersionedAddressBook#commit()`— Saves the current address book state in its history.
-* `VersionedAddressBook#undo()`— Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()`— Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and
-`Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the
-initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-![UndoRedoState0](images/UndoRedoState0.png)
-
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls
-`Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be
-saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-![UndoRedoState1](images/UndoRedoState1.png)
-
-Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls
-`Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-![UndoRedoState2](images/UndoRedoState2.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
-
-</div>
-
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the
-`undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once
-to the left, pointing it to the previous address book state, and restores the address book to that state.
-
-![UndoRedoState3](images/UndoRedoState3.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</div>
-
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
-
-![UndoSequenceDiagram](images/UndoSequenceDiagram-Logic.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
-
-</div>
-
-Similarly, how an undo operation goes through the `Model` component is shown below:
-
-![UndoSequenceDiagram](images/UndoSequenceDiagram-Model.png)
-
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once
-to the right, pointing to the previously undone state, and restores the address book to that state.
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</div>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as
-`list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus,
-the `addressBookStateList` remains unchanged.
-
-![UndoRedoState4](images/UndoRedoState4.png)
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not
-pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be
-purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern
-desktop applications follow.
-
-![UndoRedoState5](images/UndoRedoState5.png)
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<img src="images/CommitActivityDiagram.png" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-    * Pros: Easy to implement.
-    * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-    * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-    * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
 
 ### Delete and bulk-delete confirmation flow
 
@@ -410,8 +371,9 @@ for the user.
 * If the command is not yet confirmed, `DeleteInteractionFlow` stores enough context to interpret the next input as
   either confirmation (`y`), cancellation (`n`), or a clash-selection index.
 * For index-based deletion, a follow-up `y` is rewritten internally to `delete INDEX confirm`.
-* For bulk deletion, a follow-up `y` or `n` is rewritten internally to `deletebulk y t/TAG` or
-  `deletebulk n t/TAG`.
+* For bulk deletion, a follow-up `y` or `n` is rewritten internally to
+  `deletebulk y [t/TAG | tm/TEAM | st/STATUS]` or `deletebulk n [t/TAG | tm/TEAM | st/STATUS]`,
+  preserving whichever criterion was originally used.
 
 The sequence diagram below shows the confirmed index-based delete path after the follow-up input has been rewritten into
 `delete 1 confirm`.
@@ -423,18 +385,19 @@ The sequence diagram below shows the confirmed index-based delete path after the
 `sort` is implemented as a `Logic`-to-`Model` operation that first sets the target scope and then applies a comparator
 to the filtered person list.
 
-* `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute, and the optional
-  `desc` modifier.
+* `SortCommandParser` parses the scope (`r/player`, `r/staff`, or all persons), the `by/...` attribute
+  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
+* `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
+  ordering stay aligned.
+* Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
+* Stat-based comparators read from `PlayerStats`; non-player entries are treated as stat value `0` so mixed lists can
+  still be sorted without special-case command failures.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
-The following sequence diagram illustrates `sort players by/email desc`.
+The following sequence diagram illustrates `sort r/player by/email desc`.
 
 ![Sort command flow in Logic](images/SortSequenceDiagram.png)
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -589,20 +552,20 @@ Use case ends.
 **MSS**
 
 1. Manager requests to edit a person.
-2. Manager provides one or more updated attribute values.
-3. SoCcer Manager validates the provided values against the corresponding catalogs.
+2. Manager identifies the person to edit and provides one or more updated attribute values.
+3. SoCcer Manager validates the request against relevant constraints.
 4. SoCcer Manager updates the person.
 5. SoCcer Manager shows a success message.  
    Use case ends.
 
 **Extensions**
 
-* 3a. At least one provided attribute value does not exist in its catalog.
-    * 3a1. SoCcer Manager shows error message.  
+* 2a. Manager specifies an invalid person.
+    * 2a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
-* 3b. Resulting role is `STAFF` and manager provides a position value.
-    * 3b1. SoCcer Manager shows error message.  
+* 3a. At least one provided value is invalid or violates an attribute or role constraint.
+    * 3a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
 **Use case: UC04 - View persons by role**  
@@ -625,7 +588,121 @@ Use case ends.
     * 3a1. SoCcer Manager shows an error message.  
       Use case ends.
 
-*{More to be added}*
+**Use case: UC05 - Filter persons using structured criteria**  
+**MSS**
+
+1. Manager requests to filter persons.
+2. Manager provides one or more structured criteria.
+3. SoCcer Manager validates the provided criteria.
+4. SoCcer Manager filters the visible person list using all specified criteria.
+5. SoCcer Manager shows the filtered list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager provides role, team, status, or position criteria.
+    * 2a1. SoCcer Manager applies exact-match filtering for the provided attributes.  
+      Use case resumes at step 4.
+
+* 2b. Manager provides stat comparison criteria for `goals`, `wins`, or `losses`.
+    * 2b1. SoCcer Manager applies numeric comparison filtering for player stats.  
+      Use case resumes at step 4.
+
+* 3a. Manager provides an invalid role, attribute value, or malformed stat comparison.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided criteria.
+    * 4a1. SoCcer Manager shows an empty filtered list.  
+      Use case ends.
+
+**Use case: UC06 - Sort persons by attribute or stat**  
+**MSS**
+
+1. Manager requests to sort persons.
+2. Manager provides an optional role scope, a supported sort attribute, and an optional sort order.
+3. SoCcer Manager validates the requested sort configuration.
+4. SoCcer Manager applies the requested scope filter.
+5. SoCcer Manager sorts the visible person list by the requested attribute.
+6. SoCcer Manager shows the sorted list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager omits the role scope.
+    * 2a1. SoCcer Manager sorts all visible persons.  
+      Use case resumes at step 3.
+
+* 2b. Manager specifies descending order.
+    * 2b1. SoCcer Manager sorts in descending order.  
+      Use case resumes at step 5.
+
+* 3a. Manager provides an unsupported sort attribute.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 5a. Manager sorts by `goals`, `wins`, or `losses` while staff are present in the visible list.
+    * 5a1. SoCcer Manager treats staff as stat value `0` and completes the sort.  
+      Use case resumes at step 6.
+
+**Use case: UC07 - Bulk delete persons by shared criterion**  
+**MSS**
+
+1. Manager requests to bulk delete persons.
+2. Manager provides exactly one supported criterion: `tag`, `team`, or `status`.
+3. SoCcer Manager validates the provided criterion.
+4. SoCcer Manager filters and shows the matching persons.
+5. SoCcer Manager requests confirmation.
+6. Manager confirms the bulk deletion.
+7. SoCcer Manager deletes all matching persons.
+8. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 3a. Manager provides an unsupported or malformed criterion.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided criterion.
+    * 4a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 5a. Manager cancels the bulk deletion.
+    * 5a1. SoCcer Manager aborts the operation and shows a cancellation message.  
+      Use case ends.
+
+* 6a. Manager provides a confirmation response other than `y` or `n`.
+    * 6a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+**Use case: UC08 - List persons using attribute filters**  
+**MSS**
+
+1. Manager requests to list persons using filters.
+2. Manager provides zero or more of the following filters: role, team, status, and position.
+3. SoCcer Manager validates the provided filters.
+4. SoCcer Manager filters the visible person list using all specified filters.
+5. SoCcer Manager shows the filtered list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager omits all filters.
+    * 2a1. SoCcer Manager shows all persons.  
+      Use case ends.
+
+* 2b. Manager provides only a role filter.
+    * 2b1. SoCcer Manager filters the visible person list by the requested role.  
+      Use case resumes at step 5.
+
+* 3a. Manager provides an invalid role or malformed filter input.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided filters.
+    * 4a1. SoCcer Manager shows an empty filtered list.  
+      Use case ends.
 
 ### Non-Functional Requirements
 
@@ -754,22 +831,125 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: At least one player and one staff in the current address book.
 
-    1. Test case: `list players`<br>
+    1. Test case: `list r/player`<br>
        Expected: Only players are shown. Status message indicates players were listed.
 
-    1. Test case: `list staff`<br>
+    1. Test case: `list r/staff`<br>
        Expected: Only staff are shown. Status message indicates staff were listed.
 
-    1. Test case: `list PLAYERS`<br>
-       Expected: Same result as `list players` (role keyword is case-insensitive).
+    1. Test case: `list r/PLAYER`<br>
+       Expected: Same result as `list r/player` (role keyword is case-insensitive).
 
-    1. Test case: `list coaches`<br>
+    1. Test case: `list r/coaches`<br>
        Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
+
+### Structured filter
+
+1. Filtering persons with structured criteria
+
+    1. Prerequisites: The address book contains players/staff with a mix of roles, attributes, and stats.
+
+    1. Test case: `filter r/player`<br>
+       Expected: Only players are shown.
+
+    1. Test case: `filter tm/First Team st/Active`<br>
+       Expected: Only persons matching both criteria are shown.
+
+    1. Test case: `filter pos/Forward goals/>10`<br>
+       Expected: Only forwards with more than 10 goals are shown.
+
+    1. Test case: `filter wins/<3`<br>
+       Expected: Only players with fewer than 3 wins are shown. Staff do not match this stat filter.
+
+    1. Test case: `filter goals/10`<br>
+       Expected: Command is rejected with an invalid format message.
+1. Listing persons with attribute filters
+
+    1. Prerequisites: At least one player assigned `tm/First Team`, `st/Active`, and `pos/Defender`.
+
+    1. Test case: `list tm/First Team`<br>
+       Expected: Only persons assigned `First Team` are shown. Status message indicates matching team filter.
+
+    1. Test case: `list st/Active pos/Defender`<br>
+       Expected: Only persons matching both status and position filters are shown.
+
+    1. Test case: `list r/player tm/First Team st/Active pos/Defender`<br>
+       Expected: Only players matching all specified filters are shown.
+
+    1. Test case: `list r/player tm/First Team tm/Second Team`<br>
+       Expected: Command is rejected because duplicate prefixes are not allowed.
+### Sorting persons
+
+1. Sorting by roster attributes
+
+    1. Prerequisites: At least two persons with different `team`, `status`, or `position` values.
+
+    1. Test case: `sort by/team`<br>
+       Expected: Persons are ordered by team in ascending order.
+
+    1. Test case: `sort by/status desc`<br>
+       Expected: Persons are ordered by status in descending order.
+
+    1. Test case: `sort r/player by/position`<br>
+       Expected: Only players are shown, ordered by position in ascending order.
+
+1. Sorting by player stats
+
+    1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
+
+    1. Test case: `sort by/goals`<br>
+       Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
+
+    1. Test case: `sort by/wins desc`<br>
+       Expected: Persons are ordered by wins in descending order.
+
+    1. Test case: `sort r/player by/losses`<br>
+       Expected: Only players are shown, ordered by losses in ascending order.
+
+    1. Test case: `sort r/player by/unknown`<br>
+       Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Recovering from malformed attribute catalogs
 
-    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
 
-1. _{ more test cases …​ }_
+    1. Test case: Add `null` or a blank string such as `" "` to the `teams`, `statuses`, or `positions` array, then
+       launch the app.<br>
+       Expected: The app still launches. Malformed catalog entries are skipped, valid entries remain loaded, and
+       protected defaults are still present.
+
+    1. Test case: Remove `Unassigned Team`, `Unassigned Position`, or `Unknown` from the corresponding catalog array,
+       then launch the app.<br>
+       Expected: The app still launches and the missing protected default is auto-healed into the catalog.
+
+1. Recovering from inconsistent person attribute data
+
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
+
+    1. Test case: Edit a person record so its `team`, `status`, or `position` uses a valid value that is missing from
+       the corresponding catalog array, then launch the app.<br>
+       Expected: The app still launches and the missing valid value is auto-registered into the corresponding catalog.
+
+    1. Test case: Edit a staff record so it has a non-default `position`, then launch the app.<br>
+       Expected: The app still launches and that staff member is loaded with `Unassigned Position`.
+
+1. Severe file corruption
+
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
+
+    1. Test case: Break the JSON structure (for example, remove a comma or closing brace) and then launch the app.<br>
+       Expected: The corrupted file cannot be loaded and the app starts with an empty address book for that run.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Planned Enhancements**
+
+**Team size:** 5
+
+1. **Normalize repeated internal whitespace in attribute catalog values:**
+   Leading and trailing whitespace in attribute values is trimmed, but repeated internal whitespace is preserved,
+   as a result, visually similar values such as `First Team` and `First  Team` can coexist as distinct
+   catalog entries. A planned enhancement is to normalize repeated internal whitespace during attribute parsing so that
+   equivalent attribute values are treated consistently during duplicate checks, storage, and person assignment.
