@@ -207,9 +207,10 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Role-filtered list command
 
-The `list` command is handled by `AddressBookParser` via `ListCommandParser`.
-For role-only input such as `list r/player` or `list r/staff`, `ListCommandParser`
-creates a `ListRoleCommand` with the corresponding role predicate.
+For role-filtered `list` input, `AddressBookParser` delegates to `ListCommandParser`.
+A bare `list` command still returns `ListCommand` directly.
+For role-only input such as `list r/player` or `list r/staff`,
+`ListCommandParser` creates a `ListRoleCommand` with the corresponding role predicate.
 
 When executed, `ListRoleCommand` calls `Model#updateFilteredPersonList(...)` with
 `PersonHasRolePredicate(Role.PLAYER)` or `PersonHasRolePredicate(Role.STAFF)`, which updates the
@@ -219,7 +220,7 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 
 ![Interactions for the `list r/player` Command](images/ListRoleSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
 
 ### Attribute-filtered list command
@@ -270,14 +271,16 @@ Default catalogs are seeded in `SampleDataUtil`:
 
 #### Catalog command flow
 
-`AddressBookParser` routes each catalog command to its parser:
+`AddressBookParser` routes attribute catalog `*add`, `*edit`, and `*delete` commands to their
+dedicated parsers. The three `*list` catalog commands are validated and created directly in
+`AddressBookParser` because they do not take arguments:
 * Team: `teamadd`, `teamedit`, `teamdelete`, `teamlist`
 * Status: `statusadd`, `statusedit`, `statusdelete`, `statuslist`
 * Position: `positionadd`, `positionedit`, `positiondelete`, `positionlist`
 
 The sequence diagram below uses `teamedit old/First Team new/Reserve Team` as the representative
 attribute catalog command flow. All attribute catalog commands share the same high-level
-parser-command-model pattern: `*add` inserts a catalog value, `*delete` removes one after guard
+command-model pattern: `*add` inserts a catalog value, `*delete` removes one after guard
 checks, `*list` formats the current catalog for display, and `*edit` renames a catalog value.
 `teamedit` is shown because it is the richest representative case, while `status*` and `position*`
 follow the same interaction structure with attribute-specific validation/messages.
@@ -307,7 +310,8 @@ Protected default values:
 Validation and normalization:
 * If provided, attribute values must exist in their catalogs.
 * In `add`, omitted values use defaults.
-* In `edit`, omitted values keep the person's existing attribute values.
+* In `edit`, omitted values keep the person's existing attribute values, unless the resulting role
+  becomes `STAFF`, in which case `position` is normalized to `Unassigned Position`.
 * Input matching is case-insensitive through attribute value equality.
 * Stored display casing follows the matched catalog entry's exact casing.
 * Position is player-only:
@@ -637,20 +641,20 @@ Use case ends.
 **MSS**
 
 1. Manager requests to edit a person.
-2. Manager provides one or more updated attribute values.
-3. SoCcer Manager validates the provided values against the corresponding catalogs.
+2. Manager identifies the person to edit and provides one or more updated attribute values.
+3. SoCcer Manager validates the request against relevant constraints.
 4. SoCcer Manager updates the person.
 5. SoCcer Manager shows a success message.  
    Use case ends.
 
 **Extensions**
 
-* 3a. At least one provided attribute value does not exist in its catalog.
-    * 3a1. SoCcer Manager shows error message.  
+* 2a. Manager specifies an invalid person.
+    * 2a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
-* 3b. Resulting role is `STAFF` and manager provides a position value.
-    * 3b1. SoCcer Manager shows error message.  
+* 3a. At least one provided value is invalid or violates an attribute or role constraint.
+    * 3a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
 
 **Use case: UC04 - View persons by role**  
