@@ -3,7 +3,9 @@ package seedu.address.ui;
 import java.util.Comparator;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -59,6 +61,10 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane staff;
     @FXML
     private VBox statsBox;
+    @FXML
+    private Separator statsSeparatorTop;
+    @FXML
+    private Separator statsSeparatorBottom;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -91,18 +97,48 @@ public class PersonCard extends UiPart<Region> {
 
             for (StatField stat : StatField.values()) {
                 String name = stat.name().replaceAll("_", " ");
-                statsBox.getChildren().add(
-                        new Label(name + ": " + stat.getValue(stats)));
+                Label label = new Label(name + ": " + stat.getValue(stats));
+                label.getStyleClass().add("stat-label");
+                statsBox.getChildren().add(label);
             }
             for (CalculatedStatField stat : CalculatedStatField.values()) {
                 String name = stat.name().replaceAll("_", " ");
-                statsBox.getChildren().add(
-                        new Label(name + ": " + String.format("%.2f", stat.getValue(stats))));
+                double value = stat.getValue(stats);
+                Label nameLabel = new Label(name + ": ");
+                nameLabel.getStyleClass().add("stat-label");
+                Label valueLabel = new Label(String.format("%.2f", value));
+                valueLabel.getStyleClass().add("stat-label");
+
+                // colour for winrate
+                if (stat == CalculatedStatField.WIN_RATE) {
+                    valueLabel.setText(valueLabel.getText() + "%");
+                    boolean hasPlayed = stats.getMatchesWon() + stats.getMatchesLost() != 0;
+                    if (!hasPlayed) {
+                        valueLabel.setStyle("-fx-text-fill: gray;");
+                    } else if (value >= 60) {
+                        valueLabel.setStyle("-fx-text-fill: green;");
+                    } else if (value >= 40) {
+                        valueLabel.setStyle("-fx-text-fill: orange;");
+                    } else {
+                        valueLabel.setStyle("-fx-text-fill: red;");
+                    }
+                }
+
+                HBox row = new HBox(nameLabel, valueLabel);
+                statsBox.getChildren().add(row);
             }
 
-            statsBox.setManaged(true);
-            statsBox.setVisible(true);
+            showElement(statsBox);
+            showElement(statsSeparatorTop);
+            showElement(statsSeparatorBottom);
         }
+    }
+
+
+    /** Helper to show element, assumes default is hidden */
+    private void showElement(Node node) {
+        node.setManaged(true);
+        node.setVisible(true);
     }
 
     private void setAttributeLabel(Label label, String fieldName, Team teamValue, boolean isDefault) {
@@ -124,7 +160,6 @@ public class PersonCard extends UiPart<Region> {
             return;
         }
         label.setText(fieldName + ": " + value);
-        label.setManaged(true);
-        label.setVisible(true);
+        showElement(label);
     }
 }

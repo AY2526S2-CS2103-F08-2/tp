@@ -16,7 +16,7 @@ public enum CalculatedStatField {
             // deal with zero division
             return 0.0;
         }
-        return (double) stats.getMatchesWon() / total;
+        return ((double) stats.getMatchesWon() / total) * 100;
     }),
 
     GOALS_PER_GAME(stats -> {
