@@ -227,6 +227,10 @@ The `filter` command is implemented as a predicate-based list narrowing operatio
 * `FilterCommand` applies that predicate through `Model#updateFilteredPersonList(...)`.
 * Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, or `losses` filters.
 
+The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
+
+![Filter command flow in Logic](images/FilterSequenceDiagram.png)
+
 ### Update player stats command
 
 The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
