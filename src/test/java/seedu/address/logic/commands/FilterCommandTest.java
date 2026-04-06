@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -85,6 +86,19 @@ public class FilterCommandTest {
         assertFalse(first.equals(second));
         assertFalse(first.equals(1));
         assertFalse(first.equals(null));
+    }
+
+    @Test
+    public void toStringMethod() {
+        PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
+                Optional.of(Role.PLAYER), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)), Optional.empty(), Optional.empty());
+        FilterCommand command = new FilterCommand(predicate);
+
+        String expected = new ToStringBuilder(command)
+                .add("predicate", predicate)
+                .toString();
+        assertEquals(expected, command.toString());
     }
 
     private seedu.address.model.AddressBook buildAddressBookWithFilterablePersons() {
