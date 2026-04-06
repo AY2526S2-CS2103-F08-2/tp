@@ -15,6 +15,17 @@ public class PlayerStats {
     public PlayerStats() {
     }
 
+    /**
+     * Copy constructor of {@code PlayerStats}.
+     *
+     * @param toCopy {@code PlayerStats} to copy
+     */
+    public PlayerStats(PlayerStats toCopy) {
+        this.goalsScored = toCopy.goalsScored;
+        this.matchesWon = toCopy.matchesWon;
+        this.matchesLost = toCopy.matchesLost;
+    }
+
     public int getGoalsScored() {
         return goalsScored;
     }
