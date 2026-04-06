@@ -18,7 +18,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
-                "Multiple values specified for the following single-valued field(s): ";
+            "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_INVALID_EVENT_DISPLAYED_INDEX = "The event index provided is invalid";
 
     /**
@@ -27,8 +27,7 @@ public class Messages {
     public static String getErrorMessageForDuplicatePrefixes(Prefix... duplicatePrefixes) {
         assert duplicatePrefixes.length > 0;
 
-        Set<String> duplicateFields =
-                Stream.of(duplicatePrefixes).map(Prefix::toString).collect(Collectors.toSet());
+        Set<String> duplicateFields = Stream.of(duplicatePrefixes).map(Prefix::toString).collect(Collectors.toSet());
 
         return MESSAGE_DUPLICATE_FIELDS + String.join(" ", duplicateFields);
     }
@@ -38,43 +37,33 @@ public class Messages {
      */
     public static String format(Person person) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(person.getName())
-                .append("; Phone: ")
-                .append(person.getPhone())
-                .append("; Email: ")
-                .append(person.getEmail())
-                .append("; Address: ")
-                .append(person.getAddress())
-                .append("; Role: ")
-                .append(person.getRole())
-                .append("; Team: ")
-                .append(person.getTeam())
-                .append("; Position: ")
-                .append(person.getPosition())
-                .append("; Status: ")
-                .append(person.getStatus())
-                .append("; Tags: ");
+        builder.append(person.getName()).append("; Phone: ").append(person.getPhone()).append("; Email: ")
+                .append(person.getEmail()).append("; Address: ").append(person.getAddress()).append("; Role: ")
+                .append(person.getRole()).append("; Team: ").append(person.getTeam()).append("; Position: ")
+                .append(person.getPosition()).append("; Status: ").append(person.getStatus()).append("; Tags: ");
         person.getTags().forEach(builder::append);
         return builder.toString();
     }
+
     /**
      * Formats the {@code Event} for display to the user.
      */
     public static String format(Event event) {
         final StringBuilder builder = new StringBuilder();
         switch (event.getEventType()) {
-        case MATCH -> builder.append("Event Type: Match; Opponent: ")
-                .append(event.getEventName());
-        case TRAINING -> builder.append("Training: ")
-                .append(event.getEventName());
+        case MATCH -> builder.append("Event Type: Match; Opponent: ").append(event.getEventName());
+        case TRAINING -> builder.append("Training: ").append(event.getEventName());
         default -> builder.append("Event: ").append(event.getEventName());
         }
         builder.append("; Date: ")
                 .append(event.getEventDate().toString())
                 .append("; Players: ")
-                .append(event.getEventPlayerList().asUnmodifiableObservableList().stream()
-                .map(person -> person.getName().toString())
-                .collect(Collectors.joining(", ")));
+                .append(event.getEventPlayerList()
+                        .asUnmodifiableObservableList()
+                        .stream()
+                        .map(person -> person.getName().toString())
+                        .sorted()
+                        .collect(Collectors.joining(", ")));
         return builder.toString();
     }
 }
