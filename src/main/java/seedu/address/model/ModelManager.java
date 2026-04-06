@@ -209,7 +209,12 @@ public class ModelManager implements Model {
         for (Person p : addressBook.getPersonList().filtered(p -> p.getRole() == Role.PLAYER)) {
             long requiredToAttend = eventList.stream().filter(e -> e.getEventPlayerList().contains(p)).count();
             long actualAttended = eventList.stream().filter(e -> e.getAttendedPlayerList().contains(p)).count();
-            double rate = (double) actualAttended / requiredToAttend * 100;
+            double rate;
+            if (requiredToAttend == 0) {
+                continue;
+            } else {
+                rate = (double) actualAttended / requiredToAttend * 100;
+            }
             attendanceMap.put(p.getName().toString(), rate);
         }
         StringBuilder sb = new StringBuilder();

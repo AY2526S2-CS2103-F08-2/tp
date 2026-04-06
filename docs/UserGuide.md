@@ -184,6 +184,7 @@ Notes:
 - There must be at least 1 event and 1 player in the address book.
 - The attendance rates are rounded to one decimal place.
 - Sorted in descending order, highest attendance rate shown at the top.
+- If a player is not in any event, they will be skipped in the attendance report.
 
 ### Sorting persons: `sort`
 
