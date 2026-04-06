@@ -158,7 +158,8 @@ How the parsing works:
 
 The `Model` component,
 
-* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the address book domain data, including `Person` objects, `Event` objects, and the
+  `Team`/`Status`/`Position` attribute catalogs.
 * `Person` is an abstract class that is extended by `Player` and `Staff` classes.
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which
   is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to
@@ -167,6 +168,10 @@ The `Model` component,
   `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they
   should make sense on their own without depending on other components)
+
+The overview model diagrams in this section focus on the person-role structure and intentionally omit
+event and attribute-catalog details to keep the diagrams readable. Those details are documented later
+in the feature-specific implementation sections.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
@@ -270,6 +275,15 @@ Default catalogs are seeded in `SampleDataUtil`:
 * Status: `statusadd`, `statusedit`, `statusdelete`, `statuslist`
 * Position: `positionadd`, `positionedit`, `positiondelete`, `positionlist`
 
+The sequence diagram below uses `teamedit old/First Team new/Reserve Team` as the representative
+attribute catalog command flow. All attribute catalog commands share the same high-level
+parser-command-model pattern: `*add` inserts a catalog value, `*delete` removes one after guard
+checks, `*list` formats the current catalog for display, and `*edit` renames a catalog value.
+`teamedit` is shown because it is the richest representative case, while `status*` and `position*`
+follow the same interaction structure with attribute-specific validation/messages.
+
+![Interactions for the `teamedit` Command](images/AttributeEditSequenceDiagram.png)
+
 Command behavior:
 * `*add` checks duplicates before inserting.
 * `*edit` checks target exists, rejects duplicate destination values, and blocks edits of protected defaults.
@@ -307,14 +321,24 @@ When a catalog value is renamed (`teamedit`, `statusedit`, `positionedit`):
 * The same operations then rebuild and replace all persons currently assigned the old value.
 * For players, existing `PlayerStats` are preserved during rebuild.
 
+The sequence diagram below focuses on the internal model-level rename cascade after command-level
+validation has already succeeded. `setTeam(...)` is shown as the representative example, while the
+internal replacement steps are intentionally shown in a simplified form to keep the diagram focused.
+`setStatus(...)` and `setPosition(...)` follow the same model-level flow.
+
+![Model-level attribute rename cascade](images/AttributeRenameCascadeSequenceDiagram.png)
+
 #### Storage behavior
 
 `JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
 
 During load:
-* duplicate catalog entries are rejected,
-* protected default catalog values are auto-healed if missing from JSON, and
-* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`.
+* malformed/duplicate catalog entries are skipped with warning logs,
+* protected default catalog values are auto-healed if missing from JSON,
+* person attribute fields (`team`, `status`, `position`) are required in `JsonAdaptedPerson`,
+* malformed person rows are skipped with warning logs,
+* valid person attributes missing from catalogs are auto-registered, and
+* non-default `position` values for `STAFF` are normalized to `Unassigned Position`.
 
 #### UI behavior
 
@@ -428,8 +452,9 @@ for the user.
 * If the command is not yet confirmed, `DeleteInteractionFlow` stores enough context to interpret the next input as
   either confirmation (`y`), cancellation (`n`), or a clash-selection index.
 * For index-based deletion, a follow-up `y` is rewritten internally to `delete INDEX confirm`.
-* For bulk deletion, a follow-up `y` or `n` is rewritten internally to `deletebulk y t/TAG` or
-  `deletebulk n t/TAG`.
+* For bulk deletion, a follow-up `y` or `n` is rewritten internally to
+  `deletebulk y [t/TAG | tm/TEAM | st/STATUS]` or `deletebulk n [t/TAG | tm/TEAM | st/STATUS]`,
+  preserving whichever criterion was originally used.
 
 The sequence diagram below shows the confirmed index-based delete path after the follow-up input has been rewritten into
 `delete 1 confirm`.
@@ -441,12 +466,17 @@ The sequence diagram below shows the confirmed index-based delete path after the
 `sort` is implemented as a `Logic`-to-`Model` operation that first sets the target scope and then applies a comparator
 to the filtered person list.
 
-* `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute, and the optional
-  `desc` modifier.
+* `SortCommandParser` parses the scope (`r/player`, `r/staff`, or all persons), the `by/...` attribute
+  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
+* `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
+  ordering stay aligned.
+* Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
+* Stat-based comparators read from `PlayerStats`; non-player entries are treated as stat value `0` so mixed lists can
+  still be sorted without special-case command failures.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
-The following sequence diagram illustrates `sort players by/email desc`.
+The following sequence diagram illustrates `sort r/player by/email desc`.
 
 ![Sort command flow in Logic](images/SortSequenceDiagram.png)
 
@@ -799,11 +829,78 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `list r/player tm/First Team tm/Second Team`<br>
        Expected: Command is rejected because duplicate prefixes are not allowed.
+### Sorting persons
+
+1. Sorting by roster attributes
+
+    1. Prerequisites: At least two persons with different `team`, `status`, or `position` values.
+
+    1. Test case: `sort by/team`<br>
+       Expected: Persons are ordered by team in ascending order.
+
+    1. Test case: `sort by/status desc`<br>
+       Expected: Persons are ordered by status in descending order.
+
+    1. Test case: `sort r/player by/position`<br>
+       Expected: Only players are shown, ordered by position in ascending order.
+
+1. Sorting by player stats
+
+    1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
+
+    1. Test case: `sort by/goals`<br>
+       Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
+
+    1. Test case: `sort by/wins desc`<br>
+       Expected: Persons are ordered by wins in descending order.
+
+    1. Test case: `sort r/player by/losses`<br>
+       Expected: Only players are shown, ordered by losses in ascending order.
+
+    1. Test case: `sort r/player by/unknown`<br>
+       Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Recovering from malformed attribute catalogs
 
-    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
 
-1. _{ more test cases …​ }_
+    1. Test case: Add `null` or a blank string such as `" "` to the `teams`, `statuses`, or `positions` array, then
+       launch the app.<br>
+       Expected: The app still launches. Malformed catalog entries are skipped, valid entries remain loaded, and
+       protected defaults are still present.
+
+    1. Test case: Remove `Unassigned Team`, `Unassigned Position`, or `Unknown` from the corresponding catalog array,
+       then launch the app.<br>
+       Expected: The app still launches and the missing protected default is auto-healed into the catalog.
+
+1. Recovering from inconsistent person attribute data
+
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
+
+    1. Test case: Edit a person record so its `team`, `status`, or `position` uses a valid value that is missing from
+       the corresponding catalog array, then launch the app.<br>
+       Expected: The app still launches and the missing valid value is auto-registered into the corresponding catalog.
+
+    1. Test case: Edit a staff record so it has a non-default `position`, then launch the app.<br>
+       Expected: The app still launches and that staff member is loaded with `Unassigned Position`.
+
+1. Severe file corruption
+
+    1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
+
+    1. Test case: Break the JSON structure (for example, remove a comma or closing brace) and then launch the app.<br>
+       Expected: The corrupted file cannot be loaded and the app starts with an empty address book for that run.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Planned Enhancements**
+
+**Team size:** 5
+
+1. **Normalize repeated internal whitespace in attribute catalog values:**
+   Leading and trailing whitespace in attribute values is trimmed, but repeated internal whitespace is preserved,
+   as a result, visually similar values such as `First Team` and `First  Team` can coexist as distinct
+   catalog entries. A planned enhancement is to normalize repeated internal whitespace during attribute parsing so that
+   equivalent attribute values are treated consistently during duplicate checks, storage, and person assignment.

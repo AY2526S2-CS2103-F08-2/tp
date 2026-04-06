@@ -93,6 +93,14 @@ public class AddressBookParserTest {
         DeleteBulkCommand command = (DeleteBulkCommand) parser.parseCommand(
                 DeleteBulkCommand.COMMAND_WORD + " t/graduated");
         assertEquals(new DeleteBulkCommand(new seedu.address.model.tag.Tag("graduated")), command);
+
+        DeleteBulkCommand teamCommand = (DeleteBulkCommand) parser.parseCommand(
+                DeleteBulkCommand.COMMAND_WORD + " tm/Reserve Team");
+        assertEquals(new DeleteBulkCommand(new Team("Reserve Team")), teamCommand);
+
+        DeleteBulkCommand statusCommand = (DeleteBulkCommand) parser.parseCommand(
+                DeleteBulkCommand.COMMAND_WORD + " st/Unavailable");
+        assertEquals(new DeleteBulkCommand(new Status("Unavailable")), statusCommand);
     }
 
     @Test
@@ -177,8 +185,9 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_sort() throws Exception {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/name") instanceof SortCommand);
-        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email") instanceof SortCommand);
-        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " players by/email desc") instanceof SortCommand);
+        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " r/player by/email") instanceof SortCommand);
+        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " r/player by/email desc")
+                instanceof SortCommand);
     }
 
     @Test

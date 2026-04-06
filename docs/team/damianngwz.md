@@ -35,22 +35,22 @@ Given below are my contributions to the project.
 * **Enhancements to existing features**:
     * Extended role-scoped filtering behavior through role-aware search/filter enhancements (PR [#95](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/95)).
     * Refined attribute behavior after initial delivery (e.g., canonical casing and storage/default handling) through follow-up attribute integration work (PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
+    * Hardened JSON deserialization and recovery paths for attributes/person records to improve robustness against malformed data:
+      malformed attribute catalog entries are skipped with warning logs, missing valid person-referenced catalog values are auto-registered, malformed staff-position combinations are normalized on load, and malformed person rows are skipped while preserving valid rows.
 
 * **Documentation**:
     * User Guide:
         * Updated command documentation and usage clarifications for list/attributes flows (PR [#76](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/76), PR [#127](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/127), PR [#128](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/128)).
+        * Updated JSON file-editing caution to reflect current recovery behavior for malformed entries.
     * Developer Guide:
         * Added implementation and interaction details for role-scoped list and attributes architecture/behavior, including use cases and testing notes (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
         * Updated use-case and DG-related content during early project phases (PR [#46](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/46)).
+        * Updated storage behavior documentation to match implemented JSON deserialization recovery semantics.
 
 * **Community**:
     * PRs reviewed (with non-trivial review comments): PR [#136](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/136), PR [#126](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/126),
       PR [#114](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/114), PR [#112](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/112), PR [#103](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/103), PR [#90](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/90), PR [#81](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/81), PR [#75](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/75), PR [#67](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/67), PR [#51](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/51)
-  
-* **Extra Templates**: (To be removed if irrelevant)
 
 * **Tools**:
     * Set up and maintained the team repository workflow baseline (branching/merge flow and collaboration setup).
     * Used CI/test workflows and local verification routines to support stable integration before releases.
-
-* _{you can add/remove categories in the list above}_

@@ -10,6 +10,8 @@ import seedu.address.logic.commands.DeleteBulkCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.model.person.Status;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
 public class DeleteInteractionFlowTest {
@@ -83,5 +85,21 @@ public class DeleteInteractionFlowTest {
                 new Tag("graduated"), DeleteBulkCommand.BulkDeletionDecision.CONFIRM));
 
         assertEquals("y", flow.preprocessInput("y"));
+    }
+
+    @Test
+    public void preprocessInput_deleteBulkTeam_yesMapsToFollowUpCommand() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteBulkCommand(new Team("Reserve Team")));
+
+        assertEquals("deletebulk y tm/Reserve Team", flow.preprocessInput("y"));
+    }
+
+    @Test
+    public void preprocessInput_deleteBulkStatus_noMapsToFollowUpCommand() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteBulkCommand(new Status("Unavailable")));
+
+        assertEquals("deletebulk n st/Unavailable", flow.preprocessInput("n"));
     }
 }

@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SORT_BY;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
@@ -22,8 +23,6 @@ public class SortCommandParser implements Parser<SortCommand> {
 
     public static final String SCOPE_ALL_PERSONS = "persons";
     public static final String ARGUMENT_DESC = "desc";
-    private static final String ARGUMENT_PLAYERS = "players";
-    private static final String ARGUMENT_STAFF = "staff";
     private static final Logger logger = LogsCenter.getLogger(SortCommandParser.class);
 
     @Override
@@ -59,12 +58,11 @@ public class SortCommandParser implements Parser<SortCommand> {
                 getScopeDescription(scope), isDescending);
     }
 
-    private Predicate<Person> parseScope(String scope) {
-        Role role = parseRoleScope(scope);
-        if (role == null) {
+    private Predicate<Person> parseScope(String scope) throws ParseException {
+        if (scope.isEmpty()) {
             return PREDICATE_SHOW_ALL_PERSONS;
         }
-        return new PersonHasRolePredicate(role);
+        return new PersonHasRolePredicate(parseRoleScope(scope));
     }
 
     private PersonSortAttribute parseAttribute(String attribute) throws ParseException {
@@ -76,24 +74,36 @@ public class SortCommandParser implements Parser<SortCommand> {
     }
 
     private boolean isValidScope(String scope) {
-        return scope.isEmpty() || parseRoleScope(scope) != null;
+        if (scope.isEmpty()) {
+            return true;
+        }
+
+        try {
+            parseRoleScope(scope);
+            return true;
+        } catch (ParseException pe) {
+            return false;
+        }
     }
 
     private String getScopeDescription(String scope) {
         if (scope.isEmpty()) {
             return SCOPE_ALL_PERSONS;
         }
-        return scope.toLowerCase();
+        try {
+            Role role = parseRoleScope(scope);
+            return role == Role.PLAYER ? "players" : "staff";
+        } catch (ParseException pe) {
+            throw new IllegalArgumentException("Scope should have been validated before description lookup", pe);
+        }
     }
 
-    private Role parseRoleScope(String scope) {
-        if (ARGUMENT_PLAYERS.equalsIgnoreCase(scope)) {
-            return Role.PLAYER;
+    private Role parseRoleScope(String scope) throws ParseException {
+        if (!scope.regionMatches(true, 0, PREFIX_ROLE.getPrefix(), 0, PREFIX_ROLE.getPrefix().length())) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
         }
-        if (ARGUMENT_STAFF.equalsIgnoreCase(scope)) {
-            return Role.STAFF;
-        }
-        return null;
+
+        return ParserUtil.parseRole(scope.substring(PREFIX_ROLE.getPrefix().length()));
     }
 
     private boolean parseSortOrder(String[] sortTokens) throws ParseException {
