@@ -53,7 +53,10 @@ public class EventCard extends UiPart<Region> {
             eventName.setText("Training: " + event.getEventName().toString());
             date.setText("Training Date: " + event.getEventDate().toString());
         }
-        default -> eventName.setText("Event Name: " + event.getEventName().toString());
+        default -> {
+            eventName.setText("Event Name: " + event.getEventName().toString());
+            date.setText("Event Date: " + event.getEventDate().toString());
+        }
         }
 
         String players = event.getEventPlayerList()
