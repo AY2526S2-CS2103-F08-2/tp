@@ -14,6 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventPlayerList;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
 
 /**
  * A command that allows user to mark attendance for events.
@@ -28,8 +29,10 @@ public class AttendanceMarkCommand extends Command {
                                                + "Example: " + COMMAND_WORD + " 1 "
                                                + PREFIX_PLAYER + "Alex Yeoh ";
 
-    public static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "Marked attendance for: %s";
-    private static final String MESSAGE_PLAYER_NOT_FOUND = "This player is not part of the event!";
+    private static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "Marked attendance for: %s";
+    private static final String MESSAGE_PLAYER_NOT_FOUND = "This player is not part of the event: ";
+    private static final String MESSAGE_NOT_A_PLAYER = "This person is not a player: ";
+    private static final String MESSAGE_ALREADY_MARKED = "This player's attendance is already marked: ";
 
     private final Index index;
     private final List<String> playerNames;
@@ -73,13 +76,19 @@ public class AttendanceMarkCommand extends Command {
 
             if (personToMark.isPresent()) {
                 Person p = personToMark.get();
+                if (p.getRole() != Role.PLAYER) {
+                    throw new CommandException(String.format(MESSAGE_NOT_A_PLAYER + p.getName().fullName));
+                }
                 if (eventToMark.getEventPlayerList().contains(p)) {
+                    if (updatedAttendees.contains(p)) {
+                        throw new CommandException(String.format(MESSAGE_ALREADY_MARKED + p.getName().fullName));
+                    }
                     updatedAttendees.add(p);
                 } else {
-                    throw new CommandException(String.format(MESSAGE_PLAYER_NOT_FOUND, s));
+                    throw new CommandException(String.format(MESSAGE_PLAYER_NOT_FOUND + s));
                 }
             } else {
-                throw new CommandException("Player not found in Address Book: " + s);
+                throw new CommandException(MESSAGE_PLAYER_NOT_FOUND + s);
             }
         }
 
