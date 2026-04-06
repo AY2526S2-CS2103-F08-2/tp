@@ -5,7 +5,7 @@ skinparam ArrowFontStyle plain
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
-participant ":ListRoleCommandParser" as ListRoleCommandParser LOGIC_COLOR
+participant ":ListCommandParser" as ListCommandParser LOGIC_COLOR
 participant "lr:ListRoleCommand" as ListRoleCommand LOGIC_COLOR
 participant "r:CommandResult" as CommandResult LOGIC_COLOR
 end box
@@ -20,28 +20,28 @@ activate LogicManager
 LogicManager -> AddressBookParser : parseCommand("list r/player")
 activate AddressBookParser
 
-create ListRoleCommandParser
-AddressBookParser -> ListRoleCommandParser
-activate ListRoleCommandParser
+create ListCommandParser
+AddressBookParser -> ListCommandParser
+activate ListCommandParser
 
-ListRoleCommandParser --> AddressBookParser
-deactivate ListRoleCommandParser
+ListCommandParser --> AddressBookParser
+deactivate ListCommandParser
 
-AddressBookParser -> ListRoleCommandParser : parse("r/player")
-activate ListRoleCommandParser
+AddressBookParser -> ListCommandParser : parse(" r/player")
+activate ListCommandParser
 
 create ListRoleCommand
-ListRoleCommandParser -> ListRoleCommand
+ListCommandParser -> ListRoleCommand
 activate ListRoleCommand
 
-ListRoleCommand --> ListRoleCommandParser
+ListRoleCommand --> ListCommandParser
 deactivate ListRoleCommand
 
-ListRoleCommandParser --> AddressBookParser : lr
-deactivate ListRoleCommandParser
+ListCommandParser --> AddressBookParser : lr
+deactivate ListCommandParser
 'Hidden arrow to position the destroy marker below the end of the activation bar.
-ListRoleCommandParser -[hidden]-> AddressBookParser
-destroy ListRoleCommandParser
+ListCommandParser -[hidden]-> AddressBookParser
+destroy ListCommandParser
 
 AddressBookParser --> LogicManager : lr
 deactivate AddressBookParser
