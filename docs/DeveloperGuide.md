@@ -661,7 +661,10 @@ Use case ends.
 **Extensions**
 
 * 2a. Manager provides an attribute.
-    * 2a1. SoCcer Manager
+    * 2a1. SoCcer Manager checks that the attribute exists.
+    * 2a2. SoCcer Manager finds all the players with the attribute.
+    Use case resumes at step 3.
+
 *{More to be added}*
 
 ### Non-Functional Requirements
