@@ -3,6 +3,11 @@ package seedu.address.logic.importcsv;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The result object for the import operation.
+ * Keeps track of processed rows, successful/failed imports, and contains a list of failure messages.
+ * Prepares a summary message for the user to be displayed in the UI.
+ */
 public class CsvImportResult {
     private int totalRowsProcessed;
     private int successfulImports;
@@ -36,6 +41,9 @@ public class CsvImportResult {
         return failureMessages;
     }
 
+    /**
+     * Prepares the import result object as a summary message for the user.
+     */
     public String toUserMessage() {
         StringBuilder sb = new StringBuilder();
         sb.append("CSV import completed.\n")

@@ -21,11 +21,26 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
+/**
+ * Deals with CSV importing, managing the parsing and maintaining strict expectations of provided CSV file.
+ * See expected format in {@code EXPECTED_HEADERS} constant, and adhere to specific field(s) format requirements.
+ */
 public class CsvImportService {
 
     private static final List<String> EXPECTED_HEADERS =
             List.of("name", "role", "address", "phone", "email", "tags"); // forced order
 
+    /**
+     * Imports the CSV file from the given path. Expects a properly formatted CSV file.
+     * <p/>
+     * Firstly, it validates the headers. Then, it will go row by row to attempt to parse a {@code Person}.
+     * If format of a field in row is incorrect, import will ignore and skip row.
+     *
+     * @param path the csv file path
+     * @param model the model
+     * @return a import result object
+     * @throws CommandException if csv file is not in proper format
+     */
     public CsvImportResult importCsv(Path path, Model model) throws CommandException {
         CsvImportResult result = new CsvImportResult();
 
