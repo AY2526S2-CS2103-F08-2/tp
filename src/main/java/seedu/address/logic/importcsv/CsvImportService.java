@@ -24,7 +24,7 @@ import seedu.address.model.tag.Tag;
 public class CsvImportService {
 
     private static final List<String> EXPECTED_HEADERS =
-            List.of("name", "role", "address", "phone", "email", "tags", "role"); // forced order
+            List.of("name", "role", "address", "phone", "email", "tags"); // forced order
 
     public CsvImportResult importCsv(Path path, Model model) throws CommandException {
         CsvImportResult result = new CsvImportResult();
@@ -96,7 +96,7 @@ public class CsvImportService {
         String tagsString = values.get(5).trim();
 
         Name name = new Name(nameString);
-        Role role = Role.valueOf(roleString);
+        Role role = Role.valueOf(roleString.toUpperCase());
         Address address = new Address(addressString);
         Phone phone = new Phone(phoneString);
         Email email = new Email(emailString);
@@ -122,54 +122,40 @@ public class CsvImportService {
      * <p>
      * Supports:
      * (1) comma-separated fields
-     * (2) quoted fields
-     * (3) escaped quotes inside quoted fields using ""
+     * (2) escaped commas to become literal (\,), escaped backslash too
+     * (3) quotes are considered literal
      *
      * @throws IllegalArgumentException if the CSV row is malformed
      */
-    public static List<String> parseCsvLine(String line) {
+    private List<String> parseCsvLine(String line) {
         List<String> fields = new ArrayList<>();
         StringBuilder currentField = new StringBuilder();
 
-        boolean inQuotes = false;
-        int i = 0;
+        boolean escaping = false;
 
         // just pray it works man
-        while (i < line.length()) {
+        for (int i = 0; i < line.length(); i++) {
             char currentChar = line.charAt(i);
-            if (inQuotes) {
-                if (currentChar == '"') {
-                    if (i + 1 < line.length() && line.charAt(i + 1) == '"') {
-                        currentField.append('"');
-                        i += 2;
-                    } else {
-                        inQuotes = false;
-                        i++;
-                    }
-                } else {
+
+            if (escaping) {
+                if (currentChar == ',' || currentChar == '\\') {
                     currentField.append(currentChar);
-                    i++;
+                } else {
+                    currentField.append('\\').append(currentChar);
                 }
+                escaping = false;
+            } else if (currentChar == '\\') {
+                escaping = true;
+            } else if (currentChar == ',') {
+                fields.add(currentField.toString().trim());
+                currentField.setLength(0);
             } else {
-                if (currentChar == ',') {
-                    fields.add(currentField.toString().trim());
-                    currentField.setLength(0);
-                    i++;
-                } else if (currentChar == '"') {
-                    if (currentField.length() != 0 && !currentField.toString().trim().isEmpty()) {
-                        throw new IllegalArgumentException("Malformed CSV row: unexpected quote");
-                    }
-                    inQuotes = true;
-                    i++;
-                } else {
-                    currentField.append(currentChar);
-                    i++;
-                }
+                currentField.append(currentChar);
             }
         }
 
-        if (inQuotes) {
-            throw new IllegalArgumentException("Malformed CSV row: unclosed quoted field");
+        if (escaping) {
+            currentField.append('\\');
         }
 
         fields.add(currentField.toString().trim());
