@@ -19,7 +19,6 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 
 public class CsvImportServiceTest {
-
     @TempDir
     public Path tempDir;
 
