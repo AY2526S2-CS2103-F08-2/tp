@@ -439,19 +439,21 @@ Format: `deleteevent INDEX`
 Examples:
 * `deleteevent 2` deletes the second event in the list.
 
-### Bulk deleting persons by tag : `deletebulk`
+### Bulk deleting persons by tag, team, or status : `deletebulk`
 
-Deletes all persons that share a specified tag.
+Deletes all persons that share a specified tag, team, or status.
 
-Format: `deletebulk t/TAG`
+Format: `deletebulk [t/TAG | tm/TEAM | st/STATUS]`
 
-* `deletebulk t/TAG` filters and shows matching persons in the GUI list and CLI message.
+* `deletebulk [t/TAG | tm/TEAM | st/STATUS]` filters and shows matching persons in the GUI list and CLI message.
 * To confirm or cancel bulk deletion, type `y`/`Y` or `n`/`N`.
-* Both players and staff with the specified tag are considered.
+* Exactly one filter must be provided.
+* Both players and staff with the specified tag, team, or status are considered.
 
 Examples:
 * `deletebulk t/graduated`, then `y` deletes all persons tagged `graduated`.
-* `deletebulk t/graduated`, then `n` cancels the bulk deletion.
+* `deletebulk tm/Reserve Team`, then `y` deletes all persons assigned to `Reserve Team`.
+* `deletebulk st/Unavailable`, then `n` cancels the bulk deletion.
 
 ### Clearing all entries : `clear`
 
@@ -508,7 +510,7 @@ _Details coming soon ..._
 | **Attendance**   | `attendance`                                                                                                                                                                                                           |
 | **Clear**        | `clear`                                                                                                                                                                                                                |
 | **Delete**       | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)                                                                              |
-| **Delete Bulk**  | `deletebulk t/TAG`<br> e.g., `deletebulk t/graduated` (then `y` or `n`)                                                                                                                                                |
+| **Delete Bulk**  | `deletebulk [t/TAG \| tm/TEAM \| st/STATUS]`<br> e.g., `deletebulk st/Unavailable` (then `y` or `n`)                                                                                                                  |
 | **Edit**         | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                         |
 | **Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                         |
 | **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |

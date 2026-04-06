@@ -14,15 +14,15 @@ import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
  */
 class DeleteInteractionFlow {
     private PendingDeleteContext pendingDeleteContext;
-    private String pendingDeleteBulkTagArgument;
+    private String pendingDeleteBulkArgument;
 
     String preprocessInput(String trimmedInput) {
-        if (pendingDeleteBulkTagArgument != null && isYesNo(trimmedInput)) {
+        if (pendingDeleteBulkArgument != null && isYesNo(trimmedInput)) {
             return DeleteBulkCommand.COMMAND_WORD + " " + trimmedInput.toLowerCase(Locale.ROOT)
-                    + " " + pendingDeleteBulkTagArgument;
+                    + " " + pendingDeleteBulkArgument;
         }
-        if (pendingDeleteBulkTagArgument != null) {
-            pendingDeleteBulkTagArgument = null;
+        if (pendingDeleteBulkArgument != null) {
+            pendingDeleteBulkArgument = null;
             return trimmedInput;
         }
 
@@ -39,7 +39,7 @@ class DeleteInteractionFlow {
         }
 
         pendingDeleteContext = null;
-        pendingDeleteBulkTagArgument = null;
+        pendingDeleteBulkArgument = null;
         return trimmedInput;
     }
 
@@ -51,11 +51,11 @@ class DeleteInteractionFlow {
 
         if (!(command instanceof DeleteCommand)) {
             pendingDeleteContext = null;
-            pendingDeleteBulkTagArgument = null;
+            pendingDeleteBulkArgument = null;
             return;
         }
 
-        pendingDeleteBulkTagArgument = null;
+        pendingDeleteBulkArgument = null;
         DeleteCommand deleteCommand = (DeleteCommand) command;
         if (deleteCommand.getDeletionDecision() != DeletionDecision.UNDECIDED) {
             pendingDeleteContext = null;
@@ -80,12 +80,11 @@ class DeleteInteractionFlow {
     private void updateDeleteBulkContext(DeleteBulkCommand deleteBulkCommand) {
         pendingDeleteContext = null;
         if (deleteBulkCommand.getDecision() != BulkDeletionDecision.UNDECIDED) {
-            pendingDeleteBulkTagArgument = null;
+            pendingDeleteBulkArgument = null;
             return;
         }
 
-        pendingDeleteBulkTagArgument = CliSyntax.PREFIX_TAG
-                + deleteBulkCommand.getTag().tagName;
+        pendingDeleteBulkArgument = deleteBulkCommand.getCriterion().toArgumentString();
     }
 
     private String buildBaseDeleteCommand(DeleteCommand deleteCommand) {
