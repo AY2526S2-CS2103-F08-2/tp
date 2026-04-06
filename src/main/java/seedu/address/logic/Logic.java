@@ -53,4 +53,9 @@ public interface Logic {
      * Set the user prefs' GUI settings.
      */
     void setGuiSettings(GuiSettings guiSettings);
+
+    /**
+     * Imports persons from the given CSV file path and returns a summary message.
+     */
+    String importCsv(Path path) throws CommandException;
 }

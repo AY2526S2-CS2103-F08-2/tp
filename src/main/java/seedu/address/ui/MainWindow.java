@@ -189,8 +189,18 @@ public class MainWindow extends UiPart<Stage> {
             resultDisplay.setFeedbackToUser("CSV import cancelled.");
             return;
         }
+        if (!selectedFile.getName().toLowerCase().endsWith(".csv")) {
+            resultDisplay.setFeedbackToUser("This is not a CSV file! (expecting file extension to be .csv)");
+            return;
+        }
 
         resultDisplay.setFeedbackToUser("Selected file: " + selectedFile.getAbsolutePath());
+        try {
+            String feedback = logic.importCsv(selectedFile.toPath());
+            resultDisplay.setFeedbackToUser(feedback);
+        } catch (CommandException e) {
+            resultDisplay.setFeedbackToUser(e.getMessage());
+        }
     }
 
     public PersonListPanel getPersonListPanel() {
