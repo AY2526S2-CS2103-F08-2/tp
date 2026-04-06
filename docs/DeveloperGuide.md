@@ -216,6 +216,17 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
 
+### Structured filter command
+
+The `filter` command is implemented as a predicate-based list narrowing operation.
+
+* `FilterCommandParser` parses optional role, team, status, and position criteria, together with optional numeric
+  comparisons for `goals`, `wins`, and `losses`.
+* Parsed criteria are assembled into `PersonMatchesFilterPredicate`, which combines all supplied filters with
+  AND semantics.
+* `FilterCommand` applies that predicate through `Model#updateFilteredPersonList(...)`.
+* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, or `losses` filters.
+
 ### Update player stats command
 
 The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
@@ -426,8 +437,8 @@ The sequence diagram below shows the confirmed index-based delete path after the
 `sort` is implemented as a `Logic`-to-`Model` operation that first sets the target scope and then applies a comparator
 to the filtered person list.
 
-* `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute, and the optional
-  `desc` modifier.
+* `SortCommandParser` parses the scope (`players`, `staff`, or all persons), the `by/...` attribute
+  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
@@ -768,6 +779,27 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `list coaches`<br>
        Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
+
+### Structured filter
+
+1. Filtering persons with structured criteria
+
+    1. Prerequisites: The address book contains players/staff with a mix of roles, attributes, and stats.
+
+    1. Test case: `filter r/player`<br>
+       Expected: Only players are shown.
+
+    1. Test case: `filter tm/First Team st/Active`<br>
+       Expected: Only persons matching both criteria are shown.
+
+    1. Test case: `filter pos/Forward goals/>10`<br>
+       Expected: Only forwards with more than 10 goals are shown.
+
+    1. Test case: `filter wins/<3`<br>
+       Expected: Only players with fewer than 3 wins are shown. Staff do not match this stat filter.
+
+    1. Test case: `filter goals/10`<br>
+       Expected: Command is rejected with an invalid format message.
 
 ### Saving data
 
