@@ -428,6 +428,11 @@ to the filtered person list.
 
 * `SortCommandParser` parses the scope (`r/player`, `r/staff`, or all persons), the `by/...` attribute
   (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
+* `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
+  ordering stay aligned.
+* Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
+* Stat-based comparators read from `PlayerStats`; non-player entries are treated as stat value `0` so mixed lists can
+  still be sorted without special-case command failures.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
@@ -757,17 +762,48 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: At least one player and one staff in the current address book.
 
-    1. Test case: `list players`<br>
+    1. Test case: `list r/player`<br>
        Expected: Only players are shown. Status message indicates players were listed.
 
-    1. Test case: `list staff`<br>
+    1. Test case: `list r/staff`<br>
        Expected: Only staff are shown. Status message indicates staff were listed.
 
-    1. Test case: `list PLAYERS`<br>
-       Expected: Same result as `list players` (role keyword is case-insensitive).
+    1. Test case: `list r/PLAYER`<br>
+       Expected: Same result as `list r/player` (role keyword is case-insensitive).
 
-    1. Test case: `list coaches`<br>
+    1. Test case: `list r/coaches`<br>
        Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
+
+### Sorting persons
+
+1. Sorting by roster attributes
+
+    1. Prerequisites: At least two persons with different `team`, `status`, or `position` values.
+
+    1. Test case: `sort by/team`<br>
+       Expected: Persons are ordered by team in ascending order.
+
+    1. Test case: `sort by/status desc`<br>
+       Expected: Persons are ordered by status in descending order.
+
+    1. Test case: `sort r/player by/position`<br>
+       Expected: Only players are shown, ordered by position in ascending order.
+
+1. Sorting by player stats
+
+    1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
+
+    1. Test case: `sort by/goals`<br>
+       Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
+
+    1. Test case: `sort by/wins desc`<br>
+       Expected: Persons are ordered by wins in descending order.
+
+    1. Test case: `sort r/player by/losses`<br>
+       Expected: Only players are shown, ordered by losses in ascending order.
+
+    1. Test case: `sort r/player by/unknown`<br>
+       Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data
 
