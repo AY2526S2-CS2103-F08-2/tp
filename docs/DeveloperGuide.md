@@ -584,7 +584,121 @@ Use case ends.
     * 3a1. SoCcer Manager shows an error message.  
       Use case ends.
 
-*{More to be added}*
+**Use case: UC05 - Filter persons using structured criteria**  
+**MSS**
+
+1. Manager requests to filter persons.
+2. Manager provides one or more structured criteria.
+3. SoCcer Manager validates the provided criteria.
+4. SoCcer Manager filters the visible person list using all specified criteria.
+5. SoCcer Manager shows the filtered list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager provides role, team, status, or position criteria.
+    * 2a1. SoCcer Manager applies exact-match filtering for the provided attributes.  
+      Use case resumes at step 4.
+
+* 2b. Manager provides stat comparison criteria for `goals`, `wins`, or `losses`.
+    * 2b1. SoCcer Manager applies numeric comparison filtering for player stats.  
+      Use case resumes at step 4.
+
+* 3a. Manager provides an invalid role, attribute value, or malformed stat comparison.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided criteria.
+    * 4a1. SoCcer Manager shows an empty filtered list.  
+      Use case ends.
+
+**Use case: UC06 - Sort persons by attribute or stat**  
+**MSS**
+
+1. Manager requests to sort persons.
+2. Manager provides an optional role scope, a supported sort attribute, and an optional sort order.
+3. SoCcer Manager validates the requested sort configuration.
+4. SoCcer Manager applies the requested scope filter.
+5. SoCcer Manager sorts the visible person list by the requested attribute.
+6. SoCcer Manager shows the sorted list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager omits the role scope.
+    * 2a1. SoCcer Manager sorts all visible persons.  
+      Use case resumes at step 3.
+
+* 2b. Manager specifies descending order.
+    * 2b1. SoCcer Manager sorts in descending order.  
+      Use case resumes at step 5.
+
+* 3a. Manager provides an unsupported sort attribute.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 5a. Manager sorts by `goals`, `wins`, or `losses` while staff are present in the visible list.
+    * 5a1. SoCcer Manager treats staff as stat value `0` and completes the sort.  
+      Use case resumes at step 6.
+
+**Use case: UC07 - Bulk delete persons by shared criterion**  
+**MSS**
+
+1. Manager requests to bulk delete persons.
+2. Manager provides exactly one supported criterion: `tag`, `team`, or `status`.
+3. SoCcer Manager validates the provided criterion.
+4. SoCcer Manager filters and shows the matching persons.
+5. SoCcer Manager requests confirmation.
+6. Manager confirms the bulk deletion.
+7. SoCcer Manager deletes all matching persons.
+8. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 3a. Manager provides an unsupported or malformed criterion.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided criterion.
+    * 4a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 5a. Manager cancels the bulk deletion.
+    * 5a1. SoCcer Manager aborts the operation and shows a cancellation message.  
+      Use case ends.
+
+* 6a. Manager provides a confirmation response other than `y` or `n`.
+    * 6a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+**Use case: UC08 - List persons using attribute filters**  
+**MSS**
+
+1. Manager requests to list persons using filters.
+2. Manager provides zero or more of the following filters: role, team, status, and position.
+3. SoCcer Manager validates the provided filters.
+4. SoCcer Manager filters the visible person list using all specified filters.
+5. SoCcer Manager shows the filtered list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager omits all filters.
+    * 2a1. SoCcer Manager shows all persons.  
+      Use case ends.
+
+* 2b. Manager provides only a role filter.
+    * 2b1. SoCcer Manager filters the visible person list by the requested role.  
+      Use case resumes at step 5.
+
+* 3a. Manager provides an invalid role or malformed filter input.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided filters.
+    * 4a1. SoCcer Manager shows an empty filtered list.  
+      Use case ends.
 
 ### Non-Functional Requirements
 
