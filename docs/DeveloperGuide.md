@@ -850,3 +850,7 @@ testers are expected to do more *exploratory* testing.
    as a result, visually similar values such as `First Team` and `First  Team` can coexist as distinct
    catalog entries. A planned enhancement is to normalize repeated internal whitespace during attribute parsing so that
    equivalent attribute values are treated consistently during duplicate checks, storage, and person assignment.
+2. **Allow user to unmark attendance for specific events:**
+   Currently, users are only able to mark the attendance of players for events. They cannot reverse this and unmark someone
+   who attended. This could potentially be useful if the user accidentally marks someone as attended or the player only attends
+   for a short amount of time and the user wants to remove their attendance.
