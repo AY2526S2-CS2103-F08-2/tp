@@ -20,6 +20,7 @@ import seedu.address.logic.commands.EventEditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ImportCsvCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.MatchCommand;
 import seedu.address.logic.commands.PositionAddCommand;
@@ -176,6 +177,10 @@ public class AddressBookParser {
 
         case HelpCommand.COMMAND_WORD:
             command = new HelpCommand();
+            break;
+
+        case ImportCsvCommand.COMMAND_WORD:
+            command = new ImportCsvCommand();
             break;
 
         case SetCommand.COMMAND_WORD:
