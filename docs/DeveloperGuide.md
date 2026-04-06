@@ -223,6 +223,20 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
 
+### Structured filter command
+
+The `filter` command is implemented as a predicate-based list narrowing operation.
+
+* `FilterCommandParser` parses optional role, team, status, and position criteria, together with optional numeric
+  comparisons for `goals`, `wins`, and `losses`.
+* Parsed criteria are assembled into `PersonMatchesFilterPredicate`, which combines all supplied filters with
+  AND semantics.
+* `FilterCommand` applies that predicate through `Model#updateFilteredPersonList(...)`.
+* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, or `losses` filters.
+
+The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
+
+![Filter command flow in Logic](images/FilterSequenceDiagram.png)
 ### Attribute-filtered list command
 
 For attribute-filtered input such as `list tm/First Team` or
@@ -348,105 +362,6 @@ During load:
 
 `PersonCard` renders `Team`, `Status`, and `Position` labels only when the person has non-default values.
 
-### \[Proposed\] Undo/redo feature
-
-#### Proposed Implementation
-
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo
-history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the
-following operations:
-
-* `VersionedAddressBook#commit()`— Saves the current address book state in its history.
-* `VersionedAddressBook#undo()`— Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()`— Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and
-`Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the
-initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-![UndoRedoState0](images/UndoRedoState0.png)
-
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls
-`Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be
-saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-![UndoRedoState1](images/UndoRedoState1.png)
-
-Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls
-`Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-![UndoRedoState2](images/UndoRedoState2.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
-
-</div>
-
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the
-`undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once
-to the left, pointing it to the previous address book state, and restores the address book to that state.
-
-![UndoRedoState3](images/UndoRedoState3.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</div>
-
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
-
-![UndoSequenceDiagram](images/UndoSequenceDiagram-Logic.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
-
-</div>
-
-Similarly, how an undo operation goes through the `Model` component is shown below:
-
-![UndoSequenceDiagram](images/UndoSequenceDiagram-Model.png)
-
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once
-to the right, pointing to the previously undone state, and restores the address book to that state.
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</div>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as
-`list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus,
-the `addressBookStateList` remains unchanged.
-
-![UndoRedoState4](images/UndoRedoState4.png)
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not
-pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be
-purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern
-desktop applications follow.
-
-![UndoRedoState5](images/UndoRedoState5.png)
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<img src="images/CommitActivityDiagram.png" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-    * Pros: Easy to implement.
-    * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-    * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-    * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
-
 ### Delete and bulk-delete confirmation flow
 
 The `delete` and `deletebulk` features use a parser-managed continuation flow so that follow-up inputs can stay short
@@ -483,10 +398,6 @@ to the filtered person list.
 The following sequence diagram illustrates `sort r/player by/email desc`.
 
 ![Sort command flow in Logic](images/SortSequenceDiagram.png)
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -677,7 +588,121 @@ Use case ends.
     * 3a1. SoCcer Manager shows an error message.  
       Use case ends.
 
-*{More to be added}*
+**Use case: UC05 - Filter persons using structured criteria**  
+**MSS**
+
+1. Manager requests to filter persons.
+2. Manager provides one or more structured criteria.
+3. SoCcer Manager validates the provided criteria.
+4. SoCcer Manager filters the visible person list using all specified criteria.
+5. SoCcer Manager shows the filtered list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager provides role, team, status, or position criteria.
+    * 2a1. SoCcer Manager applies exact-match filtering for the provided attributes.  
+      Use case resumes at step 4.
+
+* 2b. Manager provides stat comparison criteria for `goals`, `wins`, or `losses`.
+    * 2b1. SoCcer Manager applies numeric comparison filtering for player stats.  
+      Use case resumes at step 4.
+
+* 3a. Manager provides an invalid role, attribute value, or malformed stat comparison.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided criteria.
+    * 4a1. SoCcer Manager shows an empty filtered list.  
+      Use case ends.
+
+**Use case: UC06 - Sort persons by attribute or stat**  
+**MSS**
+
+1. Manager requests to sort persons.
+2. Manager provides an optional role scope, a supported sort attribute, and an optional sort order.
+3. SoCcer Manager validates the requested sort configuration.
+4. SoCcer Manager applies the requested scope filter.
+5. SoCcer Manager sorts the visible person list by the requested attribute.
+6. SoCcer Manager shows the sorted list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager omits the role scope.
+    * 2a1. SoCcer Manager sorts all visible persons.  
+      Use case resumes at step 3.
+
+* 2b. Manager specifies descending order.
+    * 2b1. SoCcer Manager sorts in descending order.  
+      Use case resumes at step 5.
+
+* 3a. Manager provides an unsupported sort attribute.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 5a. Manager sorts by `goals`, `wins`, or `losses` while staff are present in the visible list.
+    * 5a1. SoCcer Manager treats staff as stat value `0` and completes the sort.  
+      Use case resumes at step 6.
+
+**Use case: UC07 - Bulk delete persons by shared criterion**  
+**MSS**
+
+1. Manager requests to bulk delete persons.
+2. Manager provides exactly one supported criterion: `tag`, `team`, or `status`.
+3. SoCcer Manager validates the provided criterion.
+4. SoCcer Manager filters and shows the matching persons.
+5. SoCcer Manager requests confirmation.
+6. Manager confirms the bulk deletion.
+7. SoCcer Manager deletes all matching persons.
+8. SoCcer Manager shows a success message.  
+   Use case ends.
+
+**Extensions**
+
+* 3a. Manager provides an unsupported or malformed criterion.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided criterion.
+    * 4a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 5a. Manager cancels the bulk deletion.
+    * 5a1. SoCcer Manager aborts the operation and shows a cancellation message.  
+      Use case ends.
+
+* 6a. Manager provides a confirmation response other than `y` or `n`.
+    * 6a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+**Use case: UC08 - List persons using attribute filters**  
+**MSS**
+
+1. Manager requests to list persons using filters.
+2. Manager provides zero or more of the following filters: role, team, status, and position.
+3. SoCcer Manager validates the provided filters.
+4. SoCcer Manager filters the visible person list using all specified filters.
+5. SoCcer Manager shows the filtered list.  
+   Use case ends.
+
+**Extensions**
+
+* 2a. Manager omits all filters.
+    * 2a1. SoCcer Manager shows all persons.  
+      Use case ends.
+
+* 2b. Manager provides only a role filter.
+    * 2b1. SoCcer Manager filters the visible person list by the requested role.  
+      Use case resumes at step 5.
+
+* 3a. Manager provides an invalid role or malformed filter input.
+    * 3a1. SoCcer Manager shows an error message.  
+      Use case ends.
+
+* 4a. No persons match the provided filters.
+    * 4a1. SoCcer Manager shows an empty filtered list.  
+      Use case ends.
 
 ### Non-Functional Requirements
 
@@ -818,6 +843,26 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `list r/coaches`<br>
        Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
 
+### Structured filter
+
+1. Filtering persons with structured criteria
+
+    1. Prerequisites: The address book contains players/staff with a mix of roles, attributes, and stats.
+
+    1. Test case: `filter r/player`<br>
+       Expected: Only players are shown.
+
+    1. Test case: `filter tm/First Team st/Active`<br>
+       Expected: Only persons matching both criteria are shown.
+
+    1. Test case: `filter pos/Forward goals/>10`<br>
+       Expected: Only forwards with more than 10 goals are shown.
+
+    1. Test case: `filter wins/<3`<br>
+       Expected: Only players with fewer than 3 wins are shown. Staff do not match this stat filter.
+
+    1. Test case: `filter goals/10`<br>
+       Expected: Command is rejected with an invalid format message.
 1. Listing persons with attribute filters
 
     1. Prerequisites: At least one player assigned `tm/First Team`, `st/Active`, and `pos/Defender`.

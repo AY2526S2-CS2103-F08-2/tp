@@ -42,6 +42,12 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `sort r/player by/goals desc` : Sorts only players by goals in descending order.
 
+   * `sort by/team` : Sorts all persons by team in ascending order.
+
+   * `sort players by/goals desc` : Sorts only players by goals in descending order.
+
+   * `filter r/player pos/Forward goals/>10` : Shows players in the Forward position with more than 10 goals.
+
    * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a player named `John Doe` to SoCcer Manager.
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
@@ -205,6 +211,25 @@ Examples:
 * `sort by/wins desc`
 * `sort r/player by/goals desc`
 * `sort r/staff by/name desc`
+
+### Filtering persons: `filter`
+
+Filters persons in the UI using structured attribute and stat criteria.
+
+Format:
+* `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[>|<|=]NUM] [wins/[>|<|=]NUM] [losses/[>|<|=]NUM]`
+
+Rules:
+* All provided filters are combined using AND semantics.
+* `goals`, `wins`, and `losses` filters apply only to players.
+* Use `list` to reset the filtered view and show all persons again.
+
+Examples:
+* `filter r/player`
+* `filter tm/First Team st/Active`
+* `filter pos/Forward goals/>10`
+* `filter wins/<3`
+* `filter r/player losses/=0`
 
 ### Player Stats
 Every **player** will have stats that denote their individual performance. 
@@ -535,6 +560,7 @@ _Details coming soon ..._
 | **Edit**         | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                         |
 | **Delete Event** | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                         |
 | **Edit Event**   | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                       |
+| **Filter**       | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[>|<|=]NUM] [wins/[>|<|=]NUM] [losses/[>|<|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10`                                                     |
 | **Find**         | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                        |
 | **List**         | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                     |
 | **Sort**         | `sort by/ATTRIBUTE [desc]` / `sort r/player by/ATTRIBUTE [desc]` / `sort r/staff by/ATTRIBUTE [desc]`<br> attributes: `name`, `email`, `team`, `status`, `position`, `goals`, `wins`, `losses`<br> e.g., `sort by/team`, `sort r/player by/goals desc` |
