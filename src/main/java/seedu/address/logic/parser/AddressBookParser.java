@@ -106,7 +106,7 @@ public class AddressBookParser {
             if (arguments.isBlank()) {
                 command = new ListCommand();
             } else {
-                command = new ListRoleCommandParser().parse(arguments);
+                command = new ListCommandParser().parse(arguments);
             }
             break;
 

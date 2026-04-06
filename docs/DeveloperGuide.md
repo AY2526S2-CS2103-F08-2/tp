@@ -207,19 +207,37 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Role-filtered list command
 
-The `list players` and `list staff` commands are handled by `AddressBookParser` via
-`ListRoleCommandParser`, which creates a `ListRoleCommand` with the corresponding role predicate.
+The `list` command is handled by `AddressBookParser` via `ListCommandParser`.
+For role-only input such as `list r/player` or `list r/staff`, `ListCommandParser`
+creates a `ListRoleCommand` with the corresponding role predicate.
 
 When executed, `ListRoleCommand` calls `Model#updateFilteredPersonList(...)` with
 `PersonHasRolePredicate(Role.PLAYER)` or `PersonHasRolePredicate(Role.STAFF)`, which updates the
 observable filtered list shown in the UI.
 
-The sequence diagram below illustrates the interaction flow using `execute("list players")` as the example.
+The sequence diagram below illustrates the interaction flow using `execute("list r/player")` as the example.
 
-![Interactions for the `list players` Command](images/ListRoleSequenceDiagram.png)
+![Interactions for the `list r/player` Command](images/ListRoleSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListRoleCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
+
+### Attribute-filtered list command
+
+For attribute-filtered input such as `list tm/First Team` or
+`list r/player st/Active pos/Defender`, `ListCommandParser` creates a
+`ListFilteredCommand` instead of a `ListRoleCommand`.
+
+Implementation details:
+* `ListCommandParser` tokenizes the optional `r/`, `tm/`, `st/`, and `pos/` prefixes.
+* If only `r/` is present, it returns `ListRoleCommand` to preserve the simpler role-only flow.
+* If any attribute filter is present, it builds a `PersonMatchesListFiltersPredicate` with the
+  provided optional role, team, status, and position values.
+* `ListFilteredCommand` then calls `Model#updateFilteredPersonList(...)` with that composite
+  predicate, updating the observable filtered list shown in the UI.
+
+The corresponding sequence-diagram source for the filtered path is recorded in
+`docs/diagrams/ListFilteredSequenceDiagram.puml`.
 
 ### Update player stats command
 
@@ -796,6 +814,21 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `list r/coaches`<br>
        Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
 
+1. Listing persons with attribute filters
+
+    1. Prerequisites: At least one player assigned `tm/First Team`, `st/Active`, and `pos/Defender`.
+
+    1. Test case: `list tm/First Team`<br>
+       Expected: Only persons assigned `First Team` are shown. Status message indicates matching team filter.
+
+    1. Test case: `list st/Active pos/Defender`<br>
+       Expected: Only persons matching both status and position filters are shown.
+
+    1. Test case: `list r/player tm/First Team st/Active pos/Defender`<br>
+       Expected: Only players matching all specified filters are shown.
+
+    1. Test case: `list r/player tm/First Team tm/Second Team`<br>
+       Expected: Command is rejected because duplicate prefixes are not allowed.
 ### Sorting persons
 
 1. Sorting by roster attributes

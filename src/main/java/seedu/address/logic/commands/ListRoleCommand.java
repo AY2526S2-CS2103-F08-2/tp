@@ -15,8 +15,8 @@ public class ListRoleCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Lists all persons of the specified role.\n"
-            + "Parameters: players | staff (omit to list all)\n"
-            + "Example: " + COMMAND_WORD + " players";
+            + "Parameters: r/player | r/staff (omit to list all)\n"
+            + "Example: " + COMMAND_WORD + " r/player";
 
     public static final String MESSAGE_SUCCESS = "Listed all %s";
 
@@ -58,5 +58,3 @@ public class ListRoleCommand extends Command {
         return new ToStringBuilder(this).add("predicate", predicate).toString();
     }
 }
-
-
