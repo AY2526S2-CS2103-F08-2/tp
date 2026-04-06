@@ -48,7 +48,8 @@ public class TrainingCommandTest {
         Date date = new Date("2026-04-15 1600");
         List<String> players = List.of("Alex Yeoh");
 
-        CommandResult commandResult = new TrainingCommand(name, date, players).execute(modelStub);
+        CommandResult commandResult = new TrainingCommand(name, date,
+                null, null, null, players).execute(modelStub);
 
         assertEquals(String.format(TrainingCommand.MESSAGE_SUCCESS,
                         "Training: Drills; Date: 15 April 2026, 4:00 PM; Players: Alex Yeoh"),
@@ -64,7 +65,8 @@ public class TrainingCommandTest {
         ModelStubAcceptingTrainingAdded modelStub = new ModelStubAcceptingTrainingAdded();
 
         TrainingCommand trainingCommand =
-                new TrainingCommand(new EventName("Drills"), new Date("2026-04-15 1600"), List.of("Unknown Player"));
+                new TrainingCommand(new EventName("Drills"), new Date("2026-04-15 1600"),
+                        null, null, null, List.of("Unknown Player"));
 
         assertThrows(CommandException.class,
                 String.format(TrainingCommand.MESSAGE_PERSON_DOES_NOT_EXIST,
@@ -78,7 +80,8 @@ public class TrainingCommandTest {
         modelStub.addPerson(coach);
 
         TrainingCommand trainingCommand =
-                new TrainingCommand(new EventName("Drills"), new Date("2026-04-15 1600"), List.of("Coach Bob"));
+                new TrainingCommand(new EventName("Drills"), new Date("2026-04-15 1600"),
+                        null, null, null, List.of("Coach Bob"));
 
         assertThrows(CommandException.class,
                 String.format(TrainingCommand.MESSAGE_NOT_A_PLAYER,

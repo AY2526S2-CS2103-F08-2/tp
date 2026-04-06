@@ -33,13 +33,14 @@ public class TrainingCommandParserTest {
                                    + PREFIX_DATE + "2026-04-15 1600 "
                                    + PREFIX_PLAYER + "Alex Yeoh "
                                    + PREFIX_PLAYER + "Bernice Yu",
-                new TrainingCommand(expectedName, expectedDate, expectedPlayers));
+                new TrainingCommand(expectedName, expectedDate, null, null, null, expectedPlayers));
 
         // White spaces in between
         assertParseSuccess(parser, "    " + PREFIX_NAME + "Warm Up  "
                                    + PREFIX_DATE + "2026-04-15 1600    "
                                    + PREFIX_PLAYER + "Alex Yeoh",
-                new TrainingCommand(expectedName, expectedDate, List.of("Alex Yeoh")));
+                new TrainingCommand(expectedName, expectedDate, null, null,
+                        null, List.of("Alex Yeoh")));
     }
 
     @Test
