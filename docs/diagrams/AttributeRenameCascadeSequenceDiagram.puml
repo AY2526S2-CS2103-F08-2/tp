@@ -1,0 +1,34 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "ab:AddressBook" as AddressBook MODEL_COLOR
+end box
+
+[-> ModelManager : setTeam(oldTeam, newTeam)
+activate ModelManager
+
+ModelManager -> AddressBook : replace team in catalog
+activate AddressBook
+AddressBook --> ModelManager
+deactivate AddressBook
+
+loop for each person assigned oldTeam
+    ModelManager -> AddressBook : replace person with updated team
+    activate AddressBook
+    AddressBook --> ModelManager
+    deactivate AddressBook
+end
+
+[<-- ModelManager
+deactivate ModelManager
+
+note over ModelManager
+The same model-level flow is used by
+setStatus(...) and setPosition(...).
+For Player instances, existing PlayerStats
+are preserved when recreating affected persons.
+end note
+@enduml
