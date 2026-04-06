@@ -40,7 +40,8 @@ public class JsonAdaptedEventTest {
                 "Liverpool",
                 "MATCH",
                 "2026-05-15 1600",
-                List.of(VALID_PLAYER.getName().toString())
+                List.of(VALID_PLAYER.getName().toString()),
+                List.of()
         );
 
         Match expectedMatch = new MatchBuilder()
@@ -63,7 +64,8 @@ public class JsonAdaptedEventTest {
                 null,
                 "MATCH",
                 "2026-05-15 1600",
-                List.of(VALID_PLAYER.getName().toString())
+                List.of(VALID_PLAYER.getName().toString()),
+                List.of()
         );
 
         assertThrows(IllegalValueException.class, () -> jsonAdaptedEvent.toModelType(VALID_PERSON_MAP));
@@ -75,7 +77,8 @@ public class JsonAdaptedEventTest {
                 "@@@",
                 "MATCH",
                 "2026-05-15 1600",
-                List.of(VALID_PLAYER.getName().toString())
+                List.of(VALID_PLAYER.getName().toString()),
+                List.of()
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->
@@ -89,7 +92,8 @@ public class JsonAdaptedEventTest {
                 "Liverpool",
                 "MATCH",
                 null,
-                List.of(VALID_PLAYER.getName().toString())
+                List.of(VALID_PLAYER.getName().toString()),
+                List.of()
         );
 
         assertThrows(IllegalValueException.class, () ->
@@ -102,7 +106,8 @@ public class JsonAdaptedEventTest {
                 "Liverpool",
                 "MATCH",
                 "2026/05/15 1600",
-                List.of(VALID_PLAYER.getName().toString())
+                List.of(VALID_PLAYER.getName().toString()),
+                List.of()
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->
@@ -116,7 +121,8 @@ public class JsonAdaptedEventTest {
                 "Liverpool",
                 "MATCH",
                 "2026-05-15 1600",
-                List.of("Ghost Player")
+                List.of("Ghost Player"),
+                List.of()
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->
@@ -135,7 +141,8 @@ public class JsonAdaptedEventTest {
                 "Liverpool",
                 "MATCH",
                 "2026-05-15 1600",
-                List.of(STAFF_PERSON.getName().toString())
+                List.of(STAFF_PERSON.getName().toString()),
+                List.of()
         );
 
         IllegalValueException e = assertThrows(IllegalValueException.class, () ->

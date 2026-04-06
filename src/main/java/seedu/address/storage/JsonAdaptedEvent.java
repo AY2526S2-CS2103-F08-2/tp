@@ -32,6 +32,7 @@ class JsonAdaptedEvent {
     private final String eventType;
     private final String date;
     private final List<String> players = new ArrayList<>();
+    private final List<String> attended = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedEvent} with the given match details.
@@ -39,12 +40,17 @@ class JsonAdaptedEvent {
     @JsonCreator
     public JsonAdaptedEvent(@JsonProperty("eventName") String eventName, @JsonProperty("eventType") String eventType,
                             @JsonProperty("date") String date,
-                            @JsonProperty("players") List<String> players) {
+                            @JsonProperty("players") List<String> players,
+                            @JsonProperty("attended") List<String> attended) {
+
         this.eventName = eventName;
         this.eventType = eventType;
         this.date = date;
         if (players != null) {
             this.players.addAll(players);
+        }
+        if (attended != null) {
+            this.attended.addAll(attended);
         }
     }
 
@@ -57,6 +63,10 @@ class JsonAdaptedEvent {
         date = source.getEventDate().getDateWithInputFormat();
 
         players.addAll(source.getEventPlayerList().asUnmodifiableObservableList().stream()
+                .map(person -> person.getName().toString())
+                .toList());
+
+        attended.addAll(source.getAttendedPlayerList().asUnmodifiableObservableList().stream()
                 .map(person -> person.getName().toString())
                 .toList());
     }
@@ -107,8 +117,18 @@ class JsonAdaptedEvent {
             playerList.add(person);
         }
 
-        final EventPlayerList modelPlayers = new EventPlayerList(playerList);
+        final Set<Person> attendedList = new HashSet<>();
+        for (String attendeeName : attended) {
+            Person person = personMap.get(attendeeName);
+            if (person == null) {
+                throw new IllegalValueException(String.format(MISSING_PLAYER_MESSAGE_FORMAT, attendeeName));
+            }
+            attendedList.add(person);
+        }
 
-        return Event.createEvent(modelEventName, modelDate, modelEventType, modelPlayers);
+        final EventPlayerList modelPlayers = new EventPlayerList(playerList);
+        final EventPlayerList modelAttended = new EventPlayerList(attendedList);
+
+        return Event.createEventWithAttendees(modelEventName, modelDate, modelEventType, modelPlayers, modelAttended);
     }
 }
