@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.List;
 
@@ -68,7 +67,6 @@ public class SetCommand extends Command {
         Player updatedPlayer = setPlayerStat(player);
 
         model.setPerson(player, updatedPlayer);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_SET_PLAYER_SUCCESS,
                 Messages.format(player), this.stat, old, this.value));
     }
