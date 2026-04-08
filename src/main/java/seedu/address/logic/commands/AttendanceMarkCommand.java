@@ -72,7 +72,7 @@ public class AttendanceMarkCommand extends Command {
 
         for (String s : playerNames) {
             Optional<Person> personToMark = model.getAddressBook().getPersonList().stream()
-                    .filter(p -> p.getName().fullName.equalsIgnoreCase(s))
+                    .filter(p -> p.getName().fullName.equals(s))
                     .findFirst();
 
             if (personToMark.isPresent()) {
@@ -101,16 +101,7 @@ public class AttendanceMarkCommand extends Command {
 
         model.setEvent(eventToMark, updatedEvent);
 
-        List<String> playerNamesProperCase = List.of();
-
-        for (String s: playerNames) {
-            playerNamesProperCase = model.getAddressBook().getPersonList().stream()
-                    .filter(p -> p.getName().fullName.equalsIgnoreCase(s))
-                    .map(p -> p.getName().fullName)
-                    .toList();
-        }
-
         return new CommandResult(String.format(MESSAGE_MARK_ATTENDANCE_SUCCESS,
-                String.join(", ", playerNamesProperCase)));
+                String.join(", ", playerNames)));
     }
 }
