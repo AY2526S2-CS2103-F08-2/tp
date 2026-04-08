@@ -30,6 +30,8 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Player;
+import seedu.address.model.person.PlayerStats;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
@@ -151,8 +153,17 @@ public class EditCommand extends Command {
             updatedPosition = new Position(Position.DEFAULT_UNASSIGNED_POSITION);
         }
 
-        return Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+        Person updatedPerson = Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
                 updatedRole, updatedTeam, updatedStatus, updatedPosition);
+
+        if (personToEdit.getRole() == Role.PLAYER && updatedRole == Role.PLAYER) {
+            Player playerToEdit = (Player) personToEdit;
+            PlayerStats playerStats = playerToEdit.getStats();
+            Player updatedPlayer = (Player) updatedPerson;
+            return new Player(updatedPlayer, playerStats);
+        }
+
+        return updatedPerson;
     }
 
     @Override
