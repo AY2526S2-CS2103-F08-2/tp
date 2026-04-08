@@ -71,6 +71,7 @@ public class EditCommand extends Command {
             "The specified position does not exist in the catalog";
     public static final String MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF =
             "Position can only be assigned to players";
+    public static final String MESSAGE_NO_FIELD_WAS_CHANGED = "No fields were changed from the existing person.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -122,6 +123,10 @@ public class EditCommand extends Command {
         }
 
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+
+        if (personToEdit.equals(editedPerson)) {
+            throw new CommandException(MESSAGE_NO_FIELD_WAS_CHANGED);
+        }
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
