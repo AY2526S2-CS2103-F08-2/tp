@@ -296,7 +296,7 @@ public class CsvImportServiceTest {
     }
 
     @Test
-    public void importCsv_blankLastFieldForTags_notTrimmed_success() throws Exception {
+    public void importCsv_blankLastFieldForTags_notTrimmed() throws Exception {
         Path csvFile = createCsvFile("blankTags.csv",
                 "name,role,address,phone,email,tags",
                 "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,");
