@@ -25,6 +25,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -69,6 +70,8 @@ public class EditCommand extends Command {
             "The specified position does not exist in the catalog";
     public static final String MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF =
             "Position can only be assigned to players";
+    public static final String MESSAGE_REMOVE_FROM_EVENT_FIRST = "Staff cannot be added to events. "
+            + "Please remove %s from all events before changing role to staff";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -119,6 +122,11 @@ public class EditCommand extends Command {
             throw new CommandException(MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF);
         }
 
+        if (updatedRole == Role.STAFF && eventListContainsPerson(model, personToEdit)) {
+            throw new CommandException(String.format(MESSAGE_REMOVE_FROM_EVENT_FIRST,
+                    personToEdit.getName().toString()));
+        }
+
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
@@ -128,6 +136,20 @@ public class EditCommand extends Command {
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+    }
+
+    /**
+     * Checks if any events in event list contains person
+     * @param model
+     * @param personToCheck
+     */
+    private boolean eventListContainsPerson(Model model, Person personToCheck) {
+        for (Event e : model.getEventList()) {
+            if (e.getEventPlayerList().contains(personToCheck)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
