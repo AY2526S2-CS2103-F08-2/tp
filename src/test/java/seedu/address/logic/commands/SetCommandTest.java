@@ -66,7 +66,7 @@ public class SetCommandTest {
                         Messages.format(player), StatField.GOALS, oldGoals, newGoals),
                 commandResult.getFeedbackToUser());
         assertEquals(newGoals, updatedPlayer.getStats().getGoalsScored());
-        assertTrue(modelStub.updateFilteredPersonListCalled);
+        assertFalse(modelStub.updateFilteredPersonListCalled);
         assertTrue(modelStub.setPersonCalled);
     }
 
