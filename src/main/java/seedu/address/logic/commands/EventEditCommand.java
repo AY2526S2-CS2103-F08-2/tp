@@ -107,7 +107,7 @@ public class EventEditCommand extends Command {
 
         for (String playerName : updatedPlayerNames) {
             Person person = model.getAddressBook().getPersonList().stream()
-                    .filter(p -> p.getName().toString().equals(playerName.trim()))
+                    .filter(p -> p.getName().toString().equalsIgnoreCase(playerName.trim()))
                     .findFirst()
                     .orElseThrow(() -> new CommandException(String.format(MESSAGE_PERSON_DOES_NOT_EXIST, playerName)));
 
