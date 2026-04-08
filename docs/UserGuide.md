@@ -52,7 +52,7 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
 
-   * `clear` : Deletes all contacts.
+   * `clear` : Clears all persons and events while keeping the default Team/Status/Position catalogs.
 
    * `exit` : Exits the app.
 
@@ -523,7 +523,7 @@ Examples:
 
 ### Clearing all entries : `clear`
 
-Clears all entries from SoCcer Manager.
+Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
 
 Format: `clear`
 
@@ -556,7 +556,7 @@ SoCcer Manager data are saved in the hard disk automatically after any command t
 SoCcer Manager data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
+If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run, while restoring the default Team/Status/Position catalogs. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
