@@ -11,7 +11,7 @@ import java.util.function.Function;
  */
 public enum CalculatedStatField {
     WIN_RATE(stats -> {
-        int total = stats.getMatchesWon() + stats.getMatchesLost();
+        long total = (long) stats.getMatchesWon() + stats.getMatchesLost();
         if (total == 0) {
             // deal with zero division
             return 0.0;
@@ -20,7 +20,7 @@ public enum CalculatedStatField {
     }),
 
     GOALS_PER_GAME(stats -> {
-        int total = stats.getMatchesWon() + stats.getMatchesLost();
+        long total = (long) stats.getMatchesWon() + stats.getMatchesLost();
         if (total == 0) {
             // deal with zero division
             return 0.0;
