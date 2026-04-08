@@ -12,6 +12,7 @@ import seedu.address.model.person.PersonMatchesListFiltersPredicate;
 public class ListFilteredCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Listed %s";
+    public static final String MESSAGE_NO_MATCHES = "No %s found.";
 
     private final PersonMatchesListFiltersPredicate predicate;
     private final String description;
@@ -30,6 +31,9 @@ public class ListFilteredCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredPersonList(predicate);
+        if (model.getFilteredPersonList().isEmpty()) {
+            return new CommandResult(String.format(MESSAGE_NO_MATCHES, description));
+        }
         return new CommandResult(String.format(MESSAGE_SUCCESS, description));
     }
 

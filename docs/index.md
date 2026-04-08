@@ -8,10 +8,21 @@ title: SoCcer Manager
 
 ![Ui](images/Ui.png)
 
-**SoCcer Manager is a CLI desktop app for soccer academy managers to track players, staff, attendance, stats, and teams.** Optimized for fast typists, it centralizes contact details with soccer-specific filtering and views. While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
+**SoCcer Manager helps soccer academy managers keep player and staff operations in one place.** From roster details and role-specific views to team/status/position catalogs, attendance tracking, event scheduling, and player stats, it is designed to support the day-to-day workflows of running a squad.
 
-* If you are interested in using SoCcer Manager, head over to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).
-* If you are interested about developing SoCcer Manager, the [**Developer Guide**](DeveloperGuide.html) is a good place to start.
+Built for users who are comfortable with the command line, SoCcer Manager combines fast CLI interactions with a clear desktop GUI. That means less time clicking through forms and more time updating records, checking squad status, and preparing for training or matchday.
+
+**Why use SoCcer Manager?**
+
+* Manage both players and staff in a single system.
+* Keep team, status, and position data consistent with catalog-backed attributes.
+* Track events, attendance, and player performance in an organized workflow.
+* Use fast commands for filtering, sorting, and updating large rosters efficiently.
+
+**Get started**
+
+* New users: head to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).
+* Developers: start with the [**Developer Guide**](DeveloperGuide.html).
 
 
 **Acknowledgements**

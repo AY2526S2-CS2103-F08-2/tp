@@ -9,6 +9,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -81,5 +82,15 @@ public class ListRoleCommandTest {
                 (int) getTypicalAddressBook().getPersonList().stream()
                         .filter(predicate)
                         .count());
+    }
+
+    @Test
+    public void execute_noMatchingRole_showsNoMatchesMessage() {
+        model = new ModelManager(new AddressBook(), new UserPrefs());
+        expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        PersonHasRolePredicate predicate = new PersonHasRolePredicate(Role.STAFF);
+        ListRoleCommand command = new ListRoleCommand(predicate, "staff");
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, String.format(ListRoleCommand.MESSAGE_NO_MATCHES, "staff"), expectedModel);
     }
 }

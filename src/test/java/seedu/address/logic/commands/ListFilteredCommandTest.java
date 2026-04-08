@@ -60,6 +60,17 @@ public class ListFilteredCommandTest {
     }
 
     @Test
+    public void execute_noMatches_showsNoMatchesMessage() {
+        PersonMatchesListFiltersPredicate predicate = new PersonMatchesListFiltersPredicate(Optional.of(Role.STAFF),
+                Optional.empty(), Optional.of(new Status("Unavailable")), Optional.empty());
+        ListFilteredCommand command = new ListFilteredCommand(predicate, "staff matching status Unavailable");
+
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model,
+                "No staff matching status Unavailable found.", expectedModel);
+    }
+
+    @Test
     public void equals() {
         PersonMatchesListFiltersPredicate firstPredicate = new PersonMatchesListFiltersPredicate(Optional.empty(),
                 Optional.of(new Team("First Team")), Optional.empty(), Optional.empty());

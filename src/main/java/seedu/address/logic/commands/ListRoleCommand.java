@@ -19,6 +19,7 @@ public class ListRoleCommand extends Command {
             + "Example: " + COMMAND_WORD + " r/player";
 
     public static final String MESSAGE_SUCCESS = "Listed all %s";
+    public static final String MESSAGE_NO_MATCHES = "No %s found.";
 
     private final PersonHasRolePredicate predicate;
     private final String roleDescription;
@@ -35,6 +36,9 @@ public class ListRoleCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredPersonList(predicate);
+        if (model.getFilteredPersonList().isEmpty()) {
+            return new CommandResult(String.format(MESSAGE_NO_MATCHES, roleDescription));
+        }
         return new CommandResult(String.format(MESSAGE_SUCCESS, roleDescription));
     }
 

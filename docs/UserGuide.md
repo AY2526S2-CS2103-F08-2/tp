@@ -15,11 +15,11 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S2-CS2103-F08-2/tp/releases).
 
 1. Copy the file to the folder you want to use as the _home folder_ for your SoCcer Manager data.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar soccermanager.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
@@ -602,7 +602,6 @@ _Details coming soon ..._
 | **Set**             | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                                     |
 | **Update**          | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                                |
 | **Help**            | `help`                                                                                                                                                                                                                                |
-| **Attributes**      | team, status, and position catalog commands                                                                                                                                                                                           |
 | **Team**            | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`                                               |
 | **Status**          | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`                                             |
 | **Position**        | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back`                |
