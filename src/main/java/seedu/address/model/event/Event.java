@@ -134,7 +134,8 @@ public abstract class Event {
         Event otherEvent = (Event) other;
         return eventDate.equals(otherEvent.eventDate)
                 && eventName.equals(otherEvent.eventName)
-                && eventPlayerList.equals(otherEvent.eventPlayerList);
+                && eventPlayerList.equals(otherEvent.eventPlayerList)
+                && eventType.equals(otherEvent.eventType);
     }
 
     @Override
