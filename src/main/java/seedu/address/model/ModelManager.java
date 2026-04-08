@@ -199,6 +199,25 @@ public class ModelManager implements Model {
 
         addressBook.setEvent(target, editedEvent);
     }
+
+    @Override
+    public void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson) {
+        ObservableList<Event> eventList = addressBook.getEventList();
+
+        for (Event e : eventList) {
+            Event copiedEvent = Event.createEventWithAttendees(e.getEventName(), e.getEventDate(),
+                    e.getEventType(), e.getEventPlayerList(), e.getAttendedPlayerList());
+            if (copiedEvent.getEventPlayerList().contains(personToEdit)) {
+                copiedEvent.getEventPlayerList().remove(personToEdit);
+                copiedEvent.getEventPlayerList().add(editedPerson);
+            }
+            if (copiedEvent.getAttendedPlayerList().contains(personToEdit)) {
+                copiedEvent.getAttendedPlayerList().remove(personToEdit);
+                copiedEvent.getAttendedPlayerList().add(editedPerson);
+            }
+            setEvent(e, copiedEvent);
+        }
+    }
     //=========== Event List Accessors =======================================================================
 
     @Override
