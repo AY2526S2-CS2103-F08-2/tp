@@ -537,13 +537,15 @@ Format: `exit`
 
 Imports contacts from a given CSV file. Expects the CSV file to follow format strictly.
 
-> _Expected Headers (in order):_ name, role, address, phone, email, tags 
+> _Expected Headers (in order):_ **name, role, address, phone, email, tags** 
+> 
+> Note: sometimes saving CSV files in _Microsoft Excel_ will create extra padded commas, the parser will assume that this was not intended by the user and trim it, since you cannot put commas in tags anyway.
 
 **If headers are invalid, CSV importing will fail.**
 
 If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
 
-The relevant error messages per row will be displayed.
+Then, the relevant error messages per row that failed to import will be displayed.
 
 Format: `importcsv`
 
