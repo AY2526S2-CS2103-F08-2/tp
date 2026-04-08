@@ -34,7 +34,7 @@ import seedu.address.model.person.Role;
  */
 public class EventEditCommand extends Command {
 
-    public static final String COMMAND_WORD = "editevent";
+    public static final String COMMAND_WORD = "eventedit";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the event identified "
             + "by the index number used in the displayed person list. "
