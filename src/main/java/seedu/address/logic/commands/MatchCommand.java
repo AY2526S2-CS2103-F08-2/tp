@@ -33,7 +33,7 @@ import seedu.address.model.person.Team;
  */
 public class MatchCommand extends Command {
 
-    public static final String COMMAND_WORD = "match";
+    public static final String COMMAND_WORD = "matchadd";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a match to the address book. "
             + "Parameters: "
