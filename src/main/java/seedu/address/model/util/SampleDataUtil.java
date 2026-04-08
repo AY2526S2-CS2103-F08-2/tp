@@ -93,17 +93,25 @@ public class SampleDataUtil {
         };
     }
 
-    public static ReadOnlyAddressBook getSampleAddressBook() {
-        AddressBook sampleAb = new AddressBook();
+    /**
+     * Returns an empty {@code AddressBook} seeded with the default team, position, and status catalogs.
+     */
+    public static AddressBook getEmptyAddressBookWithDefaultCatalogs() {
+        AddressBook addressBook = new AddressBook();
         for (Team defaultTeam : getDefaultTeams()) {
-            sampleAb.addTeam(defaultTeam);
+            addressBook.addTeam(defaultTeam);
         }
         for (Position defaultPosition : getDefaultPositions()) {
-            sampleAb.addPosition(defaultPosition);
+            addressBook.addPosition(defaultPosition);
         }
         for (Status defaultStatus : getDefaultStatuses()) {
-            sampleAb.addStatus(defaultStatus);
+            addressBook.addStatus(defaultStatus);
         }
+        return addressBook;
+    }
+
+    public static ReadOnlyAddressBook getSampleAddressBook() {
+        AddressBook sampleAb = getEmptyAddressBookWithDefaultCatalogs();
         for (Person samplePerson : getSamplePersons()) {
             sampleAb.addPerson(samplePerson);
         }
