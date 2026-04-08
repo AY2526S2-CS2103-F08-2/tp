@@ -85,7 +85,7 @@ public class EventEditCommand extends Command {
             throw new CommandException(String.format(MESSAGE_NO_FIELD_WAS_CHANGED));
         }
 
-        if (model.hasEvent(editedEvent)) {
+        if (!eventToEdit.isSameEvent(editedEvent) && model.hasEvent(editedEvent)) {
             throw new CommandException(MESSAGE_DUPLICATE_EVENT);
         }
 
