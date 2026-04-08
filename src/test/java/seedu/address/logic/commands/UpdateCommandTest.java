@@ -96,7 +96,7 @@ public class UpdateCommandTest {
         Player updatedPlayer = (Player) modelStub.filteredPersons.get(0);
 
         assertEquals(String.format(UpdateCommand.MESSAGE_SET_PLAYER_SUCCESS,
-                        Messages.format(player), StatField.WINS, oldWins, expectedWins, increment),
+                        Messages.format(player), StatField.WINS, oldWins, expectedWins, "+" + increment),
                 commandResult.getFeedbackToUser());
         assertEquals(expectedWins, updatedPlayer.getStats().getMatchesWon());
         assertTrue(modelStub.updateFilteredPersonListCalled);
