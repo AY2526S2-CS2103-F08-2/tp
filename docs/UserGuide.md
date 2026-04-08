@@ -255,7 +255,10 @@ Examples:
 Every **player** will have stats that denote their individual performance. 
 These stats can be modified by the user via commands.
 
-Note: staff do not have any performance stats.
+**Note:**
+- Staff do not have any performance stats.
+- Player stats will not persist if player becomes a staff.
+- A staff will have the default state of performance stats when converted to a player.
 
 _Current valid stats: `goals`, `wins`, `losses`_
 
