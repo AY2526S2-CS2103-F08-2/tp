@@ -29,6 +29,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
+import seedu.address.model.person.PlayerStats;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.StatField;
@@ -101,6 +102,21 @@ public class UpdateCommandTest {
         assertEquals(expectedWins, updatedPlayer.getStats().getMatchesWon());
         assertTrue(modelStub.updateFilteredPersonListCalled);
         assertTrue(modelStub.setPersonCalled);
+    }
+
+    @Test
+    public void execute_statOverflow_throwsCommandException() {
+        Player player = (Player) new PersonBuilder(PLAYER_AMY).build();
+        // set wins to MAX_VALUE first so any increment will overflow
+        PlayerStats stats = new PlayerStats();
+        stats.setMatchesWon(Integer.MAX_VALUE);
+        Player maxPlayer = new Player(player, stats);
+        ModelStubWithFilteredList modelStub = new ModelStubWithFilteredList(maxPlayer);
+
+        UpdateCommand command = new UpdateCommand(INDEX_FIRST_PERSON, StatField.WINS, 1);
+
+        assertThrows(CommandException.class,
+                UpdateCommand.MESSAGE_STAT_OVERFLOW, () -> command.execute(modelStub));
     }
 
     @Test
