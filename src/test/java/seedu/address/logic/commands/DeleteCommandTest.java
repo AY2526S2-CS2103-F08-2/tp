@@ -12,6 +12,7 @@ import static seedu.address.testutil.TypicalPersons.KEYWORD_MATCHING_MEIER;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
-                Messages.format(personToDelete), "Y", "N", "Y", "N");
+                roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -51,7 +52,7 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON, true);
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
-                Messages.format(personToDelete));
+                roleLabel(personToDelete), Messages.format(personToDelete));
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
@@ -64,7 +65,7 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON, DeletionDecision.CANCEL);
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CANCELLED,
-                Messages.format(personToDelete));
+                roleLabel(personToDelete), Messages.format(personToDelete));
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -87,7 +88,7 @@ public class DeleteCommandTest {
                 .orElseThrow();
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
-                Messages.format(personToDelete), "Y", "N", "Y", "N");
+                roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredPersonList(new NameContainsKeywordsPredicate(Arrays.asList("Ida")));
@@ -116,7 +117,7 @@ public class DeleteCommandTest {
                 new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
         Person personToDelete = expectedModel.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
-                Messages.format(personToDelete));
+                roleLabel(personToDelete), Messages.format(personToDelete));
         expectedModel.deletePerson(personToDelete);
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
@@ -128,7 +129,7 @@ public class DeleteCommandTest {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
-                Messages.format(personToDelete), "Y", "N", "Y", "N");
+                roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
@@ -168,5 +169,9 @@ public class DeleteCommandTest {
                 + "{targetIndex=" + targetIndex
                 + ", criteria=null, criteriaMatchIndex=null, deletionDecision=UNDECIDED}";
         assertEquals(expected, deleteCommand.toString());
+    }
+
+    private String roleLabel(Person person) {
+        return person.getRole().name().toLowerCase(Locale.ROOT);
     }
 }
