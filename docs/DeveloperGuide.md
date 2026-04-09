@@ -10,8 +10,14 @@ title: Developer Guide
 
 ## **Acknowledgements**
 
-* {list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the
-  original source as well}
+* This project is built on top of [AddressBook-Level3](https://se-education.org/addressbook-level3/), and reuses the
+  original architecture, application structure, and substantial parts of the command/parser/storage/UI foundation from
+  that codebase.
+* Our user and developer documentation structure was adapted from the AddressBook-Level3 project and the
+  [SE-EDU guides](https://se-education.org/guides/).
+* Third-party libraries used include [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson),
+  [JUnit 5](https://junit.org/junit5/), [JaCoCo](https://www.jacoco.org/jacoco/), [Checkstyle](https://checkstyle.org/),
+  and [PlantUML](https://plantuml.com/).
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -851,9 +857,10 @@ testers are expected to do more *exploratory* testing.
 
 1. Initial launch
 
-    1. Download the jar file and copy into an empty folder
+    1. Download the jar file and copy it into an empty folder.
 
-    2. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be
+    2. Double-click the jar file.<br>
+       Expected: Shows the GUI with a set of sample contacts. The window size may not be
        optimum.
 
 2. Saving window preferences
@@ -867,7 +874,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Deleting a person while all persons are being shown
 
-    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+    1. Prerequisites: List all persons using the `list` command. Ensure multiple persons are in the list.
 
     2. Test case: `delete 1`<br>
        Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
