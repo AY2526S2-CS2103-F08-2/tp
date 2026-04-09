@@ -241,6 +241,7 @@ Format:
 
 Rules:
 * All provided filters are combined using AND semantics.
+* Invalid `tm/`, `st/`, or `pos/` values are rejected if they do not exist in the current catalog.
 * `goals`, `wins`, and `losses` filters apply only to players.
 * Use `list` to reset the filtered view and show all persons again.
 

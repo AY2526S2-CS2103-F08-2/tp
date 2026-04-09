@@ -973,6 +973,15 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `filter goals/10`<br>
        Expected: Command is rejected with an invalid format message.
+
+    1. Test case: `filter tm/Nonexistent Team`<br>
+       Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `filter st/Retired`<br>
+       Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `filter pos/Coach`<br>
+       Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
 1. Listing persons with attribute filters
 
     1. Prerequisites: At least one player assigned `tm/First Team`, `st/Active`, and `pos/Defender`.
