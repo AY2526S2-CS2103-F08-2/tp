@@ -33,8 +33,8 @@ public class UpdateCommand extends Command {
 
     public static final String MESSAGE_SET_PLAYER_SUCCESS = "Update %1$s\n%2$s: %3$s -> %4$s (+%5$s)";
     public static final String MESSAGE_NOT_PLAYER = "This person must be a player.";
-    public static final String MESSAGE_STAT_OVERFLOW = "Stat value has exceeded the maximum limit." +
-            "\nWhy are you trying to overflow it?";
+    public static final String MESSAGE_STAT_OVERFLOW = "Stat value has exceeded the maximum limit."
+            + "\nWhy are you trying to overflow it?";
 
     private final Index index;
     private final StatField stat;
