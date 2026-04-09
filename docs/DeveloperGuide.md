@@ -433,25 +433,26 @@ freeing the manager from manual memory tracking to focus on strategies and decis
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​          | I want to …​                                         | So that…​                                                                            |
-|----------|------------------|------------------------------------------------------|--------------------------------------------------------------------------------------|
-| `* *`    | new user         | launch the app with sample data                      | I can see how the details and stats of players are displayed                         |
-| `* *`    | new user         | read the user guide                                  | I know how to use the commands to interact with the app                              |
-| `* * *`  | new user         | add new players to the app                           | I have an updated list of players                                                    |
-| `* * *`  | new user         | delete players/staff from the app                    | I can remove erroneous entries                                                       |
-| `* * *`  | new user         | view the staff list or player only list              | I can focus on user-role related information without other roles' entries in the way |
-| `* * *`  | new user         | add matches and trainings to the app                 | I have an updated list of different events                                           |
-| `* * *`  | new user         | edit and delete matches and trainings                | I can remove and edit erroneous entries                                              |
-| `* *`    | forgetful user   | quickly retrieve and view player stats               | I can make better judgements on player performance                                   |
-| `*`      | expert user      | mass removal of players based on tags                | the system is not cluttered with redundant data                                      |
-| `* *`    | experienced user | add attributes to each player                        | I can set who is on the first team, second team etc                                  |
-| `* *`    | experienced user | filter players based on tags or attributes           | I can see all players based on the tag (first team, second team, injured etc)        |
-| `*`      | experienced user | use the app to track attendance for trainings        | I know who is skipping training                                                      |
-| `* *`    | experienced user | search within the staff or player list               | I can find a specific staff or user quickly                                          |
-| `* *`    | experienced user | edit staff or player information                     | I can ensure that the staff or player's list stays accurate over time                |
-| `* *`    | experienced user | filter the players based on specific stats or traits | I can reward players based on their performance                                      |
-| `* *`    | experienced user | add new batch of players' data using a CSV file      | I can easily update the database with the new players' data                          |
-| `* *`    | experienced user | add simple player stats (goals scored, wins, losses) | I can see my best performing players                                                 |
+| Priority | As a …​          | I want to …​                                                 | So that…​                                                                               |
+|----------|------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `* *`    | new user         | launch the app with sample data                              | I can see how the details and stats of players are displayed                            |
+| `* *`    | new user         | read the user guide                                          | I know how to use the commands to interact with the app                                 |
+| `* * *`  | new user         | add new players to the app                                   | I have an updated list of players                                                       |
+| `* * *`  | new user         | delete players/staff from the app                            | I can remove erroneous entries                                                          |
+| `* * *`  | new user         | view the staff list or player only list                      | I can focus on user-role related information without other roles' entries in the way    |
+| `* * *`  | new user         | add matches and trainings to the app                         | I have an updated list of different events                                              |
+| `* * *`  | new user         | edit and delete matches and trainings                        | I can remove and edit erroneous entries                                                 |
+| `* *`    | forgetful user   | quickly retrieve and view player stats                       | I can make better judgements on player performance                                      |
+| `*`      | expert user      | mass removal of players based on tags                        | I can ensure the system is not cluttered with redundant data                            |
+| `* *`    | experienced user | add attributes to each player                                | I can set who is on the first team, second team etc                                     |
+| `* *`    | experienced user | filter players based on tags or attributes                   | I can see all players based on the tag/attribute (first team, second team, injured etc) |
+| `*`      | experienced user | use the app to track attendance for trainings                | I know who is skipping training                                                         |
+| `* *`    | experienced user | search within the staff or player list                       | I can find a specific staff or user quickly                                             |
+| `* *`    | experienced user | edit staff or player information                             | I can ensure that the staff or player's list stays accurate over time                   |
+| `* *`    | experienced user | filter the players based on specific stats or traits         | I can reward players based on their performance                                         |
+| `* *`    | experienced user | add new batch of players' data using a CSV file              | I can easily update the database with the new players' data                             |
+| `* *`    | experienced user | add simple player stats (goals scored, wins, losses)         | I can see my best performing players                                                    |
+| `* *`    | experienced user | add advanced player stats (winrate, average goals per match) | I can further analyse my players based on their performance                             |
 
 ### Use cases
 
@@ -693,7 +694,7 @@ Use case ends.
     * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
-## Use case: UC09 - Set or update a player’s recorded performance stat
+**Use case: UC09 - Set or update a player’s recorded performance stat**
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
@@ -732,7 +733,7 @@ Use case ends.
     * 2b1. SoCcer Manager increments the stat by the specified value.
       Use case resumes at step 7.
 
-## Use case: UC10 - Automatically display calculated stats for a player
+**Use case: UC10 - Automatically display calculated stats for a player**
 **MSS**
 
 1. Manager views the player list or player details in the UI.
@@ -828,8 +829,8 @@ Use case ends.
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Academy**: The full set of staff/players used to represent all contacts in the contact list
 * **Position**: The roles that each player is specialised/assigned in the team
-* **Performance Stats**: The player statistics based on their previous games (e.g. goals, assist, shots on target,
-  calculated rating, etc.)
+* **Performance Stats**: The player statistics based on their previous games (e.g. goals, wins, losses,
+  calculated winrate, etc.)
 
 --------------------------------------------------------------------------------------------------------------------
 
