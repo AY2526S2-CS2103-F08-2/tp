@@ -350,6 +350,11 @@ public class AddCommandTest {
         public String getAttendanceReport() {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     /**

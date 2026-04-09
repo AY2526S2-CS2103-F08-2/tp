@@ -5,7 +5,7 @@ title: Rui Sheng's Project Portfolio Page
 
 ### Project: SoCcer Manager
 
-AddressBook - Level 3 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+SoCcer Manager is a desktop application for managing soccer academy players and staff. The user interacts with it primarily using a CLI, and it has a GUI created with JavaFX. It is written in Java and has about 15 kLoC.
 
 Given below are my contributions to the project.
 

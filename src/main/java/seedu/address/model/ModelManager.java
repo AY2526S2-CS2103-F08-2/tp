@@ -199,6 +199,25 @@ public class ModelManager implements Model {
 
         addressBook.setEvent(target, editedEvent);
     }
+
+    @Override
+    public void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson) {
+        ObservableList<Event> eventList = addressBook.getEventList();
+
+        for (Event e : eventList) {
+            Event copiedEvent = Event.createEventWithAttendees(e.getEventName(), e.getEventDate(),
+                    e.getEventType(), e.getEventPlayerList(), e.getAttendedPlayerList());
+            if (copiedEvent.getEventPlayerList().contains(personToEdit)) {
+                copiedEvent.getEventPlayerList().remove(personToEdit);
+                copiedEvent.getEventPlayerList().add(editedPerson);
+            }
+            if (copiedEvent.getAttendedPlayerList().contains(personToEdit)) {
+                copiedEvent.getAttendedPlayerList().remove(personToEdit);
+                copiedEvent.getAttendedPlayerList().add(editedPerson);
+            }
+            setEvent(e, copiedEvent);
+        }
+    }
     //=========== Event List Accessors =======================================================================
 
     @Override
@@ -221,7 +240,7 @@ public class ModelManager implements Model {
         attendanceMap.entrySet().stream()
                 .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
                 .forEach(entry -> {
-                    sb.append(String.format("%-20s: %.1f%%\n", entry.getKey(), entry.getValue()));
+                    sb.append(String.format("%s : %.1f%%\n", entry.getKey(), entry.getValue()));
                 });
 
         return sb.toString();

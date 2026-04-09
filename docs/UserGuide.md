@@ -15,11 +15,11 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S2-CS2103-F08-2/tp/releases).
 
 1. Copy the file to the folder you want to use as the _home folder_ for your SoCcer Manager data.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar soccermanager.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
@@ -52,7 +52,7 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
 
-   * `clear` : Deletes all contacts.
+   * `clear` : Clears all persons and events while keeping the default Team/Status/Position catalogs.
 
    * `exit` : Exits the app.
 
@@ -175,7 +175,7 @@ Examples:
 * `list tm/First Team`
 * `list r/player st/Active pos/Defender`
 
-### Marking attendance for trainings: `attendancemark`
+### Marking attendance for events: `attendancemark`
 
 Marks attendance for specified players for the specified event.
 
@@ -190,7 +190,7 @@ Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
-### Viewing attendance for trainings: `attendance`
+### Viewing attendance for events: `attendance`
 
 Shows a summary of player attendance for events for every player in the address book.
 
@@ -255,7 +255,10 @@ Examples:
 Every **player** will have stats that denote their individual performance. 
 These stats can be modified by the user via commands.
 
-Note: staff do not have any performance stats.
+**Note:**
+- Staff do not have any performance stats.
+- Player stats will not persist if player becomes a staff.
+- A staff will have the default state of performance stats when converted to a player.
 
 _Current valid stats: `goals`, `wins`, `losses`_
 
@@ -523,7 +526,7 @@ Examples:
 
 ### Clearing all entries : `clear`
 
-Clears all entries from SoCcer Manager.
+Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
 
 Format: `clear`
 
@@ -556,7 +559,7 @@ SoCcer Manager data are saved in the hard disk automatically after any command t
 SoCcer Manager data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
+If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run, while restoring the default Team/Status/Position catalogs. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
@@ -602,7 +605,6 @@ _Details coming soon ..._
 | **Set**             | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                                     |
 | **Update**          | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                                |
 | **Help**            | `help`                                                                                                                                                                                                                                |
-| **Attributes**      | team, status, and position catalog commands                                                                                                                                                                                           |
 | **Team**            | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`                                               |
 | **Status**          | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`                                             |
 | **Position**        | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back`                |

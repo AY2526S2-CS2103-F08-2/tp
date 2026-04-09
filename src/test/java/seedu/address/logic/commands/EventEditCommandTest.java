@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_MATCH;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalEvents.getTypicalAddressBookWithEvents;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_EVENT;
@@ -47,14 +48,10 @@ public class EventEditCommandTest {
     @Test
     public void execute_noFieldSpecifiedUnfilteredList_success() {
         EventEditCommand eventEditCommand = new EventEditCommand(INDEX_FIRST_EVENT, new EditEventDescriptor());
-        Event editedEvent = model.getEventList().get(INDEX_FIRST_EVENT.getZeroBased());
 
-        String expectedMessage = String.format(EventEditCommand.MESSAGE_EDIT_EVENT_SUCCESS,
-                Messages.format(editedEvent));
+        String expectedMessage = EventEditCommand.MESSAGE_NO_FIELD_WAS_CHANGED;
 
-        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-
-        assertCommandSuccess(eventEditCommand, model, expectedMessage, expectedModel);
+        assertCommandFailure(eventEditCommand, model, expectedMessage);
     }
 
     @Test
