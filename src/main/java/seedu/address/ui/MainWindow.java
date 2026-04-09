@@ -71,6 +71,9 @@ public class MainWindow extends UiPart<Stage> {
 
         setAccelerators();
 
+        // Center window at active screen
+        primaryStage.centerOnScreen();
+
         helpWindow = new HelpWindow();
     }
 

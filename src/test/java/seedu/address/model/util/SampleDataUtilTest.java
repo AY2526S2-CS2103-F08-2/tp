@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Status;
@@ -50,5 +51,15 @@ public class SampleDataUtilTest {
         assertEquals(5, sample.getPositionList().size());
         assertEquals(3, sample.getStatusList().size());
     }
-}
 
+    @Test
+    public void getEmptyAddressBookWithDefaultCatalogs_includesOnlyDefaultCatalogs() {
+        AddressBook sample = SampleDataUtil.getEmptyAddressBookWithDefaultCatalogs();
+
+        assertEquals(0, sample.getPersonList().size());
+        assertEquals(0, sample.getEventList().size());
+        assertEquals(3, sample.getTeamList().size());
+        assertEquals(5, sample.getPositionList().size());
+        assertEquals(3, sample.getStatusList().size());
+    }
+}

@@ -15,11 +15,11 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S2-CS2103-F08-2/tp/releases).
 
 1. Copy the file to the folder you want to use as the _home folder_ for your SoCcer Manager data.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar soccermanager.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
@@ -52,7 +52,7 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
 
-   * `clear` : Deletes all contacts.
+   * `clear` : Clears all persons and events while keeping the default Team/Status/Position catalogs.
 
    * `exit` : Exits the app.
 
@@ -121,11 +121,11 @@ Examples:
 * `add n/Betsy Crowe r/staff t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street tm/First Team st/Active pos/Forward`
 
-### Adding a match: `match`
+### Adding a match: `matchadd`
 
 Adds a match to the address book.
 
-Format: `match n/OPPONENT_NAME d/DATE [st/STATUS | pos/POSITION | tm/TEAM] [pl/PLAYER_NAME]…​`
+Format: `matchadd n/OPPONENT_NAME d/DATE [st/STATUS | pos/POSITION | tm/TEAM] [pl/PLAYER_NAME]…​`
 
 Notes: 
 - Date must have format `yyyy-MM-dd HHmm`
@@ -133,9 +133,9 @@ Notes:
 - Status, position and team are optional. If specified, will add all players that match ALL the parameters.
 
 Examples:
-- `match n/Mancherster United d/2026-05-15 1600`
-- `match n/Mancherster United d/2026-05-15 1600 pl/John Doe`
-- `match n/Mancherster United d/2026-05-15 1600 st/Active tm/First Team`
+- `matchadd n/Mancherster United d/2026-05-15 1600`
+- `matchadd n/Mancherster United d/2026-05-15 1600 pl/John Doe`
+- `matchadd n/Mancherster United d/2026-05-15 1600 st/Active tm/First Team`
 
 ### Adding a training session: `trainingadd`
 
@@ -175,7 +175,7 @@ Examples:
 * `list tm/First Team`
 * `list r/player st/Active pos/Defender`
 
-### Marking attendance for trainings: `attendancemark`
+### Marking attendance for events: `attendancemark`
 
 Marks attendance for specified players for the specified event.
 
@@ -190,7 +190,7 @@ Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
-### Viewing attendance for trainings: `attendance`
+### Viewing attendance for events: `attendance`
 
 Shows a summary of player attendance for events for every player in the address book.
 
@@ -255,7 +255,10 @@ Examples:
 Every **player** will have stats that denote their individual performance. 
 These stats can be modified by the user via commands.
 
-Note: staff do not have any performance stats.
+**Note:**
+- Staff do not have any performance stats.
+- Player stats will not persist if player becomes a staff.
+- A staff will have the default state of performance stats when converted to a player.
 
 _Current valid stats: `goals`, `wins`, `losses`_
 
@@ -437,11 +440,11 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
-### Editing an event: `editevent`
+### Editing an event: `eventedit`
 
 Edits an existing event in SoCcer Manager.
 
-Format: `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`
+Format: `eventedit INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`
 
 * Edits the event at the specified `INDEX`. The index refers to the index number shown in the displayed event list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
@@ -450,8 +453,8 @@ Format: `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME
 * You can remove all players by typing `pl/` without specifying any tags after it.
 
 Examples:
-*  `editevent 1 et/TRAINING d/2026-01-01 1200` Edits the event type and date of the 1st event to be `TRAINING` and `2026-01-01 1200` respectively.
-*  `editevent 2 n/Barcelona pl/` Edits the name of the 2nd event to be `Barcelona` and clears all existing players involved.
+*  `eventedit 1 et/TRAINING d/2026-01-01 1200` Edits the event type and date of the 1st event to be `TRAINING` and `2026-01-01 1200` respectively.
+*  `eventedit 2 n/Barcelona pl/` Edits the name of the 2nd event to be `Barcelona` and clears all existing players involved.
 
 ### Locating persons by name: `find`
 
@@ -495,15 +498,15 @@ Examples:
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
-### Deleting an event : `deleteevent`
+### Deleting an event : `eventdelete`
 
-Format: `deleteevent INDEX`
-* `deleteevent INDEX` selects the event at the specified `INDEX`
+Format: `eventdelete INDEX`
+* `eventdelete INDEX` selects the event at the specified `INDEX`
 * The index refers to the index number shown in the displayed event list.
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `deleteevent 2` deletes the second event in the list.
+* `eventdelete 2` deletes the second event in the list.
 
 ### Bulk deleting persons by tag, team, or status : `deletebulk`
 
@@ -523,7 +526,7 @@ Examples:
 
 ### Clearing all entries : `clear`
 
-Clears all entries from SoCcer Manager.
+Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
 
 Format: `clear`
 
@@ -556,7 +559,7 @@ SoCcer Manager data are saved in the hard disk automatically after any command t
 SoCcer Manager data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
+If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run, while restoring the default Team/Status/Position catalogs. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
@@ -585,7 +588,7 @@ _Details coming soon ..._
 | Action              | Format, Examples                                                                                                                                                                                                                      |
 |---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Add**             | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 tm/First Team st/Active t/friend` |
-| **Match**           | `match n/OPPONENT_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `match n/Mancherster United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                          |
+| **Match**           | `matchadd n/OPPONENT_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `matchadd n/Mancherster United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                    |
 | **Training**        | `trainingadd n/TRAINING_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `trainingadd n/Warm Up d/2026-06-16 1700 tm/First Team pl/John Doe`                                                         |
 | **Attendance**      | `attendance`                                                                                                                                                                                                                          |
 | **Attendance Mark** | `attendancemark INDEX [pl/PLAYER_NAME]…​` <br> e.g., `attendancemark 1 pl/Alex Yeoh pl/Bernice Yu`                                                                                                                                    |
@@ -593,8 +596,8 @@ _Details coming soon ..._
 | **Delete**          | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)                                                                                             |
 | **Delete Bulk**     | `deletebulk [t/TAG \| tm/TEAM \| st/STATUS]`<br> e.g., `deletebulk st/Unavailable` (then `y` or `n`)                                                                                                                                  |
 | **Edit**            | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                                      |
-| **Delete Event**    | `deleteevent INDEX` <br> e.g., `deleteevent 3`                                                                                                                                                                                        |
-| **Edit Event**      | `editevent INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`edit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                                      |
+| **Delete Event**    | `eventdelete INDEX` <br> e.g., `eventdelete 3`                                                                                                                                                                                        |
+| **Edit Event**      | `eventedit INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`eventedit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                                 |
 | **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10`                                                                |
 | **Find**            | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                                       |
 | **List**            | `list` / `list players` / `list staff`<br> e.g., `list players`                                                                                                                                                                       |
@@ -602,7 +605,6 @@ _Details coming soon ..._
 | **Set**             | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                                     |
 | **Update**          | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                                |
 | **Help**            | `help`                                                                                                                                                                                                                                |
-| **Attributes**      | team, status, and position catalog commands                                                                                                                                                                                           |
 | **Team**            | `teamlist` / `teamadd TEAM_NAME` / `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME` / `teamdelete TEAM_NAME`<br> e.g., `teamadd Reserve Team`, `teamedit old/First Team new/Reserve Team`                                               |
 | **Status**          | `statuslist` / `statusadd STATUS_NAME` / `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME` / `statusdelete STATUS_NAME`<br> e.g., `statusadd Rehab`, `statusedit old/Active new/Rehab`                                             |
 | **Position**        | `positionlist` / `positionadd POSITION_NAME` / `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME` / `positiondelete POSITION_NAME`<br> e.g., `positionadd Winger`, `positionedit old/Defender new/Center Back`                |

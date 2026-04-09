@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class UpdateCommand extends Command {
             + "VALUE"
             + "\nExample: " + COMMAND_WORD + " 1 wins 5";
 
-    public static final String MESSAGE_SET_PLAYER_SUCCESS = "Update %1$s\n%2$s: %3$s -> %4$s (+%5$s)";
+    public static final String MESSAGE_SET_PLAYER_SUCCESS = "Update %1$s\n%2$s: %3$s -> %4$s (%5$s)";
     public static final String MESSAGE_NOT_PLAYER = "This person must be a player.";
 
     private final Index index;
@@ -69,9 +68,10 @@ public class UpdateCommand extends Command {
         Player updatedPlayer = updatePlayerStat(player);
 
         model.setPerson(player, updatedPlayer);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_SET_PLAYER_SUCCESS,
-                Messages.format(player), this.stat, old, old + this.value, this.value));
+                Messages.format(player),
+                this.stat, old, old + this.value, (
+                this.value >= 0 ? "+" : "") + this.value));
     }
 
     /**

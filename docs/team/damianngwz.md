@@ -3,9 +3,9 @@ layout: page
 title: DamianNgWZ's Project Portfolio Page
 ---
 
-### Project: AddressBook Level 3
+### Project: SoCcer Manager
 
-AddressBook - Level 3 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 15kLoC.
+SoCcer Manager is a desktop application for managing soccer academy players and staff. The user interacts with it primarily using a CLI, and it has a GUI created with JavaFX. It is written in Java and has about 15 kLoC.
 
 Given below are my contributions to the project.
 
@@ -37,18 +37,23 @@ Given below are my contributions to the project.
     * Refined attribute behavior after initial delivery (e.g., canonical casing and storage/default handling) through follow-up attribute integration work (PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
     * Hardened JSON deserialization and recovery paths for attributes/person records to improve robustness against malformed data:
       malformed attribute catalog entries are skipped with warning logs, missing valid person-referenced catalog values are auto-registered, malformed staff-position combinations are normalized on load, and malformed person rows are skipped while preserving valid rows.
+    * Updated product-facing branding and release polish by changing the help window to point to the team's published User Guide, renaming the packaged jar to `soccermanager.jar`, updating the app title to `SoCcer Manager`, replacing the default app icon with a soccer-themed icon, refreshing the main product screenshot used on the landing page and in the User Guide, and rewriting the landing-page copy to present the app more clearly as a soccer management product.
 
 * **Documentation**:
     * User Guide:
         * Updated command documentation and usage clarifications for list/attributes flows (PR [#76](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/76), PR [#127](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/127), PR [#128](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/128)).
         * Updated JSON file-editing caution to reflect current recovery behavior for malformed entries.
+        * Updated quick-start branding details, including the project User Guide link, help-window screenshot, the main product screenshot, and renamed jar usage (`java -jar soccermanager.jar`).
     * Developer Guide:
         * Added implementation and interaction details for role-scoped list and attributes architecture/behavior, including use cases and testing notes (PR [#62](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/62), PR [#125](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/125)).
         * Updated use-case and DG-related content during early project phases (PR [#46](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/46)).
         * Updated storage behavior documentation to match implemented JSON deserialization recovery semantics.
+    * Project website / UI polish:
+        * Updated the landing-page product image and aligned visible app branding with the shipped `SoCcer Manager` identity.
+        * Rewrote the landing-page introduction and call-to-action copy in `docs/index.md` to make the website read more like a real product page than a default course-project page.
 
 * **Community**:
-    * PRs reviewed (with non-trivial review comments): PR [#136](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/136), PR [#126](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/126),
+    * PRs reviewed (with non-trivial review comments): PR [#150](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/150), PR [#136](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/136), PR [#126](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/126),
       PR [#114](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/114), PR [#112](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/112), PR [#103](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/103), PR [#90](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/90), PR [#81](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/81), PR [#75](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/75), PR [#67](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/67), PR [#51](https://github.com/AY2526S2-CS2103-F08-2/tp/pull/51)
 
 * **Tools**:
