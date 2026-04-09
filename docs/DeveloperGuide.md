@@ -4,11 +4,11 @@ title: Developer Guide
 ---
 
 * Table of Contents
-  {:toc}
+{:toc}
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Acknowledgements**
+## Acknowledgements
 
 * This project is built on top of [AddressBook-Level3](https://se-education.org/addressbook-level3/), and reuses the
   original architecture, application structure, and substantial parts of the command/parser/storage/UI foundation from
@@ -21,13 +21,13 @@ title: Developer Guide
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Setting up, getting started**
+## Setting up, getting started
 
 Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Design**
+## Design
 
 <div markdown="span" class="alert alert-primary">
 
@@ -205,7 +205,7 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Implementation**
+## Implementation
 
 This section describes some noteworthy details on how certain features are implemented.
 
@@ -407,7 +407,7 @@ The following sequence diagram illustrates `sort r/player by/email desc`.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Documentation, logging, testing, configuration, dev-ops**
+## Documentation, logging, testing, configuration, dev-ops
 
 * [Documentation guide](Documentation.md)
 * [Testing guide](Testing.md)
@@ -417,7 +417,7 @@ The following sequence diagram illustrates `sort r/player by/email desc`.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Requirements**
+## Appendix: Requirements
 
 ### Product scope
 
@@ -844,7 +844,7 @@ Use case ends.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Instructions for manual testing**
+## Appendix: Instructions for manual testing
 
 Given below are instructions to test the app manually.
 
@@ -1074,7 +1074,7 @@ testers are expected to do more *exploratory* testing.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Planned Enhancements**
+## Appendix: Planned Enhancements
 
 **Team size:** 5
 
@@ -1089,3 +1089,7 @@ testers are expected to do more *exploratory* testing.
    for a short amount of time and the user wants to remove their attendance.
 3. **Allow user to import players with preset attributes/stats:** When importing from CSV, users currently are only able to import contacts without the ability to define their attributes and stats. Then, the user has to manually update these one-by-one by commands. Allowing importing of preset attributes/stats can further help the user in mass importing players with more specific data.
 4. **Allow matches to affect player performance stats:** Currently, performance stats of players can only be modified by the user via commands. If the user adds a new match, they also have to update the performance of each player manually. By recording player stats like goals/wins in matches, and then cascade it to update each player's performance stat, it will automate this process and save a lot of time for the user.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## Appendix: Effort
