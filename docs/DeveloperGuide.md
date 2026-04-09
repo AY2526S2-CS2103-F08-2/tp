@@ -811,8 +811,6 @@ Use case ends.
     * 2a2. SoCcer Manager finds all the players with the attribute.
       Use case resumes at step 3.
 
-*{More to be added}*
-
 ### Non-Functional Requirements
 
 1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
