@@ -461,6 +461,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | experienced user | filter the players based on specific stats or traits                                                 | I can reward players based on their performance                                      |
 | `* *`    | experienced user | add new batch of players' data using a CSV file                                                      | I can easily update the database with the new players' data                          |
 | `* *`    | experienced user | add simple player stats (goals scored, saves)                                                        | I can see my best performing players                                                 |
+| `* *`    | experienced user | add advanced player stats (winrate, average goals per match)                                         | I can further analyse my players based on their performance                          |
 
 *{More to be added}*
 
@@ -704,7 +705,7 @@ Use case ends.
     * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
-## Use case: UC09 - Set or update a player’s recorded performance stat
+**Use case: UC09 - Set or update a player’s recorded performance stat**
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
@@ -743,7 +744,7 @@ Use case ends.
     * 2b1. SoCcer Manager increments the stat by the specified value.
       Use case resumes at step 7.
 
-## Use case: UC10 - Automatically display calculated stats for a player
+**Use case: UC10 - Automatically display calculated stats for a player**
 **MSS**
 
 1. Manager views the player list or player details in the UI.
@@ -839,8 +840,8 @@ Use case ends.
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Academy**: The full set of staff/players used to represent all contacts in the contact list
 * **Position**: The roles that each player is specialised/assigned in the team
-* **Performance Stats**: The player statistics based on their previous games (e.g. goals, assist, shots on target,
-  calculated rating, etc.)
+* **Performance Stats**: The player statistics based on their previous games (e.g. goals, wins, losses,
+  calculated winrate, etc.)
 
 --------------------------------------------------------------------------------------------------------------------
 
