@@ -167,6 +167,7 @@ Notes:
 * Role values are case-insensitive. e.g. `list r/PLAYER`, `list r/Staff`.
 * If `r/` is omitted, matching persons from all roles are shown.
 * Invalid role arguments are rejected. Use only `r/player` or `r/staff`.
+* Invalid `tm/`, `st/`, or `pos/` values are rejected if they do not exist in the current catalog.
 
 Examples:
 * `list`

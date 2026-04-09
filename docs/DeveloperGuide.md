@@ -988,6 +988,15 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `list r/player tm/First Team tm/Second Team`<br>
        Expected: Command is rejected because duplicate prefixes are not allowed.
+
+    1. Test case: `list tm/Nonexistent Team`<br>
+       Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `list st/Retired`<br>
+       Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `list pos/Coach`<br>
+       Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
 ### Sorting persons
 
 1. Sorting by roster attributes
