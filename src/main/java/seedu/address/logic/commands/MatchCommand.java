@@ -57,7 +57,7 @@ public class MatchCommand extends Command {
     public static final String MESSAGE_STATUS_DOES_NOT_EXIST = "Status %s does not exist in the address book!";
     public static final String MESSAGE_POSITION_DOES_NOT_EXIST = "Position %s does not exist in the address book!";
     public static final String MESSAGE_TEAM_DOES_NOT_EXIST = "Team %s does not exist in the address book!";
-
+    public static final String MESSAGE_NO_PLAYER_NAME = "Player name cannot be empty!";
 
     private final EventName eventName;
     private final Date date;
@@ -136,6 +136,10 @@ public class MatchCommand extends Command {
         Set<Person> playerSet = new HashSet<>();
 
         for (String playerName : playerNames) {
+            if (playerName.trim().isEmpty()) {
+                throw new CommandException(String.format(MESSAGE_NO_PLAYER_NAME));
+            }
+
             Person person = model.getAddressBook().getPersonList().stream()
                     .filter(p -> p.getName().toString().equals(playerName.trim()))
                     .findFirst()

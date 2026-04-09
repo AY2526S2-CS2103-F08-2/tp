@@ -175,7 +175,7 @@ Examples:
 * `list tm/First Team`
 * `list r/player st/Active pos/Defender`
 
-### Marking attendance for trainings: `attendancemark`
+### Marking attendance for events: `attendancemark`
 
 Marks attendance for specified players for the specified event.
 
@@ -190,7 +190,7 @@ Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
-### Viewing attendance for trainings: `attendance`
+### Viewing attendance for events: `attendance`
 
 Shows a summary of player attendance for events for every player in the address book.
 

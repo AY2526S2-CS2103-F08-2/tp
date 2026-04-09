@@ -221,7 +221,7 @@ public class ModelManager implements Model {
         attendanceMap.entrySet().stream()
                 .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
                 .forEach(entry -> {
-                    sb.append(String.format("%-20s: %.1f%%\n", entry.getKey(), entry.getValue()));
+                    sb.append(String.format("%s : %.1f%%\n", entry.getKey(), entry.getValue()));
                 });
 
         return sb.toString();
