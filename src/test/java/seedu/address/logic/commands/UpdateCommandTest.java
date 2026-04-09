@@ -114,7 +114,7 @@ public class UpdateCommandTest {
                         Messages.format(player), StatField.WINS, oldWins, expectedWins, increment), // without plus
                 commandResult.getFeedbackToUser());
         assertEquals(expectedWins, updatedPlayer.getStats().getMatchesWon());
-        assertTrue(modelStub.updateFilteredPersonListCalled);
+        assertFalse(modelStub.updateFilteredPersonListCalled);
         assertTrue(modelStub.setPersonCalled);
     }
 
