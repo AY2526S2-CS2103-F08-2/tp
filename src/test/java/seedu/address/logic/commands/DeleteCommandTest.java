@@ -20,11 +20,13 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteCommand.DeletionDecision;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.NameContainsAllKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
@@ -91,7 +93,7 @@ public class DeleteCommandTest {
                 roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(new NameContainsKeywordsPredicate(Arrays.asList("Ida")));
+        expectedModel.updateFilteredPersonList(new NameContainsAllKeywordsPredicate(Arrays.asList("Ida")));
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
 
@@ -100,7 +102,7 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand(KEYWORD_MATCHING_MEIER, null, DeletionDecision.UNDECIDED);
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredPersonList(
-                new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
+                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
         String expectedList = "1. " + Messages.format(expectedModel.getFilteredPersonList().get(0)) + "\n"
                 + "2. " + Messages.format(expectedModel.getFilteredPersonList().get(1));
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CLASH,
@@ -114,12 +116,37 @@ public class DeleteCommandTest {
                 DeletionDecision.CONFIRM);
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredPersonList(
-                new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
+                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
         Person personToDelete = expectedModel.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 roleLabel(personToDelete), Messages.format(personToDelete));
         expectedModel.deletePerson(personToDelete);
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_criteriaMultipleKeywords_narrowsToSingleMatch() {
+        AddressBook addressBook = new AddressBook(model.getAddressBook());
+        Person alexYeoh = new PersonBuilder().withName("Alex Yeoh").withPhone("87438807")
+                .withEmail("alexyeoh2@example.com").withAddress("Blk 30 Geylang Street 29, #06-40").build();
+        Person alexNeo = new PersonBuilder().withName("Alex Neo").withPhone("12345678")
+                .withEmail("alexneo@example.com").withAddress("123 New Street").build();
+        addressBook.addPerson(alexYeoh);
+        addressBook.addPerson(alexNeo);
+
+        DeleteCommand deleteCommand = new DeleteCommand("Alex Neo", null, DeletionDecision.UNDECIDED);
+        ModelManager modelWithAlexes = new ModelManager(addressBook, new UserPrefs());
+        ModelManager expectedModel = new ModelManager(addressBook, new UserPrefs());
+        Person personToDelete = expectedModel.getAddressBook().getPersonList().stream()
+                .filter(person -> person.getName().fullName.equals("Alex Neo"))
+                .findFirst()
+                .orElseThrow();
+
+        expectedModel.updateFilteredPersonList(new NameContainsAllKeywordsPredicate(Arrays.asList("Alex", "Neo")));
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
+                roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
+
+        assertCommandSuccess(deleteCommand, modelWithAlexes, expectedMessage, expectedModel);
     }
 
     @Test

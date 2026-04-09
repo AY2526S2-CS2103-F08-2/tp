@@ -14,7 +14,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.NameContainsAllKeywordsPredicate;
 import seedu.address.model.person.Person;
 
 /**
@@ -123,7 +123,7 @@ public class DeleteCommand extends Command {
     }
 
     private CommandResult executeCriteriaDelete(Model model) throws CommandException {
-        NameContainsKeywordsPredicate predicate = buildNamePredicate(criteria);
+        NameContainsAllKeywordsPredicate predicate = buildNamePredicate(criteria);
         model.updateFilteredPersonList(predicate);
         List<Person> matches = model.getFilteredPersonList();
         if (matches.isEmpty()) {
@@ -172,9 +172,9 @@ public class DeleteCommand extends Command {
                 NO_KEYWORD.toUpperCase(Locale.ROOT)));
     }
 
-    private NameContainsKeywordsPredicate buildNamePredicate(String rawCriteria) {
+    private NameContainsAllKeywordsPredicate buildNamePredicate(String rawCriteria) {
         List<String> keywords = Arrays.asList(rawCriteria.trim().split("\\s+"));
-        return new NameContainsKeywordsPredicate(keywords);
+        return new NameContainsAllKeywordsPredicate(keywords);
     }
 
     private String formatMatches(List<Person> matches) {
