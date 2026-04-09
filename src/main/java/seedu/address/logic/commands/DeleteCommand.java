@@ -14,7 +14,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.NameContainsAllKeywordsPredicate;
 import seedu.address.model.person.Person;
 
 /**
@@ -28,8 +28,8 @@ public class DeleteCommand extends Command {
     public static final String NO_KEYWORD = "n";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes a player by list index or name keywords.\n"
-            + "You can confirm with Y/N after selecting a player.\n"
+            + ": Deletes a person by list index or name keywords.\n"
+            + "You can confirm with Y/N after selecting a person.\n"
             + "Parameters:\n"
             + "  1) INDEX\n"
             + "  2) NAME [MATCH_INDEX]\n"
@@ -37,16 +37,16 @@ public class DeleteCommand extends Command {
             + "  " + COMMAND_WORD + " 3\n"
             + "  " + COMMAND_WORD + " Ryan\n";
 
-    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted player: %1$s";
-    public static final String MESSAGE_DELETE_PERSON_CANCELLED = "Deletion cancelled for player: %1$s";
-    public static final String MESSAGE_NO_MATCHING_PERSON = "No players found matching: %1$s";
+    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted %1$s: %2$s";
+    public static final String MESSAGE_DELETE_PERSON_CANCELLED = "Deletion cancelled for %1$s: %2$s";
+    public static final String MESSAGE_NO_MATCHING_PERSON = "No persons found matching: %1$s";
     public static final String MESSAGE_INVALID_MATCH_INDEX = "The match index provided is invalid";
 
-    public static final String MESSAGE_DELETE_PERSON_CONFIRMATION = "Selected player for deletion: %1$s\n"
-            + "Confirm deletion? (%2$s/%3$s)\n"
-            + "Type '%4$s' to delete or '%5$s' to cancel.";
-    public static final String MESSAGE_DELETE_PERSON_CLASH = "Multiple matching players found for \"%1$s\":\n%2$s\n"
-            + "Type the index corresponding to the player you wish to delete.";
+    public static final String MESSAGE_DELETE_PERSON_CONFIRMATION = "Selected %1$s for deletion: %2$s\n"
+            + "Confirm deletion? (%3$s/%4$s)\n"
+            + "Type '%5$s' to delete or '%6$s' to cancel.";
+    public static final String MESSAGE_DELETE_PERSON_CLASH = "Multiple matching persons found for \"%1$s\":\n%2$s\n"
+            + "Type the index corresponding to the person you wish to delete.";
 
     private final Index targetIndex;
     private final String criteria;
@@ -72,7 +72,7 @@ public class DeleteCommand extends Command {
     /**
      * Creates a {@code DeleteCommand} for deletion by index.
      *
-     * @param targetIndex index of the player in the filtered list.
+     * @param targetIndex index of the person in the filtered list.
      * @param isConfirmed whether the deletion has been explicitly confirmed.
      */
     public DeleteCommand(Index targetIndex, boolean isConfirmed) {
@@ -82,7 +82,7 @@ public class DeleteCommand extends Command {
     /**
      * Creates a {@code DeleteCommand} for deletion by index with an explicit decision state.
      *
-     * @param targetIndex index of the player in the filtered list.
+     * @param targetIndex index of the person in the filtered list.
      * @param deletionDecision user confirmation state.
      */
     public DeleteCommand(Index targetIndex, DeletionDecision deletionDecision) {
@@ -95,8 +95,8 @@ public class DeleteCommand extends Command {
     /**
      * Creates a {@code DeleteCommand} based on matching criteria.
      *
-     * @param criteria keywords used to find matching players.
-     * @param criteriaMatchIndex optional index for selecting a player when there are clashes.
+     * @param criteria keywords used to find matching persons.
+     * @param criteriaMatchIndex optional index for selecting a person when there are clashes.
      * @param deletionDecision user confirmation state.
      */
     public DeleteCommand(String criteria, Index criteriaMatchIndex, DeletionDecision deletionDecision) {
@@ -123,7 +123,7 @@ public class DeleteCommand extends Command {
     }
 
     private CommandResult executeCriteriaDelete(Model model) throws CommandException {
-        NameContainsKeywordsPredicate predicate = buildNamePredicate(criteria);
+        NameContainsAllKeywordsPredicate predicate = buildNamePredicate(criteria);
         model.updateFilteredPersonList(predicate);
         List<Person> matches = model.getFilteredPersonList();
         if (matches.isEmpty()) {
@@ -152,25 +152,29 @@ public class DeleteCommand extends Command {
     }
 
     private CommandResult executeDecision(Model model, Person personToDelete) throws CommandException {
+        String roleLabel = personToDelete.getRole().name().toLowerCase(Locale.ROOT);
+
         if (deletionDecision == DeletionDecision.CONFIRM) {
             model.deletePerson(personToDelete);
-            return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+            return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS,
+                    roleLabel, Messages.format(personToDelete)));
         }
 
         if (deletionDecision == DeletionDecision.CANCEL) {
-            return new CommandResult(String.format(MESSAGE_DELETE_PERSON_CANCELLED, Messages.format(personToDelete)));
+            return new CommandResult(String.format(MESSAGE_DELETE_PERSON_CANCELLED,
+                    roleLabel, Messages.format(personToDelete)));
         }
 
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_CONFIRMATION,
-                Messages.format(personToDelete), YES_KEYWORD.toUpperCase(Locale.ROOT),
+                roleLabel, Messages.format(personToDelete), YES_KEYWORD.toUpperCase(Locale.ROOT),
                 NO_KEYWORD.toUpperCase(Locale.ROOT),
                 YES_KEYWORD.toUpperCase(Locale.ROOT),
                 NO_KEYWORD.toUpperCase(Locale.ROOT)));
     }
 
-    private NameContainsKeywordsPredicate buildNamePredicate(String rawCriteria) {
+    private NameContainsAllKeywordsPredicate buildNamePredicate(String rawCriteria) {
         List<String> keywords = Arrays.asList(rawCriteria.trim().split("\\s+"));
-        return new NameContainsKeywordsPredicate(keywords);
+        return new NameContainsAllKeywordsPredicate(keywords);
     }
 
     private String formatMatches(List<Person> matches) {

@@ -70,7 +70,10 @@ class DeleteInteractionFlow {
                 return;
             }
 
-            pendingDeleteContext = new PendingDeleteContext(buildBaseDeleteCommand(deleteCommand), null, false);
+            pendingDeleteContext = new PendingDeleteContext(
+                    buildBaseDeleteCommand(deleteCommand),
+                    deleteCommand.getCriteria(),
+                    false);
             return;
         }
 
