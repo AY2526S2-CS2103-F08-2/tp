@@ -199,15 +199,15 @@ public class SortCommandTest {
     @Test
     public void execute_sortAllPersonsByWins_success() {
         SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
-                PersonSortAttribute.WINS, "persons", false);
+                PersonSortAttribute.WINS, "players", false);
 
-        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.PLAYER));
         expectedModel.updateSortedPersonListComparator(PersonSortAttribute.WINS.getComparator());
 
         assertCommandSuccess(command, model,
-                String.format(SortCommand.MESSAGE_SUCCESS, "persons", "wins", SortCommand.ORDER_ASCENDING),
+                String.format(SortCommand.MESSAGE_SUCCESS, "players", "wins", SortCommand.ORDER_ASCENDING),
                 expectedModel);
-        assertEquals(List.of(STAFF_ADAM, STAFF_MIA, PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
+        assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
     }
 
     @Test

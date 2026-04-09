@@ -10,7 +10,9 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonHasRolePredicate;
 import seedu.address.model.person.PersonSortAttribute;
+import seedu.address.model.person.Role;
 
 /**
  * Sorts persons in the current UI list by a supported attribute.
@@ -58,6 +60,9 @@ public class SortCommand extends Command {
         Predicate<Person> predicateToApply = predicate == Model.PREDICATE_SHOW_ALL_PERSONS
                 ? model.getFilteredPersonListPredicate()
                 : predicate;
+        if (attribute.isPlayerStatAttribute()) {
+            predicateToApply = predicateToApply.and(new PersonHasRolePredicate(Role.PLAYER));
+        }
         model.updateFilteredPersonList(predicateToApply);
         model.updateSortedPersonListComparator(comparator);
         logger.fine(() -> String.format("Sorted %s by %s in %s order",

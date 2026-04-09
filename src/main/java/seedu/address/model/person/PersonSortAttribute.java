@@ -49,6 +49,13 @@ public enum PersonSortAttribute {
     }
 
     /**
+     * Returns whether this sort attribute is based on player-only stats.
+     */
+    public boolean isPlayerStatAttribute() {
+        return this == GOALS || this == WINS || this == LOSSES;
+    }
+
+    /**
      * Returns the sort attribute matching the given keyword.
      */
     public static PersonSortAttribute fromKeyword(String keyword) {
