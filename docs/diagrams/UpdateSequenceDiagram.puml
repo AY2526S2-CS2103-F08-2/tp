@@ -60,11 +60,6 @@ activate Player
 Player --> UpdateCommand
 deactivate Player
 
-UpdateCommand -> Model : updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)
-activate Model
-Model --> UpdateCommand
-deactivate Model
-
 create CommandResult
 UpdateCommand -> CommandResult
 activate CommandResult
