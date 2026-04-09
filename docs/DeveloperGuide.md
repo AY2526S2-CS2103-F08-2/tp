@@ -236,7 +236,7 @@ The `filter` command is implemented as a predicate-based list narrowing operatio
 
 The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
 
-![Filter command flow in Logic](images/FilterSequenceDiagram.png)
+![Filter command flow in Logic](docs/images/FilterSequenceDiagram.png)
 ### Attribute-filtered list command
 
 For attribute-filtered input such as `list tm/First Team` or
