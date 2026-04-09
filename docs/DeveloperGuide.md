@@ -118,8 +118,6 @@ multi-step delete interaction flow after the user first selects a player for del
 
 ![Interactions Inside the Logic Component for the `delete 1 confirm` Command](images/DeleteSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-</div>
 
 How the `Logic` component works:
 
@@ -219,9 +217,6 @@ observable filtered list shown in the UI.
 The sequence diagram below illustrates the interaction flow using `execute("list r/player")` as the example.
 
 ![Interactions for the `list r/player` Command](images/ListRoleSequenceDiagram.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-</div>
 
 ### Structured filter command
 
@@ -967,6 +962,15 @@ testers are expected to do more *exploratory* testing.
 
     6. Test case: `filter goals/10`<br>
        Expected: Command is rejected with an invalid format message.
+
+    1. Test case: `filter tm/Nonexistent Team`<br>
+       Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `filter st/Retired`<br>
+       Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `filter pos/Coach`<br>
+       Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
 2. Listing persons with attribute filters
 
     1. Prerequisites: At least one player assigned `tm/First Team`, `st/Active`, and `pos/Defender`.

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -67,6 +68,39 @@ public class FilterCommandTest {
 
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1), expectedModel);
+    }
+
+    @Test
+    public void execute_invalidTeam_throwsCommandException() {
+        Model model = new ModelManager(buildAddressBookWithFilterablePersons(), new UserPrefs());
+        PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
+                Optional.empty(), Optional.of(new Team("Ghost Team")), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty());
+        FilterCommand command = new FilterCommand(predicate);
+
+        assertCommandFailure(command, model, String.format(FilterCommand.MESSAGE_TEAM_NOT_FOUND, "Ghost Team"));
+    }
+
+    @Test
+    public void execute_invalidStatus_throwsCommandException() {
+        Model model = new ModelManager(buildAddressBookWithFilterablePersons(), new UserPrefs());
+        PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
+                Optional.empty(), Optional.empty(), Optional.of(new Status("Retired")), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty());
+        FilterCommand command = new FilterCommand(predicate);
+
+        assertCommandFailure(command, model, String.format(FilterCommand.MESSAGE_STATUS_NOT_FOUND, "Retired"));
+    }
+
+    @Test
+    public void execute_invalidPosition_throwsCommandException() {
+        Model model = new ModelManager(buildAddressBookWithFilterablePersons(), new UserPrefs());
+        PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(new Position("Coach")),
+                Optional.empty(), Optional.empty(), Optional.empty());
+        FilterCommand command = new FilterCommand(predicate);
+
+        assertCommandFailure(command, model, String.format(FilterCommand.MESSAGE_POSITION_NOT_FOUND, "Coach"));
     }
 
     @Test

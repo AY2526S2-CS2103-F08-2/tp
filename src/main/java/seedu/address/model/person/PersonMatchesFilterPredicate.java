@@ -43,6 +43,22 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
                 && losses.map(value -> matchesPlayerStat(person, StatField.LOSSES, value)).orElse(true);
     }
 
+    public Optional<Role> getRole() {
+        return role;
+    }
+
+    public Optional<Team> getTeam() {
+        return team;
+    }
+
+    public Optional<Status> getStatus() {
+        return status;
+    }
+
+    public Optional<Position> getPosition() {
+        return position;
+    }
+
     private boolean matchesPlayerStat(Person person, StatField statField, NumericComparison comparison) {
         if (!(person instanceof Player)) {
             return false;
