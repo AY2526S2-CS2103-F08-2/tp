@@ -254,8 +254,7 @@ The corresponding sequence-diagram source for the filtered path is recorded in
 The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
 which creates a `UpdateCommand` with the given parameters (`INDEX, STAT, VALUE`).
 
-After updating the player stats with the relevant setter function in `PlayerStats`, it refreshes the observable filtered list
-by calling `Model#updateFilteredPersonList(...)` with `PREDICATE_SHOW_ALL_PERSONS`.
+The player stat is updated with the relevant setter function in `PlayerStats`.
 
 The sequence diagram below illustrates the interactions, taking a `execute("update 1 wins 5")` call as an example.
 
