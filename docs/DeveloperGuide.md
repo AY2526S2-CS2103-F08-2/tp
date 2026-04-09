@@ -698,7 +698,7 @@ Use case ends.
     * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
-**Use case: UC09 - Set or update a player’s recorded performance stat**
+**Use case: UC09 - Set or update a player’s recorded performance stat**  
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
@@ -737,7 +737,7 @@ Use case ends.
     * 2b1. SoCcer Manager increments the stat by the specified value.
       Use case resumes at step 7.
 
-**Use case: UC10 - Automatically display calculated stats for a player**
+**Use case: UC10 - Automatically display calculated stats for a player**  
 **MSS**
 
 1. Manager views the player list or player details in the UI.
@@ -1082,3 +1082,5 @@ testers are expected to do more *exploratory* testing.
    Currently, users are only able to mark the attendance of players for events. They cannot reverse this and unmark someone
    who attended. This could potentially be useful if the user accidentally marks someone as attended or the player only attends
    for a short amount of time and the user wants to remove their attendance.
+3. **Allow user to import players with preset attributes/stats:** When importing from CSV, users currently are only able to import contacts without the ability to define their attributes and stats. Then, the user has to manually update these one-by-one by commands. Allowing importing of preset attributes/stats can further help the user in mass importing players with more specific data.
+4. **Allow matches to affect player performance stats:** Currently, performance stats of players can only be modified by the user via commands. If the user adds a new match, they also have to update the performance of each player manually. By recording player stats like goals/wins in matches, and then cascade it to update each player's performance stat, it will automate this process and save a lot of time for the user.
