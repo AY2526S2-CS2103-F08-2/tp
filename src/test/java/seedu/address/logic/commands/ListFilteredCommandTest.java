@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -68,6 +69,36 @@ public class ListFilteredCommandTest {
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model,
                 "No staff matching status Unavailable found.", expectedModel);
+    }
+
+    @Test
+    public void execute_invalidTeam_throwsCommandException() {
+        PersonMatchesListFiltersPredicate predicate = new PersonMatchesListFiltersPredicate(Optional.empty(),
+                Optional.of(new Team("Ghost Team")), Optional.empty(), Optional.empty());
+        ListFilteredCommand command = new ListFilteredCommand(predicate, "persons matching team Ghost Team");
+
+        assertCommandFailure(command, model,
+                String.format(ListFilteredCommand.MESSAGE_TEAM_NOT_FOUND, "Ghost Team"));
+    }
+
+    @Test
+    public void execute_invalidStatus_throwsCommandException() {
+        PersonMatchesListFiltersPredicate predicate = new PersonMatchesListFiltersPredicate(Optional.empty(),
+                Optional.empty(), Optional.of(new Status("Retired")), Optional.empty());
+        ListFilteredCommand command = new ListFilteredCommand(predicate, "persons matching status Retired");
+
+        assertCommandFailure(command, model,
+                String.format(ListFilteredCommand.MESSAGE_STATUS_NOT_FOUND, "Retired"));
+    }
+
+    @Test
+    public void execute_invalidPosition_throwsCommandException() {
+        PersonMatchesListFiltersPredicate predicate = new PersonMatchesListFiltersPredicate(Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.of(new Position("Coach")));
+        ListFilteredCommand command = new ListFilteredCommand(predicate, "persons matching position Coach");
+
+        assertCommandFailure(command, model,
+                String.format(ListFilteredCommand.MESSAGE_POSITION_NOT_FOUND, "Coach"));
     }
 
     @Test

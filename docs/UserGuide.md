@@ -167,6 +167,7 @@ Notes:
 * Role values are case-insensitive. e.g. `list r/PLAYER`, `list r/Staff`.
 * If `r/` is omitted, matching persons from all roles are shown.
 * Invalid role arguments are rejected. Use only `r/player` or `r/staff`.
+* Invalid `tm/`, `st/`, or `pos/` values are rejected if they do not exist in the current catalog.
 
 Examples:
 * `list`
@@ -603,7 +604,7 @@ _Details coming soon ..._
 | **Edit Event**      | `eventedit INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`eventedit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                                 |
 | **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10`                                                                |
 | **Find**            | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                                       |
-| **List**            | `list` / `list players` / `list staff`<br> e.g., `list players`                                                                                                                                                                       |
+| **List**            | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                                   |
 | **Sort**            | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                                      |
 | **Set**             | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                                     |
 | **Update**          | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                                |
