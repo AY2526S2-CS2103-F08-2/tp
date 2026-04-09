@@ -66,7 +66,7 @@ public class SetCommandTest {
                         Messages.format(player), StatField.GOALS, oldGoals, newGoals),
                 commandResult.getFeedbackToUser());
         assertEquals(newGoals, updatedPlayer.getStats().getGoalsScored());
-        assertTrue(modelStub.updateFilteredPersonListCalled);
+        assertFalse(modelStub.updateFilteredPersonListCalled);
         assertTrue(modelStub.setPersonCalled);
     }
 
@@ -312,6 +312,11 @@ public class SetCommandTest {
 
         @Override
         public String getAttendanceReport() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
     }

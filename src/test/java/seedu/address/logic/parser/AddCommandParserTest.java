@@ -515,17 +515,22 @@ public class AddCommandParserTest {
         @Override
         public void addEvent(Event event) {
             throw new AssertionError("This method should not be called.");
-        };
+        }
 
         @Override
         public void setEvent(Event target, Event editedEvent) {
             throw new AssertionError("This method should not be called.");
-        };
+        }
 
         @Override
         public String getAttendanceReport() {
             throw new AssertionError("This method should not be called.");
-        };
+        }
+
+        @Override
+        public void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson) {
+            throw new AssertionError("This method should not be called.");
+        }
 
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();

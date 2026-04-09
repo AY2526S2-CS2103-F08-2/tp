@@ -32,6 +32,22 @@ public class PersonMatchesListFiltersPredicate implements Predicate<Person> {
                 && position.map(value -> person.getPosition().equals(value)).orElse(true);
     }
 
+    public Optional<Role> getRole() {
+        return role;
+    }
+
+    public Optional<Team> getTeam() {
+        return team;
+    }
+
+    public Optional<Status> getStatus() {
+        return status;
+    }
+
+    public Optional<Position> getPosition() {
+        return position;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {

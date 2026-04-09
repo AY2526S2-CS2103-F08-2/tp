@@ -33,6 +33,7 @@ public class AttendanceMarkCommand extends Command {
     private static final String MESSAGE_PLAYER_NOT_FOUND = "This player is not part of the event: ";
     private static final String MESSAGE_NOT_A_PLAYER = "This person is not a player: ";
     private static final String MESSAGE_ALREADY_MARKED = "This player's attendance is already marked: ";
+    private static final String MESSAGE_PERSON_NOT_FOUND = "This person does not exist in the address book!";
 
     private final Index index;
     private final List<String> playerNames;
@@ -71,7 +72,7 @@ public class AttendanceMarkCommand extends Command {
 
         for (String s : playerNames) {
             Optional<Person> personToMark = model.getAddressBook().getPersonList().stream()
-                    .filter(p -> p.getName().fullName.equalsIgnoreCase(s))
+                    .filter(p -> p.getName().fullName.equals(s))
                     .findFirst();
 
             if (personToMark.isPresent()) {
@@ -88,7 +89,7 @@ public class AttendanceMarkCommand extends Command {
                     throw new CommandException(String.format(MESSAGE_PLAYER_NOT_FOUND + s));
                 }
             } else {
-                throw new CommandException(MESSAGE_PLAYER_NOT_FOUND + s);
+                throw new CommandException(MESSAGE_PERSON_NOT_FOUND);
             }
         }
 

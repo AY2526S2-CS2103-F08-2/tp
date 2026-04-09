@@ -36,6 +36,14 @@ public class DeleteInteractionFlowTest {
     }
 
     @Test
+    public void preprocessInput_criteriaDelete_supportsReselection() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(new DeleteCommand("alex", INDEX_SECOND_PERSON, DeletionDecision.UNDECIDED));
+
+        assertEquals("delete alex 1", flow.preprocessInput("1"));
+    }
+
+    @Test
     public void preprocessInput_invalidFollowUp_clearsPendingContext() {
         DeleteInteractionFlow flow = new DeleteInteractionFlow();
         flow.updateAfterParse(new DeleteCommand(INDEX_FIRST_PERSON));

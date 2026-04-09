@@ -118,19 +118,17 @@ multi-step delete interaction flow after the user first selects a player for del
 
 ![Interactions Inside the Logic Component for the `delete 1 confirm` Command](images/DeleteSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-</div>
 
 How the `Logic` component works:
 
 1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates
    a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which
+2. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which
    is executed by the `LogicManager`.
-1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
+3. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take
    several interactions (between the command object and the `Model`) to achieve.
-1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
+4. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
@@ -219,9 +217,6 @@ observable filtered list shown in the UI.
 The sequence diagram below illustrates the interaction flow using `execute("list r/player")` as the example.
 
 ![Interactions for the `list r/player` Command](images/ListRoleSequenceDiagram.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-</div>
 
 ### Structured filter command
 
@@ -438,31 +433,26 @@ freeing the manager from manual memory tracking to focus on strategies and decis
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​          | I want to …​                                                                                         | So that…​                                                                            |
-|----------|------------------|------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
-| `* *`    | new user         | launch the app with sample data                                                                      | I can see how the details and stats of players are displayed                         |
-| `* *`    | new user         | read the user guide                                                                                  | I know how to use the commands to interact with the app                              |
-| `* * *`  | new user         | add new players to the app                                                                           | I have an updated list of players                                                    |
-| `* * *`  | new user         | delete players/staff from the app                                                                    | I can remove erroneous entries                                                       |
-| `* * *`  | new user         | view the staff list or player only list                                                              | I can focus on user-role related information without other roles' entries in the way |
-| `* *`    | forgetful user   | quickly retrieve and view player stats                                                               | I can make better judgements on player performance                                   |
-| `*`      | forgetful user   | set reminders on upcoming matches                                                                    | I can remember important dates                                                       |
-| `*`      | forgetful user   | get reminded of recent injuries when creating team                                                   | I ensure my teams are in tip-top condition                                           |
-| `*`      | expert user      | mass removal of players who have graduated or been cut from the academy                              | the system is not cluttered with redundant data                                      |
-| `*`      | expert user      | mass update multiple players information                                                             | I can easily keep information up-to-date                                             |
-| `*`      | expert user      | create custom filters combining multiple criteria (position, performance stats, attendance rate etc) | I can instantly identify specific groups of players for tactical decisions           |
-| `* *`    | experienced user | add tags to each player                                                                              | I can set who is on the first team, second team etc                                  |
-| `* *`    | experienced user | filter based on tag                                                                                  | I can see all players based on the tag (first team, second team, injured etc)        |
-| `*`      | experienced user | use the app to track attendance for trainings                                                        | I know who is skipping training                                                      |
-| `* *`    | experienced user | search within the staff or player list                                                               | I can find a specific staff or user quickly                                          |
-| `*`      | experienced user | share access to the database of players with an assistant coach                                      | the coach is better able to make training decisions and plans                        |
-| `*`      | experienced user | generate teams of similar skill level                                                                | I can set up teams to train against together                                         |
-| `* *`    | experienced user | edit staff or player information                                                                     | so that the staff or player's list stays accurate over time                          |
-| `* *`    | experienced user | filter the players based on specific stats or traits                                                 | I can reward players based on their performance                                      |
-| `* *`    | experienced user | add new batch of players' data using a CSV file                                                      | I can easily update the database with the new players' data                          |
-| `* *`    | experienced user | add simple player stats (goals scored, saves)                                                        | I can see my best performing players                                                 |
-
-*{More to be added}*
+| Priority | As a …​          | I want to …​                                                 | So that…​                                                                               |
+|----------|------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `* *`    | new user         | launch the app with sample data                              | I can see how the details and stats of players are displayed                            |
+| `* *`    | new user         | read the user guide                                          | I know how to use the commands to interact with the app                                 |
+| `* * *`  | new user         | add new players to the app                                   | I have an updated list of players                                                       |
+| `* * *`  | new user         | delete players/staff from the app                            | I can remove erroneous entries                                                          |
+| `* * *`  | new user         | view the staff list or player only list                      | I can focus on user-role related information without other roles' entries in the way    |
+| `* * *`  | new user         | add matches and trainings to the app                         | I have an updated list of different events                                              |
+| `* * *`  | new user         | edit and delete matches and trainings                        | I can remove and edit erroneous entries                                                 |
+| `* *`    | forgetful user   | quickly retrieve and view player stats                       | I can make better judgements on player performance                                      |
+| `*`      | expert user      | mass removal of players based on tags                        | I can ensure the system is not cluttered with redundant data                            |
+| `* *`    | experienced user | add attributes to each player                                | I can set who is on the first team, second team etc                                     |
+| `* *`    | experienced user | filter players based on tags or attributes                   | I can see all players based on the tag/attribute (first team, second team, injured etc) |
+| `*`      | experienced user | use the app to track attendance for trainings                | I know who is skipping training                                                         |
+| `* *`    | experienced user | search within the staff or player list                       | I can find a specific staff or user quickly                                             |
+| `* *`    | experienced user | edit staff or player information                             | I can ensure that the staff or player's list stays accurate over time                   |
+| `* *`    | experienced user | filter the players based on specific stats or traits         | I can reward players based on their performance                                         |
+| `* *`    | experienced user | add new batch of players' data using a CSV file              | I can easily update the database with the new players' data                             |
+| `* *`    | experienced user | add simple player stats (goals scored, wins, losses)         | I can see my best performing players                                                    |
+| `* *`    | experienced user | add advanced player stats (winrate, average goals per match) | I can further analyse my players based on their performance                             |
 
 ### Use cases
 
@@ -708,7 +698,7 @@ Use case ends.
     * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
-## Use case: UC09 - Set or update a player’s recorded performance stat
+**Use case: UC09 - Set or update a player’s recorded performance stat**
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
@@ -747,7 +737,7 @@ Use case ends.
     * 2b1. SoCcer Manager increments the stat by the specified value.
       Use case resumes at step 7.
 
-## Use case: UC10 - Automatically display calculated stats for a player
+**Use case: UC10 - Automatically display calculated stats for a player**
 **MSS**
 
 1. Manager views the player list or player details in the UI.
@@ -843,8 +833,8 @@ Use case ends.
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Academy**: The full set of staff/players used to represent all contacts in the contact list
 * **Position**: The roles that each player is specialised/assigned in the team
-* **Performance Stats**: The player statistics based on their previous games (e.g. goals, assist, shots on target,
-  calculated rating, etc.)
+* **Performance Stats**: The player statistics based on their previous games (e.g. goals, wins, losses,
+  calculated winrate, etc.)
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -863,17 +853,17 @@ testers are expected to do more *exploratory* testing.
 
     1. Download the jar file and copy into an empty folder
 
-    1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be
+    2. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be
        optimum.
 
-1. Saving window preferences
+2. Saving window preferences
 
     1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-    1. Re-launch the app by double-clicking the jar file.<br>
+    2. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
+3. _{ more test cases …​ }_
 
 ### Deleting a person
 
@@ -881,17 +871,17 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-    1. Test case: `delete 1`<br>
+    2. Test case: `delete 1`<br>
        Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
        Timestamp in the status bar is updated.
 
-    1. Test case: `delete 0`<br>
+    3. Test case: `delete 0`<br>
        Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
 
-    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+    4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+2. _{ more test cases …​ }_
 
 ### Attributes (catalog + assignment)
 
@@ -899,44 +889,44 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: Fresh app state with default catalogs loaded.
 
-    1. Test case: `teamlist`<br>
+    2. Test case: `teamlist`<br>
        Expected: Includes `Unassigned Team`, `First Team`, `Second Team`.
 
-    1. Test case: `teamdelete Unassigned Team`<br>
+    3. Test case: `teamdelete Unassigned Team`<br>
        Expected: Rejected with a message indicating default team cannot be deleted.
 
-    1. Test case: `statusedit old/Unknown new/Available`<br>
+    4. Test case: `statusedit old/Unknown new/Available`<br>
        Expected: Rejected with a message indicating default status cannot be edited.
 
-    1. Test case: `positionadd Winger` then `positiondelete Winger`<br>
+    5. Test case: `positionadd Winger` then `positiondelete Winger`<br>
        Expected: Add succeeds, then delete succeeds.
 
-    1. Test case: `teamedit old/First Team new/first team`<br>
+    6. Test case: `teamedit old/First Team new/first team`<br>
        Expected: Command succeeds (case-only rename is accepted).
 
-1. In-use delete guards
+2. In-use delete guards
 
     1. Prerequisites: At least one person assigned `tm/First Team`.
 
-    1. Test case: `teamdelete First Team`<br>
+    2. Test case: `teamdelete First Team`<br>
        Expected: Rejected because the catalog value is in use by persons.
 
-1. Person assignment and validation
+3. Person assignment and validation
 
     1. Test case: `add n/Test Player r/player p/90000001 e/testp@example.com a/Test Addr tm/first team st/active pos/forward`<br>
        Expected: Command succeeds and displayed person shows canonical casing (`First Team`, `Active`, `Forward`).
 
-    1. Test case: `add n/Test Staff r/staff p/90000002 e/tests@example.com a/Test Addr pos/Forward`<br>
+    2. Test case: `add n/Test Staff r/staff p/90000002 e/tests@example.com a/Test Addr pos/Forward`<br>
        Expected: Rejected because staff cannot be assigned non-default position.
 
-    1. Test case: `edit 1 tm/nonexistent`<br>
+    3. Test case: `edit 1 tm/nonexistent`<br>
        Expected: Rejected because attribute value is not present in catalog.
 
-1. Rename cascade to assigned persons
+4. Rename cascade to assigned persons
 
     1. Prerequisites: At least one person currently assigned `tm/Second Team`.
 
-    1. Test case: `teamedit old/Second Team new/Reserve Team`<br>
+    2. Test case: `teamedit old/Second Team new/Reserve Team`<br>
        Expected: Command succeeds and all persons previously assigned `Second Team` now display `Reserve Team`.
 
 ### Role-scoped list
@@ -945,16 +935,16 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: At least one player and one staff in the current address book.
 
-    1. Test case: `list r/player`<br>
+    2. Test case: `list r/player`<br>
        Expected: Only players are shown. Status message indicates players were listed.
 
-    1. Test case: `list r/staff`<br>
+    3. Test case: `list r/staff`<br>
        Expected: Only staff are shown. Status message indicates staff were listed.
 
-    1. Test case: `list r/PLAYER`<br>
+    4. Test case: `list r/PLAYER`<br>
        Expected: Same result as `list r/player` (role keyword is case-insensitive).
 
-    1. Test case: `list r/coaches`<br>
+    5. Test case: `list r/coaches`<br>
        Expected: Command is rejected with an invalid format message. Filtered list is unchanged.
 
 ### Structured filter
@@ -963,67 +953,85 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: The address book contains players/staff with a mix of roles, attributes, and stats.
 
-    1. Test case: `filter r/player`<br>
+    2. Test case: `filter r/player`<br>
        Expected: Only players are shown.
 
-    1. Test case: `filter tm/First Team st/Active`<br>
+    3. Test case: `filter tm/First Team st/Active`<br>
        Expected: Only persons matching both criteria are shown.
 
-    1. Test case: `filter pos/Forward goals/>10`<br>
+    4. Test case: `filter pos/Forward goals/>10`<br>
        Expected: Only forwards with more than 10 goals are shown.
 
-    1. Test case: `filter wins/<3`<br>
+    5. Test case: `filter wins/<3`<br>
        Expected: Only players with fewer than 3 wins are shown. Staff do not match this stat filter.
 
-    1. Test case: `filter goals/10`<br>
+    6. Test case: `filter goals/10`<br>
        Expected: Command is rejected with an invalid format message.
-1. Listing persons with attribute filters
+
+    1. Test case: `filter tm/Nonexistent Team`<br>
+       Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `filter st/Retired`<br>
+       Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `filter pos/Coach`<br>
+       Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
+2. Listing persons with attribute filters
 
     1. Prerequisites: At least one player assigned `tm/First Team`, `st/Active`, and `pos/Defender`.
 
-    1. Test case: `list tm/First Team`<br>
+    2. Test case: `list tm/First Team`<br>
        Expected: Only persons assigned `First Team` are shown. Status message indicates matching team filter.
 
-    1. Test case: `list st/Active pos/Defender`<br>
+    3. Test case: `list st/Active pos/Defender`<br>
        Expected: Only persons matching both status and position filters are shown.
 
-    1. Test case: `list r/player tm/First Team st/Active pos/Defender`<br>
+    4. Test case: `list r/player tm/First Team st/Active pos/Defender`<br>
        Expected: Only players matching all specified filters are shown.
 
-    1. Test case: `list r/player tm/First Team tm/Second Team`<br>
+    5. Test case: `list r/player tm/First Team tm/Second Team`<br>
        Expected: Command is rejected because duplicate prefixes are not allowed.
+
+    1. Test case: `list tm/Nonexistent Team`<br>
+       Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `list st/Retired`<br>
+       Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
+
+    1. Test case: `list pos/Coach`<br>
+       Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
 ### Sorting persons
 
 1. Sorting by roster attributes
 
     1. Prerequisites: At least two persons with different `team`, `status`, or `position` values.
 
-    1. Test case: `sort by/team`<br>
+    2. Test case: `sort by/team`<br>
        Expected: Persons are ordered by team in ascending order.
 
-    1. Test case: `sort by/status desc`<br>
+    3. Test case: `sort by/status desc`<br>
        Expected: Persons are ordered by status in descending order.
 
-    1. Test case: `sort r/player by/position`<br>
+    4. Test case: `sort r/player by/position`<br>
        Expected: Only players are shown, ordered by position in ascending order.
 
-1. Sorting by player stats
+2. Sorting by player stats
 
     1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
 
-    1. Test case: `sort by/goals`<br>
-       Expected: Only players are shown, ordered by goals in ascending order.
+    2. Test case: `sort by/goals`<br>
+       Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
 
-    1. Test case: `sort by/wins desc`<br>
-       Expected: Only players are shown, ordered by wins in descending order.
+    3. Test case: `sort by/wins desc`<br>
+       Expected: Persons are ordered by wins in descending order.
 
-    1. Test case: `sort r/player by/losses`<br>
+    4. Test case: `sort r/player by/losses`<br>
        Expected: Only players are shown, ordered by losses in ascending order.
 
-    1. Test case: `sort r/staff by/goals`<br>
+    5. Test case: `sort r/staff by/goals`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
-    1. Test case: `sort r/player by/unknown`<br>
+    6. Test case: `sort r/player by/unknown`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data
@@ -1032,31 +1040,31 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
 
-    1. Test case: Add `null` or a blank string such as `" "` to the `teams`, `statuses`, or `positions` array, then
+    2. Test case: Add `null` or a blank string such as `" "` to the `teams`, `statuses`, or `positions` array, then
        launch the app.<br>
        Expected: The app still launches. Malformed catalog entries are skipped, valid entries remain loaded, and
        protected defaults are still present.
 
-    1. Test case: Remove `Unassigned Team`, `Unassigned Position`, or `Unknown` from the corresponding catalog array,
+    3. Test case: Remove `Unassigned Team`, `Unassigned Position`, or `Unknown` from the corresponding catalog array,
        then launch the app.<br>
        Expected: The app still launches and the missing protected default is auto-healed into the catalog.
 
-1. Recovering from inconsistent person attribute data
+2. Recovering from inconsistent person attribute data
 
     1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
 
-    1. Test case: Edit a person record so its `team`, `status`, or `position` uses a valid value that is missing from
+    2. Test case: Edit a person record so its `team`, `status`, or `position` uses a valid value that is missing from
        the corresponding catalog array, then launch the app.<br>
        Expected: The app still launches and the missing valid value is auto-registered into the corresponding catalog.
 
-    1. Test case: Edit a staff record so it has a non-default `position`, then launch the app.<br>
+    3. Test case: Edit a staff record so it has a non-default `position`, then launch the app.<br>
        Expected: The app still launches and that staff member is loaded with `Unassigned Position`.
 
-1. Severe file corruption
+3. Severe file corruption
 
     1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
 
-    1. Test case: Break the JSON structure (for example, remove a comma or closing brace) and then launch the app.<br>
+    2. Test case: Break the JSON structure (for example, remove a comma or closing brace) and then launch the app.<br>
        Expected: The corrupted file cannot be loaded and the app starts with an empty address book for that run.
 
 --------------------------------------------------------------------------------------------------------------------

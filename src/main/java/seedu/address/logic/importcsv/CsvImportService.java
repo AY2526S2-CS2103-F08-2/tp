@@ -84,7 +84,7 @@ public class CsvImportService {
     }
 
     private void validateHeader(String headerLine) throws CommandException {
-        List<String> actualHeaders = parseCsvLine(headerLine)
+        List<String> actualHeaders = trimTrailingEmptyFields(parseCsvLine(headerLine))
                 .stream()
                 .map(String::trim)
                 .map(String::toLowerCase)
@@ -97,7 +97,7 @@ public class CsvImportService {
     }
 
     private Person parsePerson(String line) {
-        List<String> values = parseCsvLine(line);
+        List<String> values = trimTrailingEmptyFields(parseCsvLine(line));
 
         if (values.size() != EXPECTED_HEADERS.size()) {
             throw new IllegalArgumentException("wrong number of fields");
@@ -175,5 +175,14 @@ public class CsvImportService {
 
         fields.add(currentField.toString().trim());
         return fields;
+    }
+
+    private List<String> trimTrailingEmptyFields(List<String> fields) {
+        // remove those padded commas (assumed to be unintended)
+        int last = fields.size() - 1;
+        while (last >= EXPECTED_HEADERS.size() && fields.get(last).isEmpty()) {
+            last--;
+        }
+        return new ArrayList<>(fields.subList(0, last + 1));
     }
 }

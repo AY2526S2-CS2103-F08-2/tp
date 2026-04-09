@@ -101,4 +101,33 @@ public class CalculatedStatFieldTest {
         assertTrue(hasWinRate);
         assertTrue(hasGoalsPerGame);
     }
+
+    @Test
+    public void getValue_winRate_maxWinsAndLosses() {
+        stats.setMatchesWon(Integer.MAX_VALUE);
+        stats.setMatchesLost(Integer.MAX_VALUE);
+        // should be 50.00%, not a negative/nonsensical value
+        double result = CalculatedStatField.WIN_RATE.getValue(stats);
+        assertEquals(50.0, result, DELTA);
+        assertTrue(result >= 0.0 && result <= 100.0);
+    }
+
+    @Test
+    public void getValue_goalsPerGame_maxWinsAndLosses() {
+        stats.setGoalsScored(Integer.MAX_VALUE);
+        stats.setMatchesWon(Integer.MAX_VALUE);
+        stats.setMatchesLost(Integer.MAX_VALUE);
+        // should be 0.50, not negative
+        double result = CalculatedStatField.GOALS_PER_GAME.getValue(stats);
+        assertEquals(0.5, result, DELTA);
+        assertTrue(result >= 0.0);
+    }
+
+    @Test
+    public void getValue_winRate_maxWinsOneLoss() {
+        stats.setMatchesWon(Integer.MAX_VALUE);
+        stats.setMatchesLost(1);
+        double result = CalculatedStatField.WIN_RATE.getValue(stats);
+        assertTrue(result >= 0.0 && result <= 100.0);
+    }
 }

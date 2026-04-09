@@ -217,4 +217,11 @@ public interface Model {
      * Returns the attendance rate of all players.
      */
     String getAttendanceReport();
+
+    /**
+     * Cascade edited to events
+     * @param personToEdit
+     * @param editedPerson
+     */
+    void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson);
 }

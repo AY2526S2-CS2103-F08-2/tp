@@ -167,6 +167,7 @@ Notes:
 * Role values are case-insensitive. e.g. `list r/PLAYER`, `list r/Staff`.
 * If `r/` is omitted, matching persons from all roles are shown.
 * Invalid role arguments are rejected. Use only `r/player` or `r/staff`.
+* Invalid `tm/`, `st/`, or `pos/` values are rejected if they do not exist in the current catalog.
 
 Examples:
 * `list`
@@ -175,7 +176,7 @@ Examples:
 * `list tm/First Team`
 * `list r/player st/Active pos/Defender`
 
-### Marking attendance for trainings: `attendancemark`
+### Marking attendance for events: `attendancemark`
 
 Marks attendance for specified players for the specified event.
 
@@ -190,7 +191,7 @@ Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
-### Viewing attendance for trainings: `attendance`
+### Viewing attendance for events: `attendance`
 
 Shows a summary of player attendance for events for every player in the address book.
 
@@ -246,6 +247,7 @@ Format:
 
 Rules:
 * All provided filters are combined using AND semantics.
+* Invalid `tm/`, `st/`, or `pos/` values are rejected if they do not exist in the current catalog.
 * `goals`, `wins`, and `losses` filters apply only to players.
 * Use `list` to reset the filtered view and show all persons again.
 
@@ -260,7 +262,10 @@ Examples:
 Every **player** will have stats that denote their individual performance. 
 These stats can be modified by the user via commands.
 
-Note: staff do not have any performance stats.
+**Note:**
+- Staff do not have any performance stats.
+- Player stats will not persist if player becomes a staff.
+- A staff will have the default state of performance stats when converted to a player.
 
 _Current valid stats: `goals`, `wins`, `losses`_
 
@@ -542,13 +547,15 @@ Format: `exit`
 
 Imports contacts from a given CSV file. Expects the CSV file to follow format strictly.
 
-> _Expected Headers (in order):_ name, role, address, phone, email, tags 
+> _Expected Headers (in order):_ **name, role, address, phone, email, tags** 
+> 
+> Note: sometimes saving CSV files in _Microsoft Excel_ will create extra padded commas, the parser will assume that this was not intended by the user and trim it, since you cannot put commas in tags anyway.
 
 **If headers are invalid, CSV importing will fail.**
 
 If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
 
-The relevant error messages per row will be displayed.
+Then, the relevant error messages per row that failed to import will be displayed.
 
 Format: `importcsv`
 
@@ -564,10 +571,6 @@ SoCcer Manager data are saved automatically as a JSON file `[JAR file location]/
 If your edits make the JSON file structurally invalid (e.g., broken JSON syntax), SoCcer Manager may fail to load it and start with an empty address book for that run, while restoring the default Team/Status/Position catalogs. Some malformed rows are auto-recovered (for example, by skipping invalid entries), but this is not guaranteed for all corruption cases. Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
-
-### Archiving data files `[coming in v2.0]`
-
-_Details coming soon ..._
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -602,7 +605,7 @@ _Details coming soon ..._
 | **Edit Event**      | `eventedit INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`eventedit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                                 |
 | **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10`                                                                |
 | **Find**            | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                                       |
-| **List**            | `list` / `list players` / `list staff`<br> e.g., `list players`                                                                                                                                                                       |
+| **List**            | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                                   |
 | **Sort**            | `sort by/ATTRIBUTE [desc]` / `sort players by/ATTRIBUTE [desc]` / `sort staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                                      |
 | **Set**             | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                                     |
 | **Update**          | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                                |
