@@ -379,6 +379,11 @@ public class AddCommandParserTest {
         }
 
         @Override
+        public java.util.function.Predicate<Person> getFilteredPersonListPredicate() {
+            return Model.PREDICATE_SHOW_ALL_PERSONS;
+        }
+
+        @Override
         public void deletePerson(Person target) {
             throw new AssertionError("This method should not be called.");
         }

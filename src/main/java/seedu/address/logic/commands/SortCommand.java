@@ -55,7 +55,10 @@ public class SortCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredPersonList(predicate);
+        Predicate<Person> predicateToApply = predicate == Model.PREDICATE_SHOW_ALL_PERSONS
+                ? model.getFilteredPersonListPredicate()
+                : predicate;
+        model.updateFilteredPersonList(predicateToApply);
         model.updateSortedPersonListComparator(comparator);
         logger.fine(() -> String.format("Sorted %s by %s in %s order",
                 scopeDescription, attribute.getKeyword(), isDescending ? ORDER_DESCENDING : ORDER_ASCENDING));

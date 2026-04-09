@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.List;
 
@@ -121,6 +122,22 @@ public class SortCommandTest {
                 String.format(SortCommand.MESSAGE_SUCCESS, "persons", "name", SortCommand.ORDER_DESCENDING),
                 expectedModel);
         assertEquals(List.of(PLAYER_ZOE, STAFF_MIA, PLAYER_BETH, STAFF_ADAM), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_sortWithoutExplicitScope_preservesExistingFilter() {
+        model.updateFilteredPersonList(new PersonHasRolePredicate(Role.STAFF));
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.STAFF));
+
+        SortCommand command = new SortCommand(PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.NAME, "persons", false);
+
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.NAME.getComparator());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "persons", "name", SortCommand.ORDER_ASCENDING),
+                expectedModel);
+        assertEquals(List.of(STAFF_ADAM, STAFF_MIA), model.getFilteredPersonList());
     }
 
     @Test
