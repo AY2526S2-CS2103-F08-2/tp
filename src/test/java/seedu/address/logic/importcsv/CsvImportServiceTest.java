@@ -247,6 +247,128 @@ public class CsvImportServiceTest {
         assertEquals(1, model.getFilteredPersonList().size());
     }
 
+    @Test
+    public void importCsv_headerWithTrailingPaddingCommas_success() throws Exception {
+        Path csvFile = createCsvFile("headerWithPadding.csv",
+                "name,role,address,phone,email,tags,,",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        CsvImportResult result = service.importCsv(csvFile, model);
+
+        assertEquals(1, result.getTotalRowsProcessed());
+        assertEquals(1, result.getSuccessfulImports());
+        assertEquals(0, result.getFailedImports());
+        assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void importCsv_rowWithTrailingPaddingCommas_success() throws Exception {
+        Path csvFile = createCsvFile("rowWithPadding.csv",
+                "name,role,address,phone,email,tags",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain,,");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        CsvImportResult result = service.importCsv(csvFile, model);
+
+        assertEquals(1, result.getTotalRowsProcessed());
+        assertEquals(1, result.getSuccessfulImports());
+        assertEquals(0, result.getFailedImports());
+        assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void importCsv_headerAndRowWithTrailingPaddingCommas_success() throws Exception {
+        Path csvFile = createCsvFile("headerAndRowWithPadding.csv",
+                "name,role,address,phone,email,tags,,",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain,,");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        CsvImportResult result = service.importCsv(csvFile, model);
+
+        assertEquals(1, result.getTotalRowsProcessed());
+        assertEquals(1, result.getSuccessfulImports());
+        assertEquals(0, result.getFailedImports());
+        assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void importCsv_blankLastFieldForTags_notTrimmed() throws Exception {
+        Path csvFile = createCsvFile("blankTags.csv",
+                "name,role,address,phone,email,tags",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        CsvImportResult result = service.importCsv(csvFile, model);
+
+        assertEquals(1, result.getTotalRowsProcessed());
+        assertEquals(1, result.getSuccessfulImports());
+        assertEquals(0, result.getFailedImports());
+        assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void importCsv_blankLastFieldForTagsWithPaddingCommas_success() throws Exception {
+        Path csvFile = createCsvFile("blankTagsWithPadding.csv",
+                "name,role,address,phone,email,tags,,",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,,,");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        CsvImportResult result = service.importCsv(csvFile, model);
+
+        assertEquals(1, result.getTotalRowsProcessed());
+        assertEquals(1, result.getSuccessfulImports());
+        assertEquals(0, result.getFailedImports());
+        assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void importCsv_nonEmptyExtraFieldStillFails() throws Exception {
+        Path csvFile = createCsvFile("nonEmptyExtraField.csv",
+                "name,role,address,phone,email,tags",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain,EXTRA");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        CsvImportResult result = service.importCsv(csvFile, model);
+
+        assertEquals(1, result.getTotalRowsProcessed());
+        assertEquals(0, result.getSuccessfulImports());
+        assertEquals(1, result.getFailedImports());
+        assertTrue(result.getFailureMessages().get(0).contains("wrong number of fields"));
+    }
+
+    @Test
+    public void importCsv_headerWrongOrderWithPaddingCommas_stillFails() throws Exception {
+        Path csvFile = createCsvFile("wrongOrderWithPadding.csv",
+                "name,address,role,phone,email,tags,,",
+                "Alex Tan,12 Clementi Road,player,91234567,alex.tan@example.com,captain,,");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        assertThrows(CommandException.class, () -> service.importCsv(csvFile, model));
+    }
+
+    @Test
+    public void importCsv_headerWithWhitespaceAndPaddingCommas_success() throws Exception {
+        Path csvFile = createCsvFile("headerWhitespacePadding.csv",
+                " name , role , address , phone , email , tags , , ",
+                "Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain,,");
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        CsvImportResult result = service.importCsv(csvFile, model);
+
+        assertEquals(1, result.getTotalRowsProcessed());
+        assertEquals(1, result.getSuccessfulImports());
+        assertEquals(0, result.getFailedImports());
+    }
+
     private Path createCsvFile(String fileName, String... lines) throws IOException {
         Path file = tempDir.resolve(fileName);
         Files.write(file, List.of(lines));

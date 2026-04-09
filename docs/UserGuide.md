@@ -175,7 +175,7 @@ Examples:
 * `list tm/First Team`
 * `list r/player st/Active pos/Defender`
 
-### Marking attendance for trainings: `attendancemark`
+### Marking attendance for events: `attendancemark`
 
 Marks attendance for specified players for the specified event.
 
@@ -190,7 +190,7 @@ Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
-### Viewing attendance for trainings: `attendance`
+### Viewing attendance for events: `attendance`
 
 Shows a summary of player attendance for events for every player in the address book.
 
@@ -256,7 +256,10 @@ Examples:
 Every **player** will have stats that denote their individual performance. 
 These stats can be modified by the user via commands.
 
-Note: staff do not have any performance stats.
+**Note:**
+- Staff do not have any performance stats.
+- Player stats will not persist if player becomes a staff.
+- A staff will have the default state of performance stats when converted to a player.
 
 _Current valid stats: `goals`, `wins`, `losses`_
 
@@ -538,13 +541,15 @@ Format: `exit`
 
 Imports contacts from a given CSV file. Expects the CSV file to follow format strictly.
 
-> _Expected Headers (in order):_ name, role, address, phone, email, tags 
+> _Expected Headers (in order):_ **name, role, address, phone, email, tags** 
+> 
+> Note: sometimes saving CSV files in _Microsoft Excel_ will create extra padded commas, the parser will assume that this was not intended by the user and trim it, since you cannot put commas in tags anyway.
 
 **If headers are invalid, CSV importing will fail.**
 
 If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
 
-The relevant error messages per row will be displayed.
+Then, the relevant error messages per row that failed to import will be displayed.
 
 Format: `importcsv`
 

@@ -29,6 +29,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Player;
+import seedu.address.model.person.PlayerStats;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.StatField;
@@ -70,16 +71,6 @@ public class UpdateCommandTest {
                 UpdateCommand.MESSAGE_NOT_PLAYER, () -> command.execute(modelStub));
     }
 
-    /**
-     * This test reflects the *intended* behaviour of UpdateCommand:
-     * old stat should become old + increment.
-     *
-     * With the current implementation, this test is likely to fail because
-     * updatePlayerStat() does:
-     *     stat.setValue(playerStats, this.value);
-     * instead of:
-     *     stat.setValue(playerStats, newValue);
-     */
     @Test
     public void execute_validIndexPlayer_incrementsStat() throws Exception {
         Player player = (Player) new PersonBuilder(PLAYER_AMY).build();
@@ -96,10 +87,48 @@ public class UpdateCommandTest {
         Player updatedPlayer = (Player) modelStub.filteredPersons.get(0);
 
         assertEquals(String.format(UpdateCommand.MESSAGE_SET_PLAYER_SUCCESS,
-                        Messages.format(player), StatField.WINS, oldWins, expectedWins, increment),
+                        Messages.format(player), StatField.WINS, oldWins, expectedWins, "+" + increment),
                 commandResult.getFeedbackToUser());
         assertEquals(expectedWins, updatedPlayer.getStats().getMatchesWon());
-        assertTrue(modelStub.updateFilteredPersonListCalled);
+    }
+
+    @Test
+    public void execute_statOverflow_throwsCommandException() {
+        Player player = (Player) new PersonBuilder(PLAYER_AMY).build();
+        // set wins to MAX_VALUE first so any increment will overflow
+        PlayerStats stats = new PlayerStats();
+        stats.setMatchesWon(Integer.MAX_VALUE);
+        Player maxPlayer = new Player(player, stats);
+        ModelStubWithFilteredList modelStub = new ModelStubWithFilteredList(maxPlayer);
+
+        UpdateCommand command = new UpdateCommand(INDEX_FIRST_PERSON, StatField.WINS, 1);
+
+        assertThrows(CommandException.class,
+                UpdateCommand.MESSAGE_STAT_OVERFLOW, () -> command.execute(modelStub));
+    }
+
+    @Test
+    public void execute_validIndexPlayer_decrementStat() throws Exception {
+        Player player = (Player) new PersonBuilder(PLAYER_AMY).build();
+        ModelStubWithFilteredList modelStub = new ModelStubWithFilteredList(player);
+
+        player.getStats().setMatchesWon(10);
+
+        int oldWins = player.getStats().getMatchesWon();
+        int increment = -2;
+        int expectedWins = oldWins + increment;
+
+        UpdateCommand command = new UpdateCommand(INDEX_FIRST_PERSON, StatField.WINS, increment);
+        CommandResult commandResult = command.execute(modelStub);
+
+        // command uses old player reference for the message, fetch updated from stub for stat assertion
+        Player updatedPlayer = (Player) modelStub.filteredPersons.get(0);
+
+        assertEquals(String.format(UpdateCommand.MESSAGE_SET_PLAYER_SUCCESS,
+                        Messages.format(player), StatField.WINS, oldWins, expectedWins, increment), // without plus
+                commandResult.getFeedbackToUser());
+        assertEquals(expectedWins, updatedPlayer.getStats().getMatchesWon());
+        assertFalse(modelStub.updateFilteredPersonListCalled);
         assertTrue(modelStub.setPersonCalled);
     }
 
@@ -315,6 +344,11 @@ public class UpdateCommandTest {
 
         @Override
         public String getAttendanceReport() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
     }

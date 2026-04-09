@@ -25,11 +25,14 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Player;
+import seedu.address.model.person.PlayerStats;
 import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Status;
@@ -69,6 +72,9 @@ public class EditCommand extends Command {
             "The specified position does not exist in the catalog";
     public static final String MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF =
             "Position can only be assigned to players";
+    public static final String MESSAGE_REMOVE_FROM_EVENT_FIRST = "Staff cannot be added to events. "
+            + "Please remove %s from all events before changing role to staff";
+    public static final String MESSAGE_NO_FIELD_WAS_CHANGED = "No fields were changed from the existing person.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -119,15 +125,39 @@ public class EditCommand extends Command {
             throw new CommandException(MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF);
         }
 
+        if (updatedRole == Role.STAFF && eventListContainsPerson(model, personToEdit)) {
+            throw new CommandException(String.format(MESSAGE_REMOVE_FROM_EVENT_FIRST,
+                    personToEdit.getName().toString()));
+        }
+
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+
+        if (personToEdit.equals(editedPerson)) {
+            throw new CommandException(MESSAGE_NO_FIELD_WAS_CHANGED);
+        }
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
         model.setPerson(personToEdit, editedPerson);
+        model.cascadeEditedPersonToEvent(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+    }
+
+    /**
+     * Checks if any events in event list contains person
+     * @param model
+     * @param personToCheck
+     */
+    private boolean eventListContainsPerson(Model model, Person personToCheck) {
+        for (Event e : model.getEventList()) {
+            if (e.getEventPlayerList().contains(personToCheck)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -151,8 +181,17 @@ public class EditCommand extends Command {
             updatedPosition = new Position(Position.DEFAULT_UNASSIGNED_POSITION);
         }
 
-        return Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+        Person updatedPerson = Person.createPerson(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
                 updatedRole, updatedTeam, updatedStatus, updatedPosition);
+
+        if (personToEdit.getRole() == Role.PLAYER && updatedRole == Role.PLAYER) {
+            Player playerToEdit = (Player) personToEdit;
+            PlayerStats playerStats = playerToEdit.getStats();
+            Player updatedPlayer = (Player) updatedPerson;
+            return new Player(updatedPlayer, playerStats);
+        }
+
+        return updatedPerson;
     }
 
     @Override
