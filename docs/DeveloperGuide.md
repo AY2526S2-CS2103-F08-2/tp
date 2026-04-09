@@ -118,8 +118,6 @@ multi-step delete interaction flow after the user first selects a player for del
 
 ![Interactions Inside the Logic Component for the `delete 1 confirm` Command](images/DeleteSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-</div>
 
 How the `Logic` component works:
 
@@ -220,9 +218,6 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 
 ![Interactions for the `list r/player` Command](images/ListRoleSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ListCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
-</div>
-
 ### Structured filter command
 
 The `filter` command is implemented as a predicate-based list narrowing operation.
@@ -236,7 +231,7 @@ The `filter` command is implemented as a predicate-based list narrowing operatio
 
 The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
 
-![Filter command flow in Logic](docs/images/FilterSequenceDiagram.png)
+![Filter command flow in Logic](images/FilterSequenceDiagram.png)
 ### Attribute-filtered list command
 
 For attribute-filtered input such as `list tm/First Team` or
