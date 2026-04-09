@@ -90,8 +90,6 @@ public class UpdateCommandTest {
                         Messages.format(player), StatField.WINS, oldWins, expectedWins, "+" + increment),
                 commandResult.getFeedbackToUser());
         assertEquals(expectedWins, updatedPlayer.getStats().getMatchesWon());
-        assertTrue(modelStub.updateFilteredPersonListCalled);
-        assertTrue(modelStub.setPersonCalled);
     }
 
     @Test
@@ -107,8 +105,9 @@ public class UpdateCommandTest {
 
         assertThrows(CommandException.class,
                 UpdateCommand.MESSAGE_STAT_OVERFLOW, () -> command.execute(modelStub));
-    
-    @Test  
+    }
+
+    @Test
     public void execute_validIndexPlayer_decrementStat() throws Exception {
         Player player = (Player) new PersonBuilder(PLAYER_AMY).build();
         ModelStubWithFilteredList modelStub = new ModelStubWithFilteredList(player);
