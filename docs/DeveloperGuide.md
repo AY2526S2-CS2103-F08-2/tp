@@ -863,8 +863,6 @@ testers are expected to do more *exploratory* testing.
     2. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-3. _{ more test cases …​ }_
-
 ### Deleting a person
 
 1. Deleting a person while all persons are being shown
@@ -880,8 +878,6 @@ testers are expected to do more *exploratory* testing.
 
     4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
-
-2. _{ more test cases …​ }_
 
 ### Attributes (catalog + assignment)
 
@@ -968,14 +964,15 @@ testers are expected to do more *exploratory* testing.
     6. Test case: `filter goals/10`<br>
        Expected: Command is rejected with an invalid format message.
 
-    1. Test case: `filter tm/Nonexistent Team`<br>
-       Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
+    7. Test case: `filter tm/Nonexistent Team`<br>
+        Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
 
-    1. Test case: `filter st/Retired`<br>
-       Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
+    8. Test case: `filter st/Retired`<br>
+        Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
 
-    1. Test case: `filter pos/Coach`<br>
-       Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
+    9. Test case: `filter pos/Coach`<br>
+        Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
+   
 2. Listing persons with attribute filters
 
     1. Prerequisites: At least one player assigned `tm/First Team`, `st/Active`, and `pos/Defender`.
@@ -992,14 +989,15 @@ testers are expected to do more *exploratory* testing.
     5. Test case: `list r/player tm/First Team tm/Second Team`<br>
        Expected: Command is rejected because duplicate prefixes are not allowed.
 
-    1. Test case: `list tm/Nonexistent Team`<br>
+    6. Test case: `list tm/Nonexistent Team`<br>
        Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
 
-    1. Test case: `list st/Retired`<br>
+    7. Test case: `list st/Retired`<br>
        Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
 
-    1. Test case: `list pos/Coach`<br>
+    8. Test case: `list pos/Coach`<br>
        Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
+   
 ### Sorting persons
 
 1. Sorting by roster attributes
