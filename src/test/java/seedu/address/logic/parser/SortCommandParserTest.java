@@ -63,7 +63,7 @@ public class SortCommandParserTest {
     @Test
     public void parse_sortAllPersonsByWins_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS,
-                PersonSortAttribute.WINS, "persons", false);
+                PersonSortAttribute.WINS, "players", false);
         assertEquals(expected, parser.parse("by/wins"));
     }
 
@@ -108,5 +108,6 @@ public class SortCommandParserTest {
         assertParseFailure(parser, "by/name asc", expectedMessage);
         assertParseFailure(parser, "r/player by/name descending", expectedMessage);
         assertParseFailure(parser, "r/player desc by/name", expectedMessage);
+        assertParseFailure(parser, "r/staff by/goals", expectedMessage);
     }
 }

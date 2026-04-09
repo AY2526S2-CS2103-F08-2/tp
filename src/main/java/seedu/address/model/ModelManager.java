@@ -381,6 +381,15 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public Predicate<Person> getFilteredPersonListPredicate() {
+        Predicate<? super Person> predicate = filteredPersons.getPredicate();
+        if (predicate == null) {
+            return PREDICATE_SHOW_ALL_PERSONS;
+        }
+        return person -> predicate.test(person);
+    }
+
+    @Override
     public void updateSortedPersonListComparator(Comparator<Person> comparator) {
         requireNonNull(comparator);
         sortedAndFilteredPersons.setComparator(comparator);

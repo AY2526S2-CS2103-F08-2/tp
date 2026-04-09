@@ -631,9 +631,13 @@ Use case ends.
     * 3a1. SoCcer Manager shows an error message.  
       Use case ends.
 
-* 5a. Manager sorts by `goals`, `wins`, or `losses` while staff are present in the visible list.
-    * 5a1. SoCcer Manager treats staff as stat value `0` and completes the sort.  
+* 5a. Manager sorts by `goals`, `wins`, or `losses`.
+    * 5a1. SoCcer Manager limits the visible list to players before applying the sort.  
       Use case resumes at step 6.
+
+* 5b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, or `sort r/staff by/losses`.
+    * 5b1. SoCcer Manager shows an error message.  
+      Use case ends.
 
 **Use case: UC07 - Bulk delete persons by shared criterion**  
 **MSS**
@@ -1024,7 +1028,10 @@ testers are expected to do more *exploratory* testing.
     4. Test case: `sort r/player by/losses`<br>
        Expected: Only players are shown, ordered by losses in ascending order.
 
-    5. Test case: `sort r/player by/unknown`<br>
+    5. Test case: `sort r/staff by/goals`<br>
+       Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
+
+    6. Test case: `sort r/player by/unknown`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data

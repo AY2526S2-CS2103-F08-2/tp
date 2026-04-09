@@ -223,6 +223,11 @@ Supported attributes:
 * `wins`
 * `losses`
 
+Notes:
+* `goals`, `wins`, and `losses` are player-only sort attributes.
+* `sort by/goals`, `sort by/wins`, and `sort by/losses` will show only players.
+* `sort r/staff by/goals`, `sort r/staff by/wins`, and `sort r/staff by/losses` are invalid.
+
 Examples:
 * `sort by/name`
 * `sort r/player by/email`

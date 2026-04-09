@@ -203,6 +203,11 @@ public interface Model {
     void updateFilteredPersonList(Predicate<Person> predicate);
 
     /**
+     * Returns the predicate currently applied to the filtered person list.
+     */
+    Predicate<Person> getFilteredPersonListPredicate();
+
+    /**
      * Updates the sorting of the filtered person list using the given {@code comparator}.
      * @throws NullPointerException if {@code comparator} is null.
      */

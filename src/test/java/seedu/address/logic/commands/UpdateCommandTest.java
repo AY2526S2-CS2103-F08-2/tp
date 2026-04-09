@@ -223,6 +223,11 @@ public class UpdateCommandTest {
         }
 
         @Override
+        public java.util.function.Predicate<Person> getFilteredPersonListPredicate() {
+            return Model.PREDICATE_SHOW_ALL_PERSONS;
+        }
+
+        @Override
         public boolean hasTeam(Team team) {
             return false;
         }

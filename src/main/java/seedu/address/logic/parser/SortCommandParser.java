@@ -22,6 +22,7 @@ import seedu.address.model.person.Role;
 public class SortCommandParser implements Parser<SortCommand> {
 
     public static final String SCOPE_ALL_PERSONS = "persons";
+    public static final String SCOPE_PLAYERS = "players";
     public static final String ARGUMENT_DESC = "desc";
     private static final Logger logger = LogsCenter.getLogger(SortCommandParser.class);
 
@@ -51,11 +52,12 @@ public class SortCommandParser implements Parser<SortCommand> {
 
         String attributeKeyword = sortTokens[0];
         boolean isDescending = parseSortOrder(sortTokens);
+        PersonSortAttribute attribute = parseAttribute(attributeKeyword);
+        validateScopeForAttribute(scope, attribute);
         logger.fine(() -> String.format("Parsed sort command: scope=%s attribute=%s order=%s",
-                getScopeDescription(scope), attributeKeyword, isDescending ? SortCommand.ORDER_DESCENDING
+                getScopeDescription(scope, attribute), attributeKeyword, isDescending ? SortCommand.ORDER_DESCENDING
                         : SortCommand.ORDER_ASCENDING));
-        return new SortCommand(parseScope(scope), parseAttribute(attributeKeyword),
-                getScopeDescription(scope), isDescending);
+        return new SortCommand(parseScope(scope), attribute, getScopeDescription(scope, attribute), isDescending);
     }
 
     private Predicate<Person> parseScope(String scope) throws ParseException {
@@ -86,9 +88,9 @@ public class SortCommandParser implements Parser<SortCommand> {
         }
     }
 
-    private String getScopeDescription(String scope) {
+    private String getScopeDescription(String scope, PersonSortAttribute attribute) {
         if (scope.isEmpty()) {
-            return SCOPE_ALL_PERSONS;
+            return attribute.isPlayerStatAttribute() ? SCOPE_PLAYERS : SCOPE_ALL_PERSONS;
         }
         try {
             Role role = parseRoleScope(scope);
@@ -104,6 +106,17 @@ public class SortCommandParser implements Parser<SortCommand> {
         }
 
         return ParserUtil.parseRole(scope.substring(PREFIX_ROLE.getPrefix().length()));
+    }
+
+    private void validateScopeForAttribute(String scope, PersonSortAttribute attribute) throws ParseException {
+        if (!attribute.isPlayerStatAttribute() || scope.isEmpty()) {
+            return;
+        }
+
+        Role role = parseRoleScope(scope);
+        if (role == Role.STAFF) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+        }
     }
 
     private boolean parseSortOrder(String[] sortTokens) throws ParseException {
