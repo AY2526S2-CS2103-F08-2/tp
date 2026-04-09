@@ -273,6 +273,11 @@ At model level:
   `has*`, `add*`, `set*`, `delete*`, and `get*List`.
 * `Person` stores `Team`, `Status`, and `Position` as immutable fields.
 
+This part of the model intentionally favors explicit domain-specific classes over early generic abstractions.
+Although the three unique catalog lists are structurally similar, keeping them separate keeps the design easier
+to read, allows each catalog type to evolve independently, and avoids adding generic indirection before there is
+a clear need for shared behavior.
+
 Default catalogs are seeded in `SampleDataUtil`:
 * Team: `Unassigned Team`, `First Team`, `Second Team`
 * Position: `Unassigned Position`, `Goalkeeper`, `Defender`, `Midfielder`, `Forward`
@@ -806,8 +811,6 @@ Use case ends.
     * 2a2. SoCcer Manager finds all the players with the attribute.
       Use case resumes at step 3.
 
-*{More to be added}*
-
 ### Non-Functional Requirements
 
 1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
@@ -825,8 +828,6 @@ Use case ends.
 9. The application should not crash during normal usage and should handle invalid inputs gracefully.
 10. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be
     added without major refactoring.
-
-*{More to be added}*
 
 ### Glossary
 
@@ -863,8 +864,6 @@ testers are expected to do more *exploratory* testing.
     2. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-3. _{ more test cases …​ }_
-
 ### Deleting a person
 
 1. Deleting a person while all persons are being shown
@@ -880,8 +879,6 @@ testers are expected to do more *exploratory* testing.
 
     4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
-
-2. _{ more test cases …​ }_
 
 ### Attributes (catalog + assignment)
 
@@ -1065,7 +1062,7 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: Back up `data/addressbook.json` and edit the file manually while the app is closed.
 
     2. Test case: Break the JSON structure (for example, remove a comma or closing brace) and then launch the app.<br>
-       Expected: The corrupted file cannot be loaded and the app starts with an empty address book for that run.
+       Expected: The corrupted file cannot be loaded and the app starts with no persons or events for that run, while restoring the default Team/Status/Position catalogs.
 
 --------------------------------------------------------------------------------------------------------------------
 
