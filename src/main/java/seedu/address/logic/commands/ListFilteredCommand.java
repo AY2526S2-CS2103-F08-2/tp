@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.PersonMatchesListFiltersPredicate;
 
@@ -13,6 +14,9 @@ public class ListFilteredCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Listed %s";
     public static final String MESSAGE_NO_MATCHES = "No %s found.";
+    public static final String MESSAGE_TEAM_NOT_FOUND = "Team %s does not exist in the address book!";
+    public static final String MESSAGE_STATUS_NOT_FOUND = "Status %s does not exist in the address book!";
+    public static final String MESSAGE_POSITION_NOT_FOUND = "Position %s does not exist in the address book!";
 
     private final PersonMatchesListFiltersPredicate predicate;
     private final String description;
@@ -28,13 +32,26 @@ public class ListFilteredCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) {
+    public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        validateAttributesExist(model);
         model.updateFilteredPersonList(predicate);
         if (model.getFilteredPersonList().isEmpty()) {
             return new CommandResult(String.format(MESSAGE_NO_MATCHES, description));
         }
         return new CommandResult(String.format(MESSAGE_SUCCESS, description));
+    }
+
+    private void validateAttributesExist(Model model) throws CommandException {
+        if (predicate.getTeam().isPresent() && !model.hasTeam(predicate.getTeam().get())) {
+            throw new CommandException(String.format(MESSAGE_TEAM_NOT_FOUND, predicate.getTeam().get()));
+        }
+        if (predicate.getStatus().isPresent() && !model.hasStatus(predicate.getStatus().get())) {
+            throw new CommandException(String.format(MESSAGE_STATUS_NOT_FOUND, predicate.getStatus().get()));
+        }
+        if (predicate.getPosition().isPresent() && !model.hasPosition(predicate.getPosition().get())) {
+            throw new CommandException(String.format(MESSAGE_POSITION_NOT_FOUND, predicate.getPosition().get()));
+        }
     }
 
     @Override
