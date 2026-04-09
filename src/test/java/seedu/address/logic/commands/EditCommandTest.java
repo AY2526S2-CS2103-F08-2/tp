@@ -27,6 +27,9 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Player;
+import seedu.address.model.person.PlayerStats;
+import seedu.address.model.person.Position;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Team;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
@@ -73,15 +76,13 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_noFieldSpecifiedUnfilteredList_success() {
+    public void execute_noFieldSpecifiedUnfilteredList_failure() {
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, new EditPersonDescriptor());
         Person editedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
-        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+        String expectedMessage = EditCommand.MESSAGE_NO_FIELD_WAS_CHANGED;
 
-        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-
-        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+        assertCommandFailure(editCommand, model, expectedMessage);
     }
 
     @Test
@@ -209,6 +210,73 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_PLAYER_BEN).build());
 
         assertCommandFailure(editCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_editPlayer_preservesPlayerStats() {
+        Player playerToEdit = (Player) model.getFilteredPersonList().stream()
+                .filter(person -> person.getRole() == Role.PLAYER)
+                .findFirst()
+                .orElseThrow();
+
+        Index playerIndex = Index.fromZeroBased(model.getFilteredPersonList().indexOf(playerToEdit));
+
+        PlayerStats originalStats = playerToEdit.getStats();
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withName(VALID_NAME_JOHN)
+                .build();
+
+        EditCommand editCommand = new EditCommand(playerIndex, descriptor);
+
+        Player editedPlayerBase = (Player) new PersonBuilder(playerToEdit)
+                .withName(VALID_NAME_JOHN)
+                .build();
+
+        Player expectedPlayer = new Player(editedPlayerBase, originalStats);
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(playerToEdit, expectedPlayer);
+
+        assertCommandSuccess(editCommand, model,
+                String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(expectedPlayer)),
+                expectedModel);
+
+        // stats unchanged
+        Player actualEditedPlayer = (Player) model.getFilteredPersonList().get(playerIndex.getZeroBased());
+        assertEquals(originalStats, actualEditedPlayer.getStats());
+    }
+
+    @Test
+    public void execute_changePlayerToStaff_dropsPlayerStats() {
+        Player playerToEdit = (Player) model.getFilteredPersonList().stream()
+                .filter(person -> person.getRole() == Role.PLAYER)
+                .findFirst()
+                .orElseThrow();
+
+        Index playerIndex = Index.fromZeroBased(model.getFilteredPersonList().indexOf(playerToEdit));
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withRole(VALID_ROLE_STAFF)
+                .build();
+
+        EditCommand editCommand = new EditCommand(playerIndex, descriptor);
+
+        Person expectedPerson = new PersonBuilder(playerToEdit)
+                .withRole(Role.valueOf(VALID_ROLE_STAFF))
+                .withPosition(Position.DEFAULT_UNASSIGNED_POSITION) // important!
+                .build();
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(playerToEdit, expectedPerson);
+
+        assertCommandSuccess(editCommand, model,
+                String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(expectedPerson)),
+                expectedModel);
+
+        // ensure it's no longer a Player
+        Person actualEditedPerson = model.getFilteredPersonList().get(playerIndex.getZeroBased());
+        assertFalse(actualEditedPerson instanceof Player);
     }
 
     @Test
