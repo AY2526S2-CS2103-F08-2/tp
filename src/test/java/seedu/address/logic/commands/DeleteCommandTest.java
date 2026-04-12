@@ -184,6 +184,18 @@ public class DeleteCommandTest {
     }
 
     @Test
+    public void execute_ambiguousNumericInput_withoutExactNameFallsBackToIndex() {
+        DeleteCommand deleteCommand = DeleteCommand.forAmbiguousNumericInput("2", INDEX_SECOND_PERSON);
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
+                roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
+
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_criteriaNoMatch_keepsExistingFilteredView() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
