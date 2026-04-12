@@ -474,54 +474,50 @@ otherwise)
 
 1. Manager requests to add a person.
 2. Manager provides person details, including optional attribute values.
-3. SoCcer Manager validates person details and optional attribute constraints.
-4. SoCcer Manager adds the person and shows a confirmation message.  
+3. SoCcer Manager adds the person.
+4. SoCcer Manager informs the manager that the person was added.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Invalid person details (e.g., invalid name/phone/email/address).
-    * 2a1. SoCcer Manager shows error message.  
+    * 2a1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
 * 2b. At least one optional provided attribute does not exist in the corresponding catalog.
-    * 2b1. SoCcer Manager shows error message.  
+    * 2b1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
 * 2c. Manager assigns a non-default position to a staff member.
-    * 2c1. SoCcer Manager shows error message.  
+    * 2c1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
-* 3a. Duplicate person detected.
-    * 3a1. SoCcer Manager shows error message.  
+* 2d. Manager provides details that match an existing person.
+    * 2d1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
-
-*a. At any time, manager cancels.  
-Use case ends.
 
 **Use case: UC01 - Rename an attribute catalog value**  
 **MSS**
 
 1. Manager requests to rename an attribute catalog value.
 2. Manager provides the existing value and the replacement value.
-3. SoCcer Manager validates rename constraints.
-4. SoCcer Manager renames the catalog value.
-5. SoCcer Manager updates all persons currently assigned the original value.
-6. SoCcer Manager shows a success message.  
+3. SoCcer Manager renames the catalog value.
+4. SoCcer Manager updates all persons currently assigned the original value.
+5. SoCcer Manager informs the manager that the catalog value was renamed.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Existing value does not exist in the catalog.
-    * 2a1. SoCcer Manager shows error message.  
+    * 2a1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
 * 2b. Replacement value duplicates an existing catalog value.
-    * 2b1. SoCcer Manager shows error message.  
+    * 2b1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
 * 2c. Manager attempts to rename a protected default value.
-    * 2c1. SoCcer Manager shows error message.  
+    * 2c1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
 **Use case: UC02 - Delete an attribute catalog value**  
@@ -529,23 +525,22 @@ Use case ends.
 
 1. Manager requests to delete an attribute catalog value.
 2. Manager specifies the catalog value to delete.
-3. SoCcer Manager validates deletion constraints.
-4. SoCcer Manager deletes the catalog value.
-5. SoCcer Manager shows a success message.  
+3. SoCcer Manager deletes the catalog value.
+4. SoCcer Manager informs the manager that the catalog value was deleted.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Specified value does not exist in the catalog.
-    * 2a1. SoCcer Manager shows error message.  
+    * 2a1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-* 3a. Manager attempts to delete a protected default value.
-    * 3a1. SoCcer Manager shows error message.  
+* 2b. Manager attempts to delete a protected default value.
+    * 2b1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-* 3b. Specified value is currently assigned to one or more persons.
-    * 3b1. SoCcer Manager shows error message.  
+* 2c. Specified value is currently assigned to one or more persons.
+    * 2c1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
 **Use case: UC03 - Edit person attributes**  
@@ -553,29 +548,27 @@ Use case ends.
 
 1. Manager requests to edit a person.
 2. Manager identifies the person to edit and provides one or more updated attribute values.
-3. SoCcer Manager validates the request against relevant constraints.
-4. SoCcer Manager updates the person.
-5. SoCcer Manager shows a success message.  
+3. SoCcer Manager updates the person's attributes.
+4. SoCcer Manager informs the manager that the person was updated.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Manager specifies an invalid person.
-    * 2a1. SoCcer Manager shows error message.  
-      Use case resumes at step 2.
+    * 2a1. SoCcer Manager informs the manager that the person was not updated.  
+      Use case ends.
 
-* 3a. At least one provided value is invalid or violates an attribute or role constraint.
-    * 3a1. SoCcer Manager shows error message.  
-      Use case resumes at step 2.
+* 2b. Manager provides an attribute value that cannot be used for that person.
+    * 2b1. SoCcer Manager informs the manager that the person was not updated.  
+      Use case ends.
 
 **Use case: UC04 - View persons by role**  
 **MSS**
 
 1. Manager requests to list persons by role.
 2. Manager provides the target role to filter by.
-3. SoCcer Manager validates the requested role.
-4. SoCcer Manager filters the visible person list by the requested role.
-5. SoCcer Manager shows the filtered list.  
+3. SoCcer Manager filters the visible person list by the requested role.
+4. SoCcer Manager shows the filtered list.  
    Use case ends.
 
 **Extensions**
@@ -584,8 +577,8 @@ Use case ends.
     * 2a1. SoCcer Manager treats role keyword case-insensitively.  
       Use case resumes at step 3.
 
-* 3a. Manager provides an unsupported role keyword.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2b. Manager provides an unsupported role keyword.
+    * 2b1. SoCcer Manager informs the manager that the list was not changed.  
       Use case ends.
 
 **Use case: UC05 - Filter persons using structured criteria**  
@@ -838,6 +831,9 @@ Use case ends.
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Academy**: The full set of staff/players used to represent all contacts in the contact list
+* **Attribute**: A catalog-backed categorisation assigned to a person, such as Team, Status, or Position
+* **Attribute catalog**: The approved set of values for an attribute. A Team, Status, or Position value must exist in
+  its catalog before it can be assigned to a person
 * **Position**: The roles that each player is specialised/assigned in the team
 * **Performance Stats**: The player statistics based on their previous games (e.g. goals, wins, losses,
   calculated winrate, etc.)
@@ -1105,5 +1101,3 @@ Compared to AB3, this project required significantly more effort due to the broa
 One particularly challenging area was the implementation of the Team/Status/Position attribute subsystem. Features such as protected defaults, delete guards for in-use attributes, rename cascades, catalog validation, and robust JSON recovery required coordinated changes across the model, commands, storage, and documentation. While we were able to reuse much of AB3’s architecture such as its command flow, storage framework, and JavaFX base, our main effort lay in adapting these foundations to support soccer-specific workflows and stricter domain rules.
 We also spent a substantial amount of effort on roster-management workflows, including deletion, listing, sorting, and filtering. Although these features may appear straightforward, they operate at the intersection of parsing, model updates, filtered-list state, and user feedback. For example, implementing safer deletion required explicit confirmation flows and clash-resolution logic, while more advanced list, sort, and filter functionality had to remain consistent across role-based views, attribute-backed filtering, and player statistics. The real challenge was not in building individual commands, but in ensuring that they worked seamlessly together.
 Finally, implementing batch CSV import revealed numerous edge cases that could potentially corrupt the application. As a result, we dedicated significant time to thoroughly validating and testing our custom CSV parser. This experience also highlighted the added complexity of supporting more advanced imports, such as those involving attributes and statistics, which would require even more comprehensive safeguards. Nonetheless, such enhancements remain feasible with sufficient time and careful implementation.
-
-

@@ -53,6 +53,30 @@ public class FindCommandParserTest {
     }
 
     @Test
+    public void parse_validRoleArgsInAnyOrder_returnsFindCommand() {
+        FindCommand expectedStaffCommand =
+                new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(Role.STAFF, Arrays.asList("Bob", "Tan")));
+        FindCommand expectedPlayerCommand =
+                new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(Role.PLAYER,
+                        Arrays.asList("Alice", "Bob")));
+
+        assertParseSuccess(parser, "Bob Tan r/staff", expectedStaffCommand);
+        assertParseSuccess(parser, "Alice r/player Bob", expectedPlayerCommand);
+    }
+
+    @Test
+    public void parse_duplicateRole_throwsParseException() {
+        assertParseFailure(parser, "Alice r/player r/staff",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_invalidRole_throwsParseException() {
+        assertParseFailure(parser, "Alice r/coach",
+                Role.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
     public void parse_roleLikeKeywords_treatedAsGeneralKeywords() {
         FindCommand expectedFindCommand =
                 new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList("staff", "Ben")));

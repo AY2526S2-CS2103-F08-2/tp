@@ -22,6 +22,9 @@ Class Email
 Class Name
 Class Phone
 Class Tag
+Class Team
+Class Status
+Class Position
 
 Class I #FFFFFF
 }
@@ -49,6 +52,9 @@ Person *--> Email
 Person *--> Address
 Person *--> "*" Tag
 Person *--> "1" Role
+Person *--> "1" Team
+Person *--> "1" Status
+Person *--> "1" Position
 
 '------- Inheritance -------
 Staff -up-|> Person

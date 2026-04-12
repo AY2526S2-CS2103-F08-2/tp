@@ -11,8 +11,8 @@ public class Team {
 
     public static final String DEFAULT_UNASSIGNED_TEAM = "Unassigned Team";
     public static final String MESSAGE_CONSTRAINTS =
-            "Team names should only contain alphanumeric characters, spaces, and hyphens,"
-                    + " and it should not be blank.";
+            "Team names must start and end with an alphanumeric character,"
+                    + " and may contain only alphanumeric characters, spaces, and hyphens in between.";
     public static final String VALIDATION_REGEX = "[\\p{Alnum}](?:[\\p{Alnum} -]*[\\p{Alnum}])?";
 
     public final String value;
@@ -74,4 +74,3 @@ public class Team {
         return value;
     }
 }
-

@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
+SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI), where users type commands, while still having the benefits of a Graphical User Interface (GUI), the visual app window. If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -24,8 +24,8 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
    ![Ui](images/Ui.png)
 
    If double-clicking the jar does not launch the app on your system, use the terminal command above instead.
-   Also avoid storing the jar in a write-protected folder, because SoCcer Manager needs to create and update its
-   data files beside the jar.
+   Also avoid storing the jar in a write-protected folder, which is a folder where your computer does not allow
+   the app to create or update files.
 
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
@@ -302,7 +302,8 @@ Catalog behavior:
 * Renaming a catalog value automatically updates all persons currently assigned that value.
 * When creating catalog entries (`teamadd`/`statusadd`/`positionadd`), entered display casing is preserved.
   Matching and uniqueness checks remain case-insensitive.
-* Team, status, and position names must be non-blank and may contain only letters/numbers, spaces, and hyphens.
+* Team, status, and position names must start and end with a letter or number.
+  They may contain only letters, numbers, spaces, and hyphens in between.
 
 Role applicability:
 * `Team` and `Status` apply to both players and staff.
@@ -311,118 +312,65 @@ Role applicability:
 Display behavior:
 * Person cards show `Team`, `Status`, and `Position` only when the value is non-default.
 
+![Attribute display on person cards](images/attributeDisplay.png)
+
 For attribute catalog commands, value matching is case-insensitive. This means both `*edit` and `*delete`
 commands work regardless of letter case (for example, `teamdelete reserve team` matches `Reserve Team`).
 
 Case-only renames are supported for attribute edit commands. For example, if `R` exists in a catalog,
 `teamedit old/R new/r` (and similarly for `statusedit` / `positionedit`) updates the displayed casing.
 
-#### Listing teams: `teamlist`
+#### Listing attribute catalog values: `teamlist`, `statuslist`, `positionlist`
 
-Shows all teams in the team catalog.
+Shows all values in the selected attribute catalog.
 
-Format: `teamlist`
-
-Examples:
+Formats:
 * `teamlist`
+* `statuslist`
+* `positionlist`
 
-#### Adding a team: `teamadd`
+![Attribute catalog list output](images/attributeCatalogList.png)
 
-Adds a team to the team catalog.
+#### Adding attribute catalog values: `teamadd`, `statusadd`, `positionadd`
 
-Format: `teamadd TEAM_NAME`
+Adds a value to the selected attribute catalog.
+
+Formats:
+* `teamadd TEAM_NAME`
+* `statusadd STATUS_NAME`
+* `positionadd POSITION_NAME`
 
 Examples:
 * `teamadd Reserve Team`
+* `statusadd Rehab`
+* `positionadd Winger`
 
-#### Editing a team: `teamedit`
+#### Editing attribute catalog values: `teamedit`, `statusedit`, `positionedit`
 
-Renames an existing team in the team catalog.
+Renames an existing value in the selected attribute catalog.
 
-Format: `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME`
+Formats:
+* `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME`
+* `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME`
+* `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME`
 
 Examples:
 * `teamedit old/First Team new/Reserve Team`
+* `statusedit old/Active new/Rehab`
+* `positionedit old/Defender new/Center Back`
 
-#### Deleting a team: `teamdelete`
+#### Deleting attribute catalog values: `teamdelete`, `statusdelete`, `positiondelete`
 
-Deletes an existing team from the team catalog.
+Deletes an existing value from the selected attribute catalog.
 
-Format: `teamdelete TEAM_NAME`
+Formats:
+* `teamdelete TEAM_NAME`
+* `statusdelete STATUS_NAME`
+* `positiondelete POSITION_NAME`
 
 Examples:
 * `teamdelete Reserve Team`
-
-#### Listing statuses: `statuslist`
-
-Shows all statuses in the status catalog.
-
-Format: `statuslist`
-
-Examples:
-* `statuslist`
-
-#### Adding a status: `statusadd`
-
-Adds a status to the status catalog.
-
-Format: `statusadd STATUS_NAME`
-
-Examples:
-* `statusadd Rehab`
-
-#### Editing a status: `statusedit`
-
-Renames an existing status in the status catalog.
-
-Format: `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME`
-
-Examples:
-* `statusedit old/Active new/Rehab`
-
-#### Deleting a status: `statusdelete`
-
-Deletes an existing status from the status catalog.
-
-Format: `statusdelete STATUS_NAME`
-
-Examples:
 * `statusdelete Rehab`
-
-#### Listing positions: `positionlist`
-
-Shows all positions in the position catalog.
-
-Format: `positionlist`
-
-Examples:
-* `positionlist`
-
-#### Adding a position: `positionadd`
-
-Adds a position to the position catalog.
-
-Format: `positionadd POSITION_NAME`
-
-Examples:
-* `positionadd Winger`
-
-#### Editing a position: `positionedit`
-
-Renames an existing position in the position catalog.
-
-Format: `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME`
-
-Examples:
-* `positionedit old/Defender new/Center Back`
-
-#### Deleting a position: `positiondelete`
-
-Deletes an existing position from the position catalog.
-
-Format: `positiondelete POSITION_NAME`
-
-Examples:
 * `positiondelete Winger`
 
 ### Editing a person : `edit`
@@ -473,6 +421,7 @@ Format: `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
 * Prefixing with `r/player` or `r/staff` limits the results to that role.
+  The role prefix can appear before or after the keywords.
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
@@ -480,6 +429,7 @@ Format: `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find r/player John` returns players whose names match `John`
+* `find alex r/staff` returns staff whose names match `alex`
 * `find r/staff alex david` returns staff whose names match `alex` OR `david`
 * `find staff ben` treats `staff` as a normal name keyword (general search)
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
