@@ -39,7 +39,6 @@ deactivate SortCommand
 
 SortCommandParser --> AddressBookParser : s
 deactivate SortCommandParser
-'Hidden arrow to position the destroy marker below the end of the activation bar.
 SortCommandParser -[hidden]-> AddressBookParser
 destroy SortCommandParser
 

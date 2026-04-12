@@ -3,18 +3,7 @@ layout: page
 title: User Guide
 ---
 
-SoCcer Manager is a desktop app for managing soccer academy players and staff. It is optimized for users who prefer
-typing commands instead of clicking through forms, while still providing a clear on-screen interface for reviewing the
-current roster and event data.
-
-This guide is written for academy managers, coaches, and coordinators who:
-* manage many players and staff across teams, statuses, and events
-* are comfortable typing commands into an input box
-* want to update records quickly without relying on repeated mouse clicks
-
-Throughout this guide:
-* `CLI` means Command Line Interface, where you interact by typing commands.
-* `GUI` means Graphical User Interface, which is the application window showing lists, details, and feedback.
+SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -35,8 +24,8 @@ Throughout this guide:
    ![Ui](images/Ui.png)
 
    If double-clicking the jar does not launch the app on your system, use the terminal command above instead.
-   Also avoid storing the jar in a write-protected folder (a folder where apps are not allowed to save changes),
-   because SoCcer Manager needs to create and update its data files beside the jar.
+   Also avoid storing the jar in a write-protected folder, because SoCcer Manager needs to create and update its
+   data files beside the jar.
 
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
@@ -129,7 +118,7 @@ Notes:
 
 Examples:
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Marcus Tan r/staff t/coach e/marcustan@example.com a/12 Stadium Road p/91234567`
+* `add n/Betsy Crowe r/staff t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street tm/First Team st/Active pos/Forward`
 
 ### Adding a match: `matchadd`

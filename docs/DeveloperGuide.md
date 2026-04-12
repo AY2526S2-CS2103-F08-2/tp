@@ -443,36 +443,31 @@ freeing the manager from manual memory tracking to focus on strategies and decis
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​              | I want to …​                                            | So that…​                                                                  |
-|----------|----------------------|---------------------------------------------------------|----------------------------------------------------------------------------|
-| `* *`    | first-time manager   | launch the app with sample data                         | I can understand the type of information the product stores                |
-| `* *`    | first-time manager   | read the user guide                                     | I can learn the supported commands quickly                                 |
-| `* * *`  | academy manager      | add new players to the app                              | I can keep the squad list up to date                                       |
-| `* * *`  | academy manager      | delete players and staff from the app                   | I can remove outdated or mistaken records                                  |
-| `* * *`  | academy manager      | view only players or only staff                         | I can focus on the group I am currently managing                           |
-| `* * *`  | academy manager      | add matches and trainings to the app                    | I can keep an updated record of scheduled events                           |
-| `* * *`  | academy manager      | edit and delete matches and trainings                   | I can correct event records when plans change                              |
-| `* *`    | coach                | quickly retrieve and view player stats                  | I can make better lineup and training decisions                            |
-| `*`      | operations manager   | remove many persons with a shared tag in one step       | I can clean up records efficiently after roster changes                    |
-| `* *`    | academy manager      | assign team, status, and position attributes            | I can keep roster details organized                                        |
-| `* *`    | academy manager      | filter players by tags or attributes                    | I can review the exact subset of players I need                            |
-| `*`      | coach                | track attendance for trainings                          | I can see who missed sessions                                              |
-| `* *`    | academy manager      | search within the staff or player list                  | I can find a specific person quickly                                       |
-| `* *`    | academy manager      | edit staff or player information                        | I can keep roster records accurate over time                               |
-| `* *`    | coach                | filter players based on specific stats or traits        | I can compare players for selection and review                             |
-| `* *`    | operations manager   | import a batch of players from a CSV file               | I can onboard large groups without entering each record manually           |
-| `* *`    | coach                | record simple player stats such as goals, wins, losses  | I can review basic player performance quickly                              |
-| `* *`    | coach                | record advanced player stats such as win rate           | I can evaluate players using richer performance indicators                 |
+| Priority | As a …​          | I want to …​                                                 | So that…​                                                                               |
+|----------|------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `* *`    | new user         | launch the app with sample data                              | I can see how the details and stats of players are displayed                            |
+| `* *`    | new user         | read the user guide                                          | I know how to use the commands to interact with the app                                 |
+| `* * *`  | new user         | add new players to the app                                   | I have an updated list of players                                                       |
+| `* * *`  | new user         | delete players/staff from the app                            | I can remove erroneous entries                                                          |
+| `* * *`  | new user         | view the staff list or player only list                      | I can focus on user-role related information without other roles' entries in the way    |
+| `* * *`  | new user         | add matches and trainings to the app                         | I have an updated list of different events                                              |
+| `* * *`  | new user         | edit and delete matches and trainings                        | I can remove and edit erroneous entries                                                 |
+| `* *`    | forgetful user   | quickly retrieve and view player stats                       | I can make better judgements on player performance                                      |
+| `*`      | expert user      | mass removal of players based on tags                        | I can ensure the system is not cluttered with redundant data                            |
+| `* *`    | experienced user | add attributes to each player                                | I can set who is on the first team, second team etc                                     |
+| `* *`    | experienced user | filter players based on tags or attributes                   | I can see all players based on the tag/attribute (first team, second team, injured etc) |
+| `*`      | experienced user | use the app to track attendance for trainings                | I know who is skipping training                                                         |
+| `* *`    | experienced user | search within the staff or player list                       | I can find a specific staff or user quickly                                             |
+| `* *`    | experienced user | edit staff or player information                             | I can ensure that the staff or player's list stays accurate over time                   |
+| `* *`    | experienced user | filter the players based on specific stats or traits         | I can reward players based on their performance                                         |
+| `* *`    | experienced user | add new batch of players' data using a CSV file              | I can easily update the database with the new players' data                             |
+| `* *`    | experienced user | add simple player stats (goals scored, wins, losses)         | I can see my best performing players                                                    |
+| `* *`    | experienced user | add advanced player stats (winrate, average goals per match) | I can further analyse my players based on their performance                             |
 
 ### Use cases
 
 (For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified
 otherwise)
-
-**Reusable extension used below**
-
-*a. At any time before the operation completes, manager cancels.  
-Use case ends.
 
 **Use case: UC00 - Add new person**  
 **MSS**
@@ -500,6 +495,9 @@ Use case ends.
 * 3a. Duplicate person detected.
     * 3a1. SoCcer Manager shows error message.  
       Use case resumes at step 2.
+
+*a. At any time, manager cancels.  
+Use case ends.
 
 **Use case: UC01 - Rename an attribute catalog value**  
 **MSS**
@@ -576,8 +574,8 @@ Use case ends.
 1. Manager requests to list persons by role.
 2. Manager provides the target role to filter by.
 3. SoCcer Manager validates the requested role.
-4. SoCcer Manager lists only persons with the requested role.
-5. SoCcer Manager shows the matching persons.  
+4. SoCcer Manager filters the visible person list by the requested role.
+5. SoCcer Manager shows the filtered list.  
    Use case ends.
 
 **Extensions**
@@ -596,8 +594,8 @@ Use case ends.
 1. Manager requests to filter persons.
 2. Manager provides one or more structured criteria.
 3. SoCcer Manager validates the provided criteria.
-4. SoCcer Manager finds persons matching all specified criteria.
-5. SoCcer Manager shows the matching persons.  
+4. SoCcer Manager filters the visible person list using all specified criteria.
+5. SoCcer Manager shows the filtered list.  
    Use case ends.
 
 **Extensions**
@@ -615,7 +613,7 @@ Use case ends.
       Use case ends.
 
 * 4a. No persons match the provided criteria.
-    * 4a1. SoCcer Manager shows that no persons match the provided criteria.  
+    * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
 **Use case: UC06 - Sort persons by attribute or stat**  
@@ -690,18 +688,18 @@ Use case ends.
 1. Manager requests to list persons using filters.
 2. Manager provides zero or more of the following filters: role, team, status, and position.
 3. SoCcer Manager validates the provided filters.
-4. SoCcer Manager finds persons matching all specified filters.
-5. SoCcer Manager shows the matching persons.  
+4. SoCcer Manager filters the visible person list using all specified filters.
+5. SoCcer Manager shows the filtered list.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Manager omits all filters.
-    * 2a1. SoCcer Manager lists all persons.  
+    * 2a1. SoCcer Manager shows all persons.  
       Use case ends.
 
 * 2b. Manager provides only a role filter.
-    * 2b1. SoCcer Manager lists persons with the requested role.  
+    * 2b1. SoCcer Manager filters the visible person list by the requested role.  
       Use case resumes at step 5.
 
 * 3a. Manager provides an invalid role or malformed filter input.
@@ -709,7 +707,7 @@ Use case ends.
       Use case ends.
 
 * 4a. No persons match the provided filters.
-    * 4a1. SoCcer Manager shows that no persons match the provided filters.  
+    * 4a1. SoCcer Manager shows an empty filtered list.  
       Use case ends.
 
 **Use case: UC09 - Set or update a player’s recorded performance stat**  
@@ -721,7 +719,7 @@ Use case ends.
 4. SoCcer Manager checks that the specified person is a player.
 5. SoCcer Manager validates that the resulting stat value satisfies the stat constraints.
 6. SoCcer Manager updates the player’s stat.
-7. SoCcer Manager updates any derived stats affected by the change.
+7. SoCcer Manager refreshes the player details shown in the UI, including any calculated stats derived from the updated values.
 8. SoCcer Manager shows a success message.  
    Use case ends.
 
