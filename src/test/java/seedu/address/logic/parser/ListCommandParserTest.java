@@ -1,7 +1,9 @@
 package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static seedu.address.testutil.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_POSITION;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 
 import java.util.Optional;
 
@@ -85,6 +87,19 @@ public class ListCommandParserTest {
 
     @Test
     public void parse_duplicatePrefix_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("tm/First Team tm/Second Team"));
+        ParseException duplicateTeamException =
+                assertThrows(ParseException.class, () -> parser.parse("tm/First Team tm/Second Team"));
+        assertEquals("Multiple values specified for the following single-valued field(s): tm/",
+                duplicateTeamException.getMessage());
+
+        ParseException duplicatePositionException =
+                assertThrows(ParseException.class, () -> parser.parse("pos/Defender pos/Forward"));
+        assertEquals("Multiple values specified for the following single-valued field(s): " + PREFIX_POSITION,
+                duplicatePositionException.getMessage());
+
+        ParseException duplicateRoleException =
+                assertThrows(ParseException.class, () -> parser.parse("r/player r/staff"));
+        assertEquals("Multiple values specified for the following single-valued field(s): " + PREFIX_ROLE,
+                duplicateRoleException.getMessage());
     }
 }
