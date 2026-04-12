@@ -153,8 +153,7 @@ public class DeleteCommand extends Command {
 
     private CommandResult executeCriteriaDelete(Model model) throws CommandException {
         NameContainsAllKeywordsPredicate predicate = buildNamePredicate(criteria);
-        model.updateFilteredPersonList(predicate);
-        List<Person> matches = model.getFilteredPersonList();
+        List<Person> matches = model.getPersonsMatching(predicate);
         if (matches.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_NO_MATCHING_PERSON, criteria));
         }

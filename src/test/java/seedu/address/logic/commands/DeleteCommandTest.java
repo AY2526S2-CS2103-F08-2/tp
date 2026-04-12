@@ -93,7 +93,6 @@ public class DeleteCommandTest {
                 roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(new NameContainsAllKeywordsPredicate(Arrays.asList("Ida")));
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
 
@@ -101,10 +100,10 @@ public class DeleteCommandTest {
     public void execute_criteriaClashListsCandidates_success() {
         DeleteCommand deleteCommand = new DeleteCommand(KEYWORD_MATCHING_MEIER, null, DeletionDecision.UNDECIDED);
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(
-                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
-        String expectedList = "1. " + Messages.format(expectedModel.getFilteredPersonList().get(0)) + "\n"
-                + "2. " + Messages.format(expectedModel.getFilteredPersonList().get(1));
+        String expectedList = "1. " + Messages.format(expectedModel.getPersonsMatching(
+                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER))).get(0)) + "\n"
+                + "2. " + Messages.format(expectedModel.getPersonsMatching(
+                        new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER))).get(1));
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CLASH,
                 KEYWORD_MATCHING_MEIER, expectedList);
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -115,9 +114,9 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand(KEYWORD_MATCHING_MEIER, INDEX_SECOND_PERSON,
                 DeletionDecision.CONFIRM);
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(
-                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)));
-        Person personToDelete = expectedModel.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        Person personToDelete = expectedModel.getPersonsMatching(
+                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)))
+                .get(INDEX_SECOND_PERSON.getZeroBased());
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 roleLabel(personToDelete), Messages.format(personToDelete));
         expectedModel.deletePerson(personToDelete);
@@ -142,7 +141,6 @@ public class DeleteCommandTest {
                 .findFirst()
                 .orElseThrow();
 
-        expectedModel.updateFilteredPersonList(new NameContainsAllKeywordsPredicate(Arrays.asList("Alex", "Neo")));
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
                 roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
 
@@ -159,12 +157,37 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = DeleteCommand.forAmbiguousNumericInput("2", INDEX_SECOND_PERSON);
         ModelManager numericModel = new ModelManager(addressBook, new UserPrefs());
         ModelManager expectedModel = new ModelManager(addressBook, new UserPrefs());
-        expectedModel.updateFilteredPersonList(new NameContainsAllKeywordsPredicate(Arrays.asList("2")));
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
                 roleLabel(numericNamePerson), Messages.format(numericNamePerson), "Y", "N", "Y", "N");
 
         assertCommandSuccess(deleteCommand, numericModel, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_criteriaNoMatch_keepsExistingFilteredView() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        DeleteCommand deleteCommand = new DeleteCommand("Nobody", null, DeletionDecision.UNDECIDED);
+        assertCommandFailure(deleteCommand, model, String.format(DeleteCommand.MESSAGE_NO_MATCHING_PERSON, "Nobody"));
+        assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void execute_criteriaSingleMatch_keepsExistingFilteredView() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        DeleteCommand deleteCommand = new DeleteCommand("Ida", null, DeletionDecision.UNDECIDED);
+        Person personToDelete = model.getAddressBook().getPersonList().stream()
+                .filter(person -> person.getName().fullName.equals("Ida Mueller"))
+                .findFirst()
+                .orElseThrow();
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
+                roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
 
     @Test
