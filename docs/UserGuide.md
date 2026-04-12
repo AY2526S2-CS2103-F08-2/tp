@@ -421,6 +421,7 @@ Format: `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
 * Prefixing with `r/player` or `r/staff` limits the results to that role.
+  The role prefix can appear before or after the keywords.
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
@@ -428,6 +429,7 @@ Format: `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find r/player John` returns players whose names match `John`
+* `find alex r/staff` returns staff whose names match `alex`
 * `find r/staff alex david` returns staff whose names match `alex` OR `david`
 * `find staff ben` treats `staff` as a normal name keyword (general search)
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
