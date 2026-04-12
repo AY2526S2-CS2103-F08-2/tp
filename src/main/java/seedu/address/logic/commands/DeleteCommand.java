@@ -86,10 +86,7 @@ public class DeleteCommand extends Command {
      * @param deletionDecision user confirmation state.
      */
     public DeleteCommand(Index targetIndex, DeletionDecision deletionDecision) {
-        this.targetIndex = targetIndex;
-        this.criteria = null;
-        this.criteriaMatchIndex = null;
-        this.deletionDecision = deletionDecision;
+        this(targetIndex, null, null, deletionDecision);
     }
 
     /**
@@ -100,16 +97,48 @@ public class DeleteCommand extends Command {
      * @param deletionDecision user confirmation state.
      */
     public DeleteCommand(String criteria, Index criteriaMatchIndex, DeletionDecision deletionDecision) {
-        this.targetIndex = null;
-        this.criteria = criteria.trim();
+        this(null, criteria, criteriaMatchIndex, deletionDecision);
+    }
+
+    private DeleteCommand(Index targetIndex, String criteria, Index criteriaMatchIndex,
+                          DeletionDecision deletionDecision) {
+        this.targetIndex = targetIndex;
+        this.criteria = criteria == null ? null : criteria.trim();
         this.criteriaMatchIndex = criteriaMatchIndex;
         this.deletionDecision = deletionDecision;
+    }
+
+    /**
+     * Creates a {@code DeleteCommand} for input that could refer to either an index or a literal numeric name.
+     */
+    public static DeleteCommand forAmbiguousNumericInput(String criteria, Index targetIndex) {
+        return new DeleteCommand(targetIndex, criteria, null, DeletionDecision.UNDECIDED);
+    }
+
+    /**
+     * Creates a {@code DeleteCommand} for numeric input that could refer to either an index or a literal name,
+     * while carrying an explicit confirmation decision.
+     */
+    public static DeleteCommand forAmbiguousNumericInput(String criteria, Index targetIndex,
+                                                         DeletionDecision deletionDecision) {
+        return new DeleteCommand(targetIndex, criteria, null, deletionDecision);
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        if (targetIndex != null && criteria != null) {
+            return executeAmbiguousDelete(model);
+        }
+
         return targetIndex != null ? executeIndexDelete(model) : executeCriteriaDelete(model);
+    }
+
+    private CommandResult executeAmbiguousDelete(Model model) throws CommandException {
+        boolean hasExactNameMatch = model.getAddressBook().getPersonList().stream()
+                .anyMatch(person -> person.getName().fullName.equalsIgnoreCase(criteria));
+
+        return hasExactNameMatch ? executeCriteriaDelete(model) : executeIndexDelete(model);
     }
 
     private CommandResult executeIndexDelete(Model model) throws CommandException {
@@ -216,6 +245,13 @@ public class DeleteCommand extends Command {
      */
     public boolean isCriteriaDelete() {
         return criteria != null;
+    }
+
+    /**
+     * Returns true if this command was created from numeric input that could be interpreted as either a name or index.
+     */
+    public boolean isAmbiguousNumericDelete() {
+        return targetIndex != null && criteria != null;
     }
 
     @Override

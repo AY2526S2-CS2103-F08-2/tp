@@ -150,6 +150,24 @@ public class DeleteCommandTest {
     }
 
     @Test
+    public void execute_ambiguousNumericInput_prefersExactNameMatch() {
+        AddressBook addressBook = new AddressBook(model.getAddressBook());
+        Person numericNamePerson = new PersonBuilder().withName("2").withPhone("90000001")
+                .withEmail("two@example.com").withAddress("2 Street").build();
+        addressBook.addPerson(numericNamePerson);
+
+        DeleteCommand deleteCommand = DeleteCommand.forAmbiguousNumericInput("2", INDEX_SECOND_PERSON);
+        ModelManager numericModel = new ModelManager(addressBook, new UserPrefs());
+        ModelManager expectedModel = new ModelManager(addressBook, new UserPrefs());
+        expectedModel.updateFilteredPersonList(new NameContainsAllKeywordsPredicate(Arrays.asList("2")));
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
+                roleLabel(numericNamePerson), Messages.format(numericNamePerson), "Y", "N", "Y", "N");
+
+        assertCommandSuccess(deleteCommand, numericModel, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_validIndexFilteredList_success() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 

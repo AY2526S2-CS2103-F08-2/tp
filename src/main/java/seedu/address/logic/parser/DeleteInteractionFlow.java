@@ -35,7 +35,8 @@ class DeleteInteractionFlow {
         }
 
         if (pendingDeleteContext.pendingDeleteCriteria != null && isPositiveInteger(trimmedInput)) {
-            return DeleteCommand.COMMAND_WORD + " " + pendingDeleteContext.pendingDeleteCriteria + " " + trimmedInput;
+            return DeleteCommand.COMMAND_WORD + " " + pendingDeleteContext.pendingDeleteCriteria + " "
+                    + DeleteCommandParser.INTERNAL_MATCH_INDEX_MARKER + " " + trimmedInput;
         }
 
         pendingDeleteContext = null;
@@ -62,22 +63,32 @@ class DeleteInteractionFlow {
             return;
         }
 
+        if (deleteCommand.isAmbiguousNumericDelete()) {
+            pendingDeleteContext = new PendingDeleteContext(
+                    DeleteCommand.COMMAND_WORD + " " + deleteCommand.getCriteria(),
+                    deleteCommand.getCriteria(),
+                    false,
+                    true);
+            return;
+        }
+
         if (deleteCommand.isCriteriaDelete()) {
             if (deleteCommand.getCriteriaMatchIndex() == null) {
                 pendingDeleteContext = new PendingDeleteContext(
                         DeleteCommand.COMMAND_WORD + " " + deleteCommand.getCriteria(),
-                        deleteCommand.getCriteria(), false);
+                        deleteCommand.getCriteria(), false, false);
                 return;
             }
 
             pendingDeleteContext = new PendingDeleteContext(
                     buildBaseDeleteCommand(deleteCommand),
                     deleteCommand.getCriteria(),
+                    false,
                     false);
             return;
         }
 
-        pendingDeleteContext = new PendingDeleteContext(buildBaseDeleteCommand(deleteCommand), null, true);
+        pendingDeleteContext = new PendingDeleteContext(buildBaseDeleteCommand(deleteCommand), null, true, false);
     }
 
     private void updateDeleteBulkContext(DeleteBulkCommand deleteBulkCommand) {
@@ -100,7 +111,10 @@ class DeleteInteractionFlow {
                 .append(deleteCommand.getCriteria());
         Index criteriaMatchIndex = deleteCommand.getCriteriaMatchIndex();
         if (criteriaMatchIndex != null) {
-            commandBuilder.append(" ").append(criteriaMatchIndex.getOneBased());
+            commandBuilder.append(" ")
+                    .append(DeleteCommandParser.INTERNAL_MATCH_INDEX_MARKER)
+                    .append(" ")
+                    .append(criteriaMatchIndex.getOneBased());
         }
         return commandBuilder.toString();
     }
@@ -110,7 +124,12 @@ class DeleteInteractionFlow {
             return pendingDeleteContext.pendingDeleteBaseCommand + " " + DeleteCommand.CONFIRM_KEYWORD;
         }
 
-        return pendingDeleteContext.pendingDeleteBaseCommand + " " + normalizedInput;
+        if (pendingDeleteContext.isAmbiguousNumericDelete) {
+            return pendingDeleteContext.pendingDeleteBaseCommand + " " + normalizedInput;
+        }
+
+        return pendingDeleteContext.pendingDeleteBaseCommand + " " + DeleteCommandParser.INTERNAL_DECISION_MARKER
+                + " " + normalizedInput;
     }
 
     private boolean isYesNo(String input) {
@@ -126,12 +145,14 @@ class DeleteInteractionFlow {
         private final String pendingDeleteBaseCommand;
         private final String pendingDeleteCriteria;
         private final boolean isIndexBasedDelete;
+        private final boolean isAmbiguousNumericDelete;
 
         private PendingDeleteContext(String pendingDeleteBaseCommand, String pendingDeleteCriteria,
-                                     boolean isIndexBasedDelete) {
+                                     boolean isIndexBasedDelete, boolean isAmbiguousNumericDelete) {
             this.pendingDeleteBaseCommand = pendingDeleteBaseCommand;
             this.pendingDeleteCriteria = pendingDeleteCriteria;
             this.isIndexBasedDelete = isIndexBasedDelete;
+            this.isAmbiguousNumericDelete = isAmbiguousNumericDelete;
         }
     }
 }

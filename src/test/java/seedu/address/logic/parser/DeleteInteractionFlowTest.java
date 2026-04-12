@@ -29,10 +29,10 @@ public class DeleteInteractionFlowTest {
         DeleteInteractionFlow flow = new DeleteInteractionFlow();
         flow.updateAfterParse(new DeleteCommand("meier", null, DeletionDecision.UNDECIDED));
 
-        assertEquals("delete meier 2", flow.preprocessInput("2"));
+        assertEquals("delete meier __match_index__ 2", flow.preprocessInput("2"));
 
         flow.updateAfterParse(new DeleteCommand("meier", INDEX_SECOND_PERSON, DeletionDecision.UNDECIDED));
-        assertEquals("delete meier 2 y", flow.preprocessInput("y"));
+        assertEquals("delete meier __match_index__ 2 __decision__ y", flow.preprocessInput("y"));
     }
 
     @Test
@@ -40,7 +40,17 @@ public class DeleteInteractionFlowTest {
         DeleteInteractionFlow flow = new DeleteInteractionFlow();
         flow.updateAfterParse(new DeleteCommand("alex", INDEX_SECOND_PERSON, DeletionDecision.UNDECIDED));
 
-        assertEquals("delete alex 1", flow.preprocessInput("1"));
+        assertEquals("delete alex __match_index__ 1", flow.preprocessInput("1"));
+    }
+
+    @Test
+    public void preprocessInput_ambiguousNumericDelete_supportsDirectYesNoFollowUp() {
+        DeleteInteractionFlow flow = new DeleteInteractionFlow();
+        flow.updateAfterParse(DeleteCommand.forAmbiguousNumericInput("2", INDEX_SECOND_PERSON));
+
+        assertEquals("delete 2 y", flow.preprocessInput("y"));
+        flow.updateAfterParse(DeleteCommand.forAmbiguousNumericInput("2", INDEX_SECOND_PERSON));
+        assertEquals("delete 2 n", flow.preprocessInput("n"));
     }
 
     @Test

@@ -14,6 +14,8 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * Parses input arguments and creates a new DeleteCommand object.
  */
 public class DeleteCommandParser implements Parser<DeleteCommand> {
+    static final String INTERNAL_MATCH_INDEX_MARKER = "__match_index__";
+    static final String INTERNAL_DECISION_MARKER = "__decision__";
 
     /**
      * Parses the given {@code String} of arguments in the context of the DeleteCommand
@@ -29,12 +31,26 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
 
         String[] tokens = trimmedArgs.split("\\s+");
 
+        if (isInternalCriteriaFollowUp(tokens)) {
+            return parseCriteriaFollowUp(trimmedArgs, tokens);
+        }
+
         Index index = tryParseIndex(tokens[0]);
-        if (index != null) {
+        if (index != null && tokens.length == 1) {
+            return DeleteCommand.forAmbiguousNumericInput(trimmedArgs, index);
+        }
+
+        if (index != null && tokens.length == 2 && isYesNoToken(tokens[1])) {
+            DeletionDecision decision = tokens[1].equalsIgnoreCase(DeleteCommand.YES_KEYWORD)
+                    ? DeletionDecision.CONFIRM : DeletionDecision.CANCEL;
+            return DeleteCommand.forAmbiguousNumericInput(tokens[0], index, decision);
+        }
+
+        if (index != null && shouldParseAsIndexDelete(tokens)) {
             return parseIndexBasedDelete(index, tokens);
         }
 
-        return parseCriteriaBasedDelete(tokens);
+        return new DeleteCommand(trimmedArgs, null, DeletionDecision.UNDECIDED);
     }
 
     private Index tryParseIndex(String token) {
@@ -46,10 +62,6 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
     }
 
     private DeleteCommand parseIndexBasedDelete(Index index, String[] tokens) throws ParseException {
-        if (tokens.length == 1) {
-            return new DeleteCommand(index);
-        }
-
         if (tokens.length == 2) {
             String secondToken = tokens[1].toLowerCase(Locale.ROOT);
             if (secondToken.equals(DeleteCommand.CONFIRM_KEYWORD)) {
@@ -64,28 +76,59 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
     }
 
-    private DeleteCommand parseCriteriaBasedDelete(String[] tokens) throws ParseException {
-        int end = tokens.length;
-        DeletionDecision decision = DeletionDecision.UNDECIDED;
+    private DeleteCommand parseCriteriaFollowUp(String trimmedArgs, String[] tokens) throws ParseException {
+        int decisionMarkerIndex = indexOf(tokens, INTERNAL_DECISION_MARKER);
+        int matchIndexMarkerIndex = indexOf(tokens, INTERNAL_MATCH_INDEX_MARKER);
 
-        if (isYesNoToken(tokens[end - 1])) {
-            decision = tokens[end - 1].equalsIgnoreCase(DeleteCommand.YES_KEYWORD)
-                    ? DeletionDecision.CONFIRM : DeletionDecision.CANCEL;
-            end--;
-        }
-
-        Index matchIndex = null;
-        if (end > 1 && isPositiveInteger(tokens[end - 1])) {
-            matchIndex = ParserUtil.parseIndex(tokens[end - 1]);
-            end--;
-        }
-
-        if (end <= 0) {
+        if (decisionMarkerIndex == -1 && matchIndexMarkerIndex == -1) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
 
-        String criteria = String.join(" ", Arrays.copyOfRange(tokens, 0, end));
-        return new DeleteCommand(criteria, matchIndex, decision);
+        int firstMarkerIndex = firstMarkerIndex(decisionMarkerIndex, matchIndexMarkerIndex);
+        if (firstMarkerIndex <= 0) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        }
+
+        String criteria = String.join(" ", Arrays.copyOfRange(tokens, 0, firstMarkerIndex)).trim();
+        if (criteria.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        }
+
+        Index matchIndex = null;
+        if (matchIndexMarkerIndex != -1) {
+            if (matchIndexMarkerIndex == tokens.length - 1) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            }
+            if (matchIndexMarkerIndex != tokens.length - 2
+                    && !(decisionMarkerIndex != -1 && matchIndexMarkerIndex == tokens.length - 4
+                    && decisionMarkerIndex == tokens.length - 2)) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            }
+            matchIndex = ParserUtil.parseIndex(tokens[matchIndexMarkerIndex + 1]);
+        }
+
+        if (decisionMarkerIndex != -1) {
+            if (decisionMarkerIndex == tokens.length - 1) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            }
+            if (decisionMarkerIndex != tokens.length - 2) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            }
+            String decisionToken = tokens[tokens.length - 1].toLowerCase(Locale.ROOT);
+            if (!isYesNoToken(decisionToken)) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            }
+
+            DeletionDecision decision = decisionToken.equals(DeleteCommand.YES_KEYWORD)
+                    ? DeletionDecision.CONFIRM : DeletionDecision.CANCEL;
+            return new DeleteCommand(criteria, matchIndex, decision);
+        }
+
+        return new DeleteCommand(criteria, matchIndex, DeletionDecision.UNDECIDED);
+    }
+
+    private boolean isInternalCriteriaFollowUp(String[] tokens) {
+        return indexOf(tokens, INTERNAL_DECISION_MARKER) != -1 || indexOf(tokens, INTERNAL_MATCH_INDEX_MARKER) != -1;
     }
 
     private boolean isYesNoToken(String token) {
@@ -93,7 +136,26 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
                 || token.equalsIgnoreCase(DeleteCommand.NO_KEYWORD);
     }
 
-    private boolean isPositiveInteger(String token) {
-        return token.matches("[1-9]\\d*");
+    private boolean shouldParseAsIndexDelete(String[] tokens) {
+        return tokens.length == 2 && tokens[1].equalsIgnoreCase(DeleteCommand.CONFIRM_KEYWORD);
+    }
+
+    private int indexOf(String[] tokens, String marker) {
+        for (int i = 0; i < tokens.length; i++) {
+            if (tokens[i].equals(marker)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int firstMarkerIndex(int firstIndex, int secondIndex) {
+        if (firstIndex == -1) {
+            return secondIndex;
+        }
+        if (secondIndex == -1) {
+            return firstIndex;
+        }
+        return Math.min(firstIndex, secondIndex);
     }
 }
