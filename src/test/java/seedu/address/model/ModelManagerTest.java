@@ -17,6 +17,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Date;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventName;
@@ -26,6 +27,7 @@ import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Team;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.EventBuilder;
 import seedu.address.testutil.PersonBuilder;
 
 public class ModelManagerTest {
@@ -96,6 +98,32 @@ public class ModelManagerTest {
     public void hasPerson_personInAddressBook_returnsTrue() {
         modelManager.addPerson(PLAYER_AMY);
         assertTrue(modelManager.hasPerson(PLAYER_AMY));
+    }
+
+    @Test
+    public void deletePerson_playerInEvent_preservesOtherPlayersAttendance() throws CommandException {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(PLAYER_AMY);
+        addressBook.addPerson(PLAYER_BEN);
+
+        Event baseEvent = new EventBuilder()
+                .withEventName("Team Training")
+                .withEventType("TRAINING")
+                .withDate("2025-01-10 1800")
+                .withPlayers(Set.of(PLAYER_AMY, PLAYER_BEN))
+                .build();
+        Event event = Event.createEventWithAttendees(baseEvent.getEventName(), baseEvent.getEventDate(),
+                baseEvent.getEventType(), baseEvent.getEventPlayerList(), new EventPlayerList(Set.of(PLAYER_BEN)));
+        addressBook.addEvent(event);
+
+        ModelManager model = new ModelManager(addressBook, new UserPrefs());
+        model.deletePerson(PLAYER_AMY);
+
+        Event updatedEvent = model.getEventList().get(0);
+        assertFalse(updatedEvent.getEventPlayerList().contains(PLAYER_AMY));
+        assertTrue(updatedEvent.getEventPlayerList().contains(PLAYER_BEN));
+        assertTrue(updatedEvent.getAttendedPlayerList().contains(PLAYER_BEN));
+        assertEquals(PLAYER_BEN.getName().toString() + " : 100.0%\n", model.getAttendanceReport());
     }
 
     @Test
