@@ -317,112 +317,55 @@ commands work regardless of letter case (for example, `teamdelete reserve team` 
 Case-only renames are supported for attribute edit commands. For example, if `R` exists in a catalog,
 `teamedit old/R new/r` (and similarly for `statusedit` / `positionedit`) updates the displayed casing.
 
-#### Listing teams: `teamlist`
+#### Listing attribute catalog values: `teamlist`, `statuslist`, `positionlist`
 
-Shows all teams in the team catalog.
+Shows all values in the selected attribute catalog.
 
-Format: `teamlist`
-
-Examples:
+Formats:
 * `teamlist`
+* `statuslist`
+* `positionlist`
 
-#### Adding a team: `teamadd`
+#### Adding attribute catalog values: `teamadd`, `statusadd`, `positionadd`
 
-Adds a team to the team catalog.
+Adds a value to the selected attribute catalog.
 
-Format: `teamadd TEAM_NAME`
+Formats:
+* `teamadd TEAM_NAME`
+* `statusadd STATUS_NAME`
+* `positionadd POSITION_NAME`
 
 Examples:
 * `teamadd Reserve Team`
+* `statusadd Rehab`
+* `positionadd Winger`
 
-#### Editing a team: `teamedit`
+#### Editing attribute catalog values: `teamedit`, `statusedit`, `positionedit`
 
-Renames an existing team in the team catalog.
+Renames an existing value in the selected attribute catalog.
 
-Format: `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME`
+Formats:
+* `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME`
+* `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME`
+* `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME`
 
 Examples:
 * `teamedit old/First Team new/Reserve Team`
+* `statusedit old/Active new/Rehab`
+* `positionedit old/Defender new/Center Back`
 
-#### Deleting a team: `teamdelete`
+#### Deleting attribute catalog values: `teamdelete`, `statusdelete`, `positiondelete`
 
-Deletes an existing team from the team catalog.
+Deletes an existing value from the selected attribute catalog.
 
-Format: `teamdelete TEAM_NAME`
+Formats:
+* `teamdelete TEAM_NAME`
+* `statusdelete STATUS_NAME`
+* `positiondelete POSITION_NAME`
 
 Examples:
 * `teamdelete Reserve Team`
-
-#### Listing statuses: `statuslist`
-
-Shows all statuses in the status catalog.
-
-Format: `statuslist`
-
-Examples:
-* `statuslist`
-
-#### Adding a status: `statusadd`
-
-Adds a status to the status catalog.
-
-Format: `statusadd STATUS_NAME`
-
-Examples:
-* `statusadd Rehab`
-
-#### Editing a status: `statusedit`
-
-Renames an existing status in the status catalog.
-
-Format: `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME`
-
-Examples:
-* `statusedit old/Active new/Rehab`
-
-#### Deleting a status: `statusdelete`
-
-Deletes an existing status from the status catalog.
-
-Format: `statusdelete STATUS_NAME`
-
-Examples:
 * `statusdelete Rehab`
-
-#### Listing positions: `positionlist`
-
-Shows all positions in the position catalog.
-
-Format: `positionlist`
-
-Examples:
-* `positionlist`
-
-#### Adding a position: `positionadd`
-
-Adds a position to the position catalog.
-
-Format: `positionadd POSITION_NAME`
-
-Examples:
-* `positionadd Winger`
-
-#### Editing a position: `positionedit`
-
-Renames an existing position in the position catalog.
-
-Format: `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME`
-
-Examples:
-* `positionedit old/Defender new/Center Back`
-
-#### Deleting a position: `positiondelete`
-
-Deletes an existing position from the position catalog.
-
-Format: `positiondelete POSITION_NAME`
-
-Examples:
 * `positiondelete Winger`
 
 ### Editing a person : `edit`
