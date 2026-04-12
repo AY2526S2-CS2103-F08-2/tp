@@ -24,7 +24,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.NameContainsAllKeywordsPredicate;
+import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
@@ -101,9 +101,9 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand(KEYWORD_MATCHING_MEIER, null, DeletionDecision.UNDECIDED);
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         String expectedList = "1. " + Messages.format(expectedModel.getPersonsMatching(
-                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER))).get(0)) + "\n"
+                new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER))).get(0)) + "\n"
                 + "2. " + Messages.format(expectedModel.getPersonsMatching(
-                        new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER))).get(1));
+                        new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER))).get(1));
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CLASH,
                 KEYWORD_MATCHING_MEIER, expectedList);
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -115,7 +115,7 @@ public class DeleteCommandTest {
                 DeletionDecision.CONFIRM);
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         Person personToDelete = expectedModel.getPersonsMatching(
-                new NameContainsAllKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)))
+                new NameContainsKeywordsPredicate(Arrays.asList(KEYWORD_MATCHING_MEIER)))
                 .get(INDEX_SECOND_PERSON.getZeroBased());
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 roleLabel(personToDelete), Messages.format(personToDelete));
@@ -124,7 +124,7 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void execute_criteriaMultipleKeywords_narrowsToSingleMatch() {
+    public void execute_criteriaMultipleKeywords_clashesUnderFindStyleMatching() {
         AddressBook addressBook = new AddressBook(model.getAddressBook());
         Person alexYeoh = new PersonBuilder().withName("Alex Yeoh").withPhone("87438807")
                 .withEmail("alexyeoh2@example.com").withAddress("Blk 30 Geylang Street 29, #06-40").build();
@@ -136,15 +136,34 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand("Alex Neo", null, DeletionDecision.UNDECIDED);
         ModelManager modelWithAlexes = new ModelManager(addressBook, new UserPrefs());
         ModelManager expectedModel = new ModelManager(addressBook, new UserPrefs());
-        Person personToDelete = expectedModel.getAddressBook().getPersonList().stream()
-                .filter(person -> person.getName().fullName.equals("Alex Neo"))
-                .findFirst()
-                .orElseThrow();
-
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CONFIRMATION,
-                roleLabel(personToDelete), Messages.format(personToDelete), "Y", "N", "Y", "N");
+        String expectedList = "1. " + Messages.format(expectedModel.getPersonsMatching(
+                new NameContainsKeywordsPredicate(Arrays.asList("Alex", "Neo"))).get(0)) + "\n"
+                + "2. " + Messages.format(expectedModel.getPersonsMatching(
+                        new NameContainsKeywordsPredicate(Arrays.asList("Alex", "Neo"))).get(1));
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CLASH,
+                "Alex Neo", expectedList);
 
         assertCommandSuccess(deleteCommand, modelWithAlexes, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_criteriaMultipleKeywords_usesFindStyleAnyKeywordMatching() {
+        AddressBook addressBook = new AddressBook(model.getAddressBook());
+        Person alexYeoh = new PersonBuilder().withName("Alex Yeoh").withPhone("87438807")
+                .withEmail("alexyeoh2@example.com").withAddress("Blk 30 Geylang Street 29, #06-40").build();
+        addressBook.addPerson(alexYeoh);
+
+        DeleteCommand deleteCommand = new DeleteCommand("Alex Ida", null, DeletionDecision.UNDECIDED);
+        ModelManager modelWithAlex = new ModelManager(addressBook, new UserPrefs());
+        ModelManager expectedModel = new ModelManager(addressBook, new UserPrefs());
+        String expectedList = "1. " + Messages.format(expectedModel.getPersonsMatching(
+                new NameContainsKeywordsPredicate(Arrays.asList("Alex", "Ida"))).get(0)) + "\n"
+                + "2. " + Messages.format(expectedModel.getPersonsMatching(
+                        new NameContainsKeywordsPredicate(Arrays.asList("Alex", "Ida"))).get(1));
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_CLASH,
+                "Alex Ida", expectedList);
+
+        assertCommandSuccess(deleteCommand, modelWithAlex, expectedMessage, expectedModel);
     }
 
     @Test
