@@ -311,6 +311,8 @@ Role applicability:
 Display behavior:
 * Person cards show `Team`, `Status`, and `Position` only when the value is non-default.
 
+![Attribute display on person cards](images/attributeDisplay.png)
+
 For attribute catalog commands, value matching is case-insensitive. This means both `*edit` and `*delete`
 commands work regardless of letter case (for example, `teamdelete reserve team` matches `Reserve Team`).
 
@@ -325,6 +327,8 @@ Formats:
 * `teamlist`
 * `statuslist`
 * `positionlist`
+
+![Attribute catalog list output](images/attributeCatalogList.png)
 
 #### Adding attribute catalog values: `teamadd`, `statusadd`, `positionadd`
 
