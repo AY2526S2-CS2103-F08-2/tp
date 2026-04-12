@@ -302,7 +302,8 @@ Catalog behavior:
 * Renaming a catalog value automatically updates all persons currently assigned that value.
 * When creating catalog entries (`teamadd`/`statusadd`/`positionadd`), entered display casing is preserved.
   Matching and uniqueness checks remain case-insensitive.
-* Team, status, and position names must be non-blank and may contain only letters/numbers, spaces, and hyphens.
+* Team, status, and position names must start and end with a letter or number.
+  They may contain only letters, numbers, spaces, and hyphens in between.
 
 Role applicability:
 * `Team` and `Status` apply to both players and staff.
