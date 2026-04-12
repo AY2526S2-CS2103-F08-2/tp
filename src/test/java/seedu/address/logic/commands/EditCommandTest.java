@@ -13,6 +13,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
+import static seedu.address.testutil.TypicalEvents.getTypicalEvents;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -161,11 +162,48 @@ public class EditCommandTest {
     }
 
     @Test
+    public void execute_editStaffTeamWithEventsPresent_success() {
+        getTypicalEvents().forEach(model::addEvent);
+        Person staffInList = model.getFilteredPersonList().stream()
+                .filter(person -> person.getRole() == Role.STAFF)
+                .findFirst()
+                .orElseThrow();
+        Index staffIndex = Index.fromZeroBased(model.getFilteredPersonList().indexOf(staffInList));
+
+        EditCommand editCommand = new EditCommand(staffIndex,
+                new EditPersonDescriptorBuilder().withTeam("First Team").build());
+        Person editedStaff = new PersonBuilder(staffInList).withTeam("First Team").build();
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(staffInList, editedStaff);
+
+        assertCommandSuccess(editCommand, model,
+                String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedStaff)),
+                expectedModel);
+    }
+
+    @Test
     public void execute_changeRoleToStaffWithPosition_failure() {
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
                 new EditPersonDescriptorBuilder().withRole(VALID_ROLE_STAFF).withPosition("Forward").build());
 
         assertCommandFailure(editCommand, model, EditCommand.MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF);
+    }
+
+    @Test
+    public void execute_changeEventPlayerToStaff_failure() {
+        getTypicalEvents().forEach(model::addEvent);
+        Player playerToEdit = (Player) model.getFilteredPersonList().stream()
+                .filter(person -> person.getRole() == Role.PLAYER)
+                .findFirst()
+                .orElseThrow();
+        Index playerIndex = Index.fromZeroBased(model.getFilteredPersonList().indexOf(playerToEdit));
+
+        EditCommand editCommand = new EditCommand(playerIndex,
+                new EditPersonDescriptorBuilder().withRole(VALID_ROLE_STAFF).build());
+
+        assertCommandFailure(editCommand, model,
+                String.format(EditCommand.MESSAGE_REMOVE_FROM_EVENT_FIRST, playerToEdit.getName().toString()));
     }
 
     @Test

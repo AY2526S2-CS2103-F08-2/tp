@@ -202,6 +202,10 @@ public class ModelManager implements Model {
 
     @Override
     public void cascadeEditedPersonToEvent(Person personToEdit, Person editedPerson) {
+        if (personToEdit.getRole() != Role.PLAYER || editedPerson.getRole() != Role.PLAYER) {
+            return;
+        }
+
         ObservableList<Event> eventList = addressBook.getEventList();
 
         for (Event e : eventList) {
