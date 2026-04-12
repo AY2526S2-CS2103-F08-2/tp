@@ -838,6 +838,9 @@ Use case ends.
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Academy**: The full set of staff/players used to represent all contacts in the contact list
+* **Attribute**: A catalog-backed categorisation assigned to a person, such as Team, Status, or Position
+* **Attribute catalog**: The approved set of values for an attribute. A Team, Status, or Position value must exist in
+  its catalog before it can be assigned to a person
 * **Position**: The roles that each player is specialised/assigned in the team
 * **Performance Stats**: The player statistics based on their previous games (e.g. goals, wins, losses,
   calculated winrate, etc.)
@@ -1105,5 +1108,4 @@ Compared to AB3, this project required significantly more effort due to the broa
 One particularly challenging area was the implementation of the Team/Status/Position attribute subsystem. Features such as protected defaults, delete guards for in-use attributes, rename cascades, catalog validation, and robust JSON recovery required coordinated changes across the model, commands, storage, and documentation. While we were able to reuse much of AB3’s architecture such as its command flow, storage framework, and JavaFX base, our main effort lay in adapting these foundations to support soccer-specific workflows and stricter domain rules.
 We also spent a substantial amount of effort on roster-management workflows, including deletion, listing, sorting, and filtering. Although these features may appear straightforward, they operate at the intersection of parsing, model updates, filtered-list state, and user feedback. For example, implementing safer deletion required explicit confirmation flows and clash-resolution logic, while more advanced list, sort, and filter functionality had to remain consistent across role-based views, attribute-backed filtering, and player statistics. The real challenge was not in building individual commands, but in ensuring that they worked seamlessly together.
 Finally, implementing batch CSV import revealed numerous edge cases that could potentially corrupt the application. As a result, we dedicated significant time to thoroughly validating and testing our custom CSV parser. This experience also highlighted the added complexity of supporting more advanced imports, such as those involving attributes and statistics, which would require even more comprehensive safeguards. Nonetheless, such enhancements remain feasible with sufficient time and careful implementation.
-
 
