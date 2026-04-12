@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
+SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI), where users type commands, while still having the benefits of a Graphical User Interface (GUI), the visual app window. If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -24,8 +24,8 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
    ![Ui](images/Ui.png)
 
    If double-clicking the jar does not launch the app on your system, use the terminal command above instead.
-   Also avoid storing the jar in a write-protected folder, because SoCcer Manager needs to create and update its
-   data files beside the jar.
+   Also avoid storing the jar in a write-protected folder, which is a folder where your computer does not allow
+   the app to create or update files.
 
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
