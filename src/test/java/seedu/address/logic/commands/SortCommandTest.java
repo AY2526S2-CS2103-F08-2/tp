@@ -211,6 +211,22 @@ public class SortCommandTest {
     }
 
     @Test
+    public void execute_sortPlayerStatsAfterStaffFilter_switchesToPlayers() {
+        model.updateFilteredPersonList(new PersonHasRolePredicate(Role.STAFF));
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.PLAYER));
+
+        SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.GOALS, "players", false);
+
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.GOALS.getComparator());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "players", "goals", SortCommand.ORDER_ASCENDING),
+                expectedModel);
+        assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
+    }
+
+    @Test
     public void execute_sortPlayersByLossesDescending_success() {
         SortCommand command = new SortCommand(
                 new PersonHasRolePredicate(Role.PLAYER), PersonSortAttribute.LOSSES, "players", true);
