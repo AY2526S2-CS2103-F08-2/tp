@@ -3,7 +3,18 @@ layout: page
 title: User Guide
 ---
 
-SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
+SoCcer Manager is a desktop app for managing soccer academy players and staff. It is optimized for users who prefer
+typing commands instead of clicking through forms, while still providing a clear on-screen interface for reviewing the
+current roster and event data.
+
+This guide is written for academy managers, coaches, and coordinators who:
+* manage many players and staff across teams, statuses, and events
+* are comfortable typing commands into an input box
+* want to update records quickly without relying on repeated mouse clicks
+
+Throughout this guide:
+* `CLI` means Command Line Interface, where you interact by typing commands.
+* `GUI` means Graphical User Interface, which is the application window showing lists, details, and feedback.
 
 * Table of Contents
 {:toc}
@@ -24,8 +35,8 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
    ![Ui](images/Ui.png)
 
    If double-clicking the jar does not launch the app on your system, use the terminal command above instead.
-   Also avoid storing the jar in a write-protected folder, because SoCcer Manager needs to create and update its
-   data files beside the jar.
+   Also avoid storing the jar in a write-protected folder (a folder where apps are not allowed to save changes),
+   because SoCcer Manager needs to create and update its data files beside the jar.
 
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
@@ -78,9 +89,9 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for some commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for some commands that do not take in parameters (such as `help` and `exit`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.<br>
-  Some fixed-format commands such as `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
+  Some fixed-format commands such as `clear`, `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
@@ -118,7 +129,7 @@ Notes:
 
 Examples:
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe r/staff t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/Marcus Tan r/staff t/coach e/marcustan@example.com a/12 Stadium Road p/91234567`
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street tm/First Team st/Active pos/Forward`
 
 ### Adding a match: `matchadd`
@@ -237,6 +248,15 @@ Examples:
 * `sort by/wins desc`
 * `sort r/player by/goals desc`
 * `sort r/staff by/name desc`
+
+Multi-step examples:
+1. Run `list r/staff`.
+2. Run `sort by/status`.
+3. The roster remains sorted by `status` using the current visible list.
+
+1. Run `list r/staff`.
+2. Run `sort by/goals`.
+3. The view switches to players only, because `goals` is a player-only sort attribute.
 
 ### Filtering persons: `filter`
 
@@ -505,6 +525,11 @@ Examples:
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
+Multi-step example:
+1. Run `delete Meier`.
+2. If multiple persons match, type the clash index shown in the message, e.g. `2`.
+3. Type `y` to confirm deletion or `n` to cancel.
+
 ### Deleting an event : `eventdelete`
 
 Format: `eventdelete INDEX`
@@ -531,11 +556,21 @@ Examples:
 * `deletebulk tm/Reserve Team`, then `y` deletes all persons assigned to `Reserve Team`.
 * `deletebulk st/Unavailable`, then `n` cancels the bulk deletion.
 
+Multi-step example:
+1. Run `deletebulk tm/Reserve Team`.
+2. Review the matching persons shown in the message.
+3. Type `y` to confirm deletion or `n` to cancel.
+
 ### Clearing all entries : `clear`
 
 Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
 
 Format: `clear`
+
+Example:
+1. Run `clear`.
+2. Read the confirmation prompt.
+3. Type `y` to proceed or `n` to cancel.
 
 ### Exiting the program : `exit`
 
