@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
+import static seedu.address.model.util.SampleDataUtil.getEmptyAddressBookWithDefaultCatalogs;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.PLAYER_AMY;
 import static seedu.address.testutil.TypicalPersons.PLAYER_BEN;
@@ -11,12 +12,21 @@ import static seedu.address.testutil.TypicalPersons.PLAYER_BEN;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.event.Date;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventPlayerList;
+import seedu.address.model.event.EventType;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.Team;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.PersonBuilder;
 
 public class ModelManagerTest {
 
@@ -91,6 +101,22 @@ public class ModelManagerTest {
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void setTeam_playerInEvent_cascadesRenamedPlayerToEvent() {
+        Person player = new PersonBuilder(PLAYER_AMY).withTeam("First Team").build();
+        AddressBook addressBook = getEmptyAddressBookWithDefaultCatalogs();
+        addressBook.addPerson(player);
+        addressBook.addEvent(Event.createEvent(new EventName("Chelsea"), new Date("2026-04-15 1600"),
+                EventType.MATCH, new EventPlayerList(Set.of(player))));
+        modelManager = new ModelManager(addressBook, new UserPrefs());
+
+        modelManager.setTeam(new Team("First Team"), new Team("Reserve Team"));
+
+        Person editedPlayer = modelManager.getAddressBook().getPersonList().get(0);
+        Event editedEvent = modelManager.getAddressBook().getEventList().get(0);
+        assertTrue(editedEvent.getEventPlayerList().asUnmodifiableObservableList().contains(editedPlayer));
     }
 
     @Test

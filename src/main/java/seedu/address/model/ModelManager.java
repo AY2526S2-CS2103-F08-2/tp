@@ -357,7 +357,9 @@ public class ModelManager implements Model {
         List<Person> snapshot = new ArrayList<>(addressBook.getPersonList());
         for (Person person : snapshot) {
             if (shouldUpdate.test(person)) {
-                addressBook.setPerson(person, updatePerson.apply(person));
+                Person editedPerson = updatePerson.apply(person);
+                addressBook.setPerson(person, editedPerson);
+                cascadeEditedPersonToEvent(person, editedPerson);
             }
         }
     }
