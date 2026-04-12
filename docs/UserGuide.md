@@ -186,8 +186,10 @@ Notes:
 - The event index provided must be a valid index.
 - The players provided must exist in the addressbook and also be part of the event player list.
 - Players who are not present have (NP) beside their name in the event player list. Those who are present have (P) instead.
+- Warning: Attendance can only be marked currently. Once a player is marked for attendance, they cannot be unmarked. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
-Examples:
+
+- Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
