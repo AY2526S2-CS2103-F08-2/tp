@@ -20,8 +20,8 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventPlayerList;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
-import seedu.address.testutil.EventBuilder;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.EventBuilder;
 
 public class ModelManagerTest {
 
