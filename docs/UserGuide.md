@@ -514,10 +514,17 @@ Examples:
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
-Multi-step example:
-1. Run `delete Meier`.
-2. If multiple persons match, type the clash index shown in the message, e.g. `2`.
-3. Type `y` to confirm deletion or `n` to cancel.
+Step-by-step examples:
+1. To delete a single matched person:
+   Run `delete Bernice`.
+   If exactly one person matches, SoCcer Manager shows that person and asks for confirmation.
+   Type `y` to delete the person, or `n` to cancel.
+
+2. To delete when multiple persons match:
+   Run `delete Meier`.
+   If multiple persons match, SoCcer Manager shows a numbered clash list.
+   Type the clash index shown in the message, for example `2`.
+   After the person is selected, type `y` to confirm deletion or `n` to cancel.
 
 ### Deleting an event : `eventdelete`
 
@@ -545,10 +552,11 @@ Examples:
 * `deletebulk tm/Reserve Team`, then `y` deletes all persons assigned to `Reserve Team`.
 * `deletebulk st/Unavailable`, then `n` cancels the bulk deletion.
 
-Multi-step example:
+Step-by-step example:
 1. Run `deletebulk tm/Reserve Team`.
-2. Review the matching persons shown in the message.
-3. Type `y` to confirm deletion or `n` to cancel.
+2. SoCcer Manager shows all matching persons in the message and in the current list.
+3. Review the affected persons before confirming.
+4. Type `y` to delete all shown matches, or `n` to cancel.
 
 ### Clearing all entries : `clear`
 
