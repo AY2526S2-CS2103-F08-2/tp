@@ -355,7 +355,7 @@ internal replacement steps are intentionally shown in a simplified form to keep 
 The `importcsv` command allows batch import of players/staff, with fields defined in each column.
 The **User Guide** will have the latest expected format. The parser is strict and expect the CSV file to comply with the given format.
 
-The CSV is custom, which allows behaviour such as . 
+The CSV is custom, which allows behaviour such as escaped commas. 
 Parser behaviour is customizable by modifying `CsvImportService`/`CsvImportResult`.
 
 #### Storage behavior
