@@ -98,6 +98,16 @@ public class LogicManager implements Logic {
     public String importCsv(Path path) throws CommandException {
         CsvImportService importService = new CsvImportService();
         CsvImportResult result = importService.importCsv(path, model);
+
+        // save operation
+        try {
+            storage.saveAddressBook(model.getAddressBook());
+        } catch (AccessDeniedException e) {
+            throw new CommandException(String.format(FILE_OPS_PERMISSION_ERROR_FORMAT, e.getMessage()), e);
+        } catch (IOException ioe) {
+            throw new CommandException(String.format(FILE_OPS_ERROR_FORMAT, ioe.getMessage()), ioe);
+        }
+
         return result.toUserMessage();
     }
 }
