@@ -108,6 +108,8 @@ A person can have any number of tags (including 0)
 
 Notes:
 * `tm/TEAM`, `st/STATUS`, and `pos/POSITION` are optional.
+* A person's name is case insensitive. If `Alex Yeoh` exists in SoCcer Manager, `alex yeoh` will not be allowed to be 
+added.
 * If omitted, defaults are used: `Unassigned Team`, `Unknown`, `Unassigned Position`.
 * If provided, `TEAM`/`STATUS`/`POSITION` must already exist in their respective catalogs
   (see [Attributes](#attributes)).
