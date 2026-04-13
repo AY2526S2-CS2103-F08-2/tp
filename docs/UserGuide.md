@@ -125,7 +125,7 @@ Examples:
 
 Adds a match to the address book.
 
-Format: `matchadd n/OPPONENT_NAME d/DATE [st/STATUS | pos/POSITION | tm/TEAM] [pl/PLAYER_NAME]…​`
+Format: `matchadd n/OPPONENT_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​`
 
 Notes: 
 - Date must have format `yyyy-MM-dd HHmm`
@@ -141,7 +141,7 @@ Examples:
 
 Adds a training session to the address book.
 
-Format: `trainingadd n/TRAINING_NAME d/DATE [st/STATUS | pos/POSITION | tm/TEAM] [pl/PLAYER_NAME]…​`
+Format: `trainingadd n/TRAINING_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​`
 
 Notes:
 - Date must have format `yyyy-MM-dd HHmm`
@@ -186,8 +186,10 @@ Notes:
 - The event index provided must be a valid index.
 - The players provided must exist in the addressbook and also be part of the event player list.
 - Players who are not present have (NP) beside their name in the event player list. Those who are present have (P) instead.
+- Warning: Attendance can only be marked currently. Once a player is marked for attendance, they cannot be unmarked. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
-Examples:
+
+- Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
@@ -545,8 +547,8 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | Action              | Format, Examples                                                                                                                                                                                                                      |
 |---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Add**             | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 tm/First Team st/Active t/friend` |
-| **Match**           | `matchadd n/OPPONENT_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `matchadd n/Mancherster United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                    |
-| **Training**        | `trainingadd n/TRAINING_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `trainingadd n/Warm Up d/2026-06-16 1700 tm/First Team pl/John Doe`                                                         |
+| **Match**           | `matchadd n/OPPONENT_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `matchadd n/Mancherster United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                      |
+| **Training**        | `trainingadd n/TRAINING_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `trainingadd n/Warm Up d/2026-06-16 1700 tm/First Team pl/John Doe`                                                           |
 | **Attendance**      | `attendance`                                                                                                                                                                                                                          |
 | **Attendance Mark** | `attendancemark INDEX [pl/PLAYER_NAME]…​` <br> e.g., `attendancemark 1 pl/Alex Yeoh pl/Bernice Yu`                                                                                                                                    |
 | **Clear**           | `clear`                                                                                                                                                                                                                               |
@@ -557,8 +559,8 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | **Edit Event**      | `eventedit INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`eventedit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                                 |
 | **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10`                                                                |
 | **Find**            | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                                       |
-| **List**            | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                                   |
-| **Sort**            | `sort by/ATTRIBUTE [desc]` / `sort r/player by/ATTRIBUTE [desc]` / `sort r/staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                                  |
+| **List**            | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                                     |
+| **Sort**            | `sort by/ATTRIBUTE [desc]` / `sort r/player by/ATTRIBUTE [desc]` / `sort r/staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                                   |
 | **Set**             | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                                     |
 | **Update**          | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                                |
 | **Help**            | `help`                                                                                                                                                                                                                                |

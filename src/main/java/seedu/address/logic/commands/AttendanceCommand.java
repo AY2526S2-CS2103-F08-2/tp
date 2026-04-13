@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.event.EventType;
 import seedu.address.model.person.Role;
 
 /**
@@ -15,15 +14,15 @@ public class AttendanceCommand extends Command {
     public static final String COMMAND_WORD = "attendance";
 
     public static final String MESSAGE_SUCCESS = "=== Player Attendance Rates ===\n";
-    public static final String MESSAGE_NO_TRAINING = "No trainings detected!";
+    public static final String MESSAGE_NO_EVENT = "No events detected!";
     public static final String MESSAGE_NO_PLAYERS = "No players detected!";
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (model.getEventList().filtered(e -> e.getEventType() == EventType.TRAINING).isEmpty()) {
-            throw new CommandException(MESSAGE_NO_TRAINING);
+        if (model.getEventList().isEmpty()) {
+            throw new CommandException(MESSAGE_NO_EVENT);
         } else if (model.getAddressBook().getPersonList().filtered(p -> p.getRole() == Role.PLAYER).isEmpty()) {
             throw new CommandException(MESSAGE_NO_PLAYERS);
         }

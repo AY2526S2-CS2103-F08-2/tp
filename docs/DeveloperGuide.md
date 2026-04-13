@@ -801,13 +801,14 @@ otherwise)
 2. Manager provides the name of the training session, date, and players that attended the training.
 3. SoCcer Manager checks that the players exist in the address book.
 4. SoCcer Manager adds the training session with the specified name, date, and players.
+   Use case ends.
 
 **Extensions**
 
 * 2a. Manager provides an attribute.
     * 2a1. SoCcer Manager checks that the attribute exists.
-    * 2a2. SoCcer Manager finds all the players with the attribute.
-      Use case resumes at step 3.
+      * 2a2. SoCcer Manager gets a list of all the players with the specified attribute.
+        Use case resumes at step 4.
 
 ### Non-Functional Requirements
 
