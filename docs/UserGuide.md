@@ -55,7 +55,7 @@ fast, SoCcer Manager can get your team management tasks done faster than traditi
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
 
-   * `clear` : Clears all persons and events while keeping the default Team/Status/Position catalogs.
+   * `clear` : Immediately clears all persons and events while keeping the default Team/Status/Position catalogs. Use with care.
 
    * `exit` : Exits the app.
 
@@ -198,7 +198,7 @@ Notes:
 - Warning: Attendance can only be marked currently. Once a player is marked for attendance, they cannot be unmarked. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
 
-- Examples:
+Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
@@ -233,11 +233,12 @@ Supported attributes:
 * `goals`
 * `wins`
 * `losses`
+* `draws`
 
 Notes:
-* `goals`, `wins`, and `losses` are player-only sort attributes.
-* `sort by/goals`, `sort by/wins`, and `sort by/losses` will show only players.
-* `sort r/staff by/goals`, `sort r/staff by/wins`, and `sort r/staff by/losses` are invalid.
+* `goals`, `wins`, `losses`, and `draws` are player-only sort attributes.
+* `sort by/goals`, `sort by/wins`, `sort by/losses`, and `sort by/draws` will show only players.
+* `sort r/staff by/goals`, `sort r/staff by/wins`, `sort r/staff by/losses`, and `sort r/staff by/draws` are invalid.
 
 Examples:
 * `sort by/name`
@@ -247,6 +248,7 @@ Examples:
 * `sort r/player by/position desc`
 * `sort by/wins desc`
 * `sort r/player by/goals desc`
+* `sort by/draws`
 * `sort r/staff by/name desc`
 
 Multi-step examples:
@@ -263,12 +265,12 @@ Multi-step examples:
 Filters persons in the UI using structured attribute and stat criteria.
 
 Format:
-* `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[>|<|=]NUM] [wins/[>|<|=]NUM] [losses/[>|<|=]NUM]`
+* `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[>|<|=]NUM] [wins/[>|<|=]NUM] [losses/[>|<|=]NUM] [draws/[>|<|=]NUM]`
 
 Rules:
 * All provided filters are combined using AND semantics.
 * Invalid `tm/`, `st/`, or `pos/` values are rejected if they do not exist in the current catalog.
-* `goals`, `wins`, and `losses` filters apply only to players.
+* `goals`, `wins`, `losses`, and `draws` filters apply only to players.
 * Use `list` to reset the filtered view and show all persons again.
 
 Examples:
@@ -288,7 +290,7 @@ These stats can be modified by the user via commands.
 - A staff will have the default state of performance stats when converted to a player.
 - Values cannot be more than the `Integer` max limit (`2,147,483,647`)
 
-_Current valid stats: `goals`, `wins`, `losses`_
+_Current valid stats: `goals`, `wins`, `losses`, `draws`_
 
 #### Set player stat: `set`
 Sets a specific stat of a player to a given value.
@@ -523,14 +525,15 @@ Step-by-step example:
 
 ### Clearing all entries : `clear`
 
-Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
+Immediately clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position
+catalogs.
 
 Format: `clear`
 
-Example:
-1. Run `clear`.
-2. Read the confirmation prompt.
-3. Type `y` to proceed or `n` to cancel.
+Notes:
+* `clear` executes immediately when entered.
+* There is no confirmation step before the address book is cleared.
+* Use this command carefully because it removes all persons and events at once.
 
 ### Exiting the program : `exit`
 

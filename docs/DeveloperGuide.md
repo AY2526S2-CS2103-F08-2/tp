@@ -478,7 +478,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 (For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified
 otherwise)
 
-**Use case: UC01 - Add new person**  
+**Use case: UC00 - Add new person**
 **MSS**
 
 1. Manager requests to add a person.
@@ -505,7 +505,7 @@ otherwise)
     * 2d1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
-**Use case: UC02 - Rename an attribute catalog value**  
+**Use case: UC01 - Rename an attribute catalog value**
 **MSS**
 
 1. Manager requests to rename an attribute catalog value.
@@ -529,7 +529,7 @@ otherwise)
     * 2c1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
-**Use case: UC03 - Delete an attribute catalog value**  
+**Use case: UC02 - Delete an attribute catalog value**
 **MSS**
 
 1. Manager requests to delete an attribute catalog value.
@@ -552,7 +552,7 @@ otherwise)
     * 2c1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-**Use case: UC04 - Edit person attributes**  
+**Use case: UC03 - Edit person attributes**
 **MSS**
 
 1. Manager requests to edit a person.
@@ -571,7 +571,7 @@ otherwise)
     * 2b1. SoCcer Manager informs the manager that the person was not updated.  
       Use case ends.
 
-**Use case: UC05 - View persons by role**  
+**Use case: UC04 - View persons by role**
 **MSS**
 
 1. Manager requests to list persons by role.
@@ -590,7 +590,7 @@ otherwise)
     * 2b1. SoCcer Manager informs the manager that the list was not changed.  
       Use case ends.
 
-**Use case: UC06 - Filter persons using structured criteria**  
+**Use case: UC05 - Filter persons using structured criteria**
 **MSS**
 
 1. Manager requests to filter persons.
@@ -605,7 +605,7 @@ otherwise)
     * 2a1. SoCcer Manager applies exact-match filtering for the provided attributes.  
       Use case resumes at step 3.
 
-* 2b. Manager provides stat comparison criteria for `goals`, `wins`, or `losses`.
+* 2b. Manager provides stat comparison criteria for `goals`, `wins`, `losses`, or `draws`.
     * 2b1. SoCcer Manager applies numeric comparison filtering for player stats.  
       Use case resumes at step 3.
 
@@ -617,7 +617,7 @@ otherwise)
     * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC07 - Sort persons by attribute or stat**  
+**Use case: UC06 - Sort persons by attribute or stat**
 **MSS**
 
 1. Manager requests to sort persons.
@@ -631,7 +631,7 @@ otherwise)
 
 * 2a. Manager omits the role scope.
     * 2a1. For roster attributes, SoCcer Manager sorts the displayed list.  
-      Use case resumes at step 2.
+      Use case resumes at step 4.
 
 * 2b. Manager specifies descending order.
     * 2b1. SoCcer Manager sorts in descending order.  
@@ -641,15 +641,15 @@ otherwise)
     * 2c1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 5a. Manager sorts by `goals`, `wins`, or `losses`.
+* 5a. Manager sorts by `goals`, `wins`, `losses`, or `draws`.
     * 5a1. SoCcer Manager switches to the player-only list before applying the sort.
       Use case resumes at step 5.
 
-* 4b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, or `sort r/staff by/losses`.
+* 4b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, `sort r/staff by/losses`, or `sort r/staff by/draws`.
     * 4b1. SoCcer Manager shows an error message.
       Use case ends.
 
-**Use case: UC08 - Bulk delete persons by shared criterion**  
+**Use case: UC07 - Bulk delete persons by shared criterion**
 **MSS**
 
 1. Manager requests to bulk delete persons.
@@ -675,7 +675,7 @@ otherwise)
     * 5a1. SoCcer Manager shows an error message.
       Use case ends.
 
-**Use case: UC09 - List persons using attribute filters**  
+**Use case: UC08 - List persons using attribute filters**
 **MSS**
 
 1. Manager requests to list persons using filters.
@@ -702,7 +702,7 @@ otherwise)
     * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC10 - Set or update a player’s recorded performance stat**  
+**Use case: UC09 - Set or update a player’s recorded performance stat**
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
@@ -733,7 +733,7 @@ otherwise)
     * 2b1. SoCcer Manager increments the stat by the specified value.
       Use case resumes at step 4.
 
-**Use case: UC11 - Automatically display calculated stats for a player**  
+**Use case: UC10 - Automatically display calculated stats for a player**
 **MSS**
 
 1. Manager views the player list or player details.
@@ -752,7 +752,7 @@ otherwise)
     * 3a1. SoCcer Manager avoids division by zero and displays the default calculated value.
       Use case resumes at step 4.
 
-**Use case: UC12 - Batch import persons from a CSV file**  
+**Use case: UC11 - Batch import persons from a CSV file**
 **MSS**
 
 1. Manager requests to batch import persons from a CSV file.
@@ -785,7 +785,7 @@ otherwise)
     * 6a1. SoCcer Manager shows a summary indicating that all rows were skipped.
       Use case ends.
 
-**Use case: UC13 - Add new training**  
+**Use case: UC12 - Add new training**
 **MSS**
 
 1. Manager wants to record a new training session.
