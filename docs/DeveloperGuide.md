@@ -229,11 +229,11 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 The `filter` command is implemented as a predicate-based list narrowing operation.
 
 * `FilterCommandParser` parses optional role, team, status, and position criteria, together with optional numeric
-  comparisons for `goals`, `wins`, and `losses`.
+  comparisons for `goals`, `wins`, `losses`, and `draws`.
 * Parsed criteria are assembled into `PersonMatchesFilterPredicate`, which combines all supplied filters with
   AND semantics.
 * `FilterCommand` applies that predicate through `Model#updateFilteredPersonList(...)`.
-* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, or `losses` filters.
+* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, `losses`, or `draws` filters.
 
 The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
 
@@ -255,7 +255,30 @@ Implementation details:
 The corresponding sequence-diagram source for the filtered path is recorded in
 `docs/diagrams/ListFilteredSequenceDiagram.puml`.
 
-### Update player stats command
+### Player Stats (and Calculated Stats)
+Each **player** owns a `PlayerStats` object that contains the player's performance stats. These stats can be modified by the user through commands.
+
+- Each stat is a defined enum constant in `StatField`, consisting of a defined getter, setter and validation function for each stat
+  - `Function<PlayerStats, Integer> getter`
+  - `BiConsumer<PlayerStats, Integer> setter`
+  - `Predicate<Integer> validator`
+- To define a new player stat, simply define it as a new enum constant in `StatField`, and link it with the corresponding getter/setter/validation functions in `PlayerStats`
+- This design is meant to be **data-driven**, so that the only modifications needed are minimal:
+  - `StatField` : to define to new stat 
+  - `PlayerStats` : to link getter/setter/validation functions, and update `copy()`/`equals()`
+  - `SetCommand`/`UpdateCommand` : to update usage message
+- Other components such as JSON storage, UI, will reflect the new addition automatically and will work as intended.
+
+**Calculated stats:**
+
+As opposed to basic player stats, calculated stats are advanced player performance stats based on the existing stats of the player.
+
+- These stats cannot be directly set/updated, but rather, once the player base stats change, these calculated stats are automatically updated by recalculating with respect to the new values.
+- Therefore, these advanced stats are meant to be **read-only**.
+- Just like basic player stats, new calculated stats can be defined by adding a new enum constant to `CalculatedStatField`,
+with the relevant calculation `Function<PlayerStats, Double>`.
+
+**Commands to modify player stats:**
 
 The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
 which creates a `UpdateCommand` with the given parameters (`INDEX, STAT, VALUE`).
@@ -400,7 +423,7 @@ The sequence diagram below shows the confirmed index-based delete path after the
 to the filtered person list.
 
 * `SortCommandParser` parses the scope (`r/player`, `r/staff`, or all persons), the `by/...` attribute
-  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
+  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, `losses`, or `draws`), and the optional `desc` modifier.
 * `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
   ordering stay aligned.
 * Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
@@ -942,6 +965,38 @@ testers are expected to do more *exploratory* testing.
     2. Test case: `teamedit old/Second Team new/Reserve Team`<br>
        Expected: Command succeeds and all persons previously assigned `Second Team` now display `Reserve Team`.
 
+### Player Stats
+1. Updating player stats with `update `
+   1. Prerequisites: At least one player in the list.
+   2. Test case: `update 1 wins 5` <br>
+   Expected: Win count of player at index 1 increases by 5. Success message shows old and new value with increment. 
+   3. Test case: `update 1 losses -1` <br>
+   Expected: Rejected if resulting value would go below 0. Error message indicates value must be more or equal to 0. 
+   4. Test case: `update 1 invalidstat 5` <br>
+   Expected: Rejected with invalid command format message. 
+   5. Test case: `update 0 wins 5` <br>
+   Expected: Rejected with invalid index message.
+   6. Test case: `update 2 goals 10` where index 2 has a staff role <br>
+   Expected: Rejected with error message indicating this person must be a player.
+
+2. Setting player stats with `set`
+   1. Prerequisites: At least one player in the list.
+   2. Test case: `set 1 goals 10` <br>
+   Expected: Goals of player at index 1 is set to exactly 10 regardless of previous value. Success message shows old and new value.
+   3. Test case: `set 1 draws 0` <br>
+   Expected: Draws set to 0. Valid since 0 is within the allowed range.
+   4. Test case: `set 1 wins -1` <br>
+   Expected: Rejected with error message indicating value must be more or equal to 0.
+   5. Test case: `set 2 goals 10` where index 2 is a staff member <br>
+   Expected: Rejected with error message indicating this person must be a player.
+
+3. Calculated stats display
+   1. Prerequisites: A player with 0 wins, 0 losses, 0 draws.
+   2. Test case: Observe **win rate** and **goals per game** displayed <br>
+   Expected: Both show 0.00 (_no division by zero error_).
+   3. Test case: `set 1 wins 3` then `set 1 losses 1` <br>
+   Expected: Win rate updates live to 75.00%. Goals per game updates accordingly.
+
 ### Role-scoped list
 
 1. Listing persons by role
@@ -978,16 +1033,19 @@ testers are expected to do more *exploratory* testing.
     5. Test case: `filter wins/<3`<br>
        Expected: Only players with fewer than 3 wins are shown. Staff do not match this stat filter.
 
-    6. Test case: `filter goals/10`<br>
+    6. Test case: `filter draws/=2`<br>
+       Expected: Only players with exactly 2 draws are shown. Staff do not match this stat filter.
+
+    7. Test case: `filter goals/10`<br>
        Expected: Command is rejected with an invalid format message.
 
-    7. Test case: `filter tm/Nonexistent Team`<br>
+    8. Test case: `filter tm/Nonexistent Team`<br>
         Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
 
-    8. Test case: `filter st/Retired`<br>
+    9. Test case: `filter st/Retired`<br>
         Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
 
-    9. Test case: `filter pos/Coach`<br>
+    10. Test case: `filter pos/Coach`<br>
         Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
    
 2. Listing persons with attribute filters
@@ -1032,7 +1090,7 @@ testers are expected to do more *exploratory* testing.
 
 2. Sorting by player stats
 
-    1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
+    1. Prerequisites: At least two players with different `goals`, `wins`, `losses`, or `draws` values.
 
     2. Test case: `sort by/goals`<br>
        Expected: Only players are shown, ordered by goals in ascending order.
@@ -1043,10 +1101,13 @@ testers are expected to do more *exploratory* testing.
     4. Test case: `sort r/player by/losses`<br>
        Expected: Only players are shown, ordered by losses in ascending order.
 
-    5. Test case: `sort r/staff by/goals`<br>
+    5. Test case: `sort by/draws`<br>
+       Expected: Only players are shown, ordered by draws in ascending order.
+
+    6. Test case: `sort r/staff by/goals`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
-    6. Test case: `sort r/player by/unknown`<br>
+    7. Test case: `sort r/player by/unknown`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data
