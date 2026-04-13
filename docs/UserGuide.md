@@ -485,12 +485,12 @@ Examples:
 
 Step-by-step examples:
 1. To delete a single matched person:
-   Run `delete Bernice`.
+   Run `delete n/Bernice`.
    If exactly one person matches, SoCcer Manager shows that person and asks for confirmation.
    Type `y` to delete the person, or `n` to cancel.
 
 2. To delete when multiple persons match:
-   Run `delete Meier`.
+   Run `delete n/Meier`.
    If multiple persons match, SoCcer Manager shows a numbered clash list.
    Type the clash index shown in the message, for example `2`.
    After the person is selected, type `y` to confirm deletion or `n` to cancel.
