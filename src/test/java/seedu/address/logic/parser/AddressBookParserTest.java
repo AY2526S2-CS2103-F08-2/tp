@@ -138,6 +138,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_filter() throws Exception {
         assertTrue(parser.parseCommand("filter goals/>10") instanceof FilterCommand);
+        assertTrue(parser.parseCommand("filter draws/=2") instanceof FilterCommand);
         assertTrue(parser.parseCommand("filter r/player pos/Forward goals/>10") instanceof FilterCommand);
     }
 
@@ -194,6 +195,7 @@ public class AddressBookParserTest {
     public void parseCommand_sort() throws Exception {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/name") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " r/player by/email") instanceof SortCommand);
+        assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " by/draws") instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " r/player by/email desc")
                 instanceof SortCommand);
     }

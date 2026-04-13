@@ -116,7 +116,8 @@ public class PlayerStatsTest {
     @Test
     public void toString_defaultValues_correctFormat() {
         PlayerStats stats = new PlayerStats();
-        assertEquals("{ goalsScored = 0, matchesWon = 0, matchesLost = 0 }", stats.toString());
+        assertEquals("{ goalsScored = 0, matchesWon = 0, matchesLost = 0, matchesDrawn = 0 }",
+                stats.toString());
     }
 
     @Test
@@ -125,7 +126,8 @@ public class PlayerStatsTest {
         stats.setGoalsScored(3);
         stats.setMatchesWon(2);
         stats.setMatchesLost(1);
-        assertEquals("{ goalsScored = 3, matchesWon = 2, matchesLost = 1 }", stats.toString());
+        assertEquals("{ goalsScored = 3, matchesWon = 2, matchesLost = 1, matchesDrawn = 0 }",
+                stats.toString());
     }
 
     // ======================== Copy constructor ========================
@@ -136,12 +138,14 @@ public class PlayerStatsTest {
         original.setGoalsScored(10);
         original.setMatchesWon(5);
         original.setMatchesLost(3);
+        original.setMatchesDrawn(2);
 
         PlayerStats copy = new PlayerStats(original);
 
         assertEquals(original.getGoalsScored(), copy.getGoalsScored());
         assertEquals(original.getMatchesWon(), copy.getMatchesWon());
         assertEquals(original.getMatchesLost(), copy.getMatchesLost());
+        assertEquals(original.getMatchesDrawn(), copy.getMatchesDrawn());
     }
 
     @Test
@@ -157,11 +161,13 @@ public class PlayerStatsTest {
         original.setGoalsScored(10);
         original.setMatchesWon(5);
         original.setMatchesLost(3);
+        original.setMatchesDrawn(2);
 
         PlayerStats copy = new PlayerStats(original);
         copy.setGoalsScored(99);
         copy.setMatchesWon(99);
         copy.setMatchesLost(99);
+        copy.setMatchesDrawn(99);
 
         assertEquals(10, original.getGoalsScored());
         assertEquals(5, original.getMatchesWon());
@@ -187,5 +193,6 @@ public class PlayerStatsTest {
         assertEquals(0, copy.getGoalsScored());
         assertEquals(0, copy.getMatchesWon());
         assertEquals(0, copy.getMatchesLost());
+        assertEquals(0, copy.getMatchesDrawn());
     }
 }

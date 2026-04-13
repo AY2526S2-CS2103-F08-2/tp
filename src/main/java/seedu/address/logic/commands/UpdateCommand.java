@@ -26,7 +26,7 @@ public class UpdateCommand extends Command {
             + " by incrementing it with the given value.\n"
             + "Parameters: "
             + "INDEX (must be a positive integer) "
-            + "STAT (must be a valid player stat) [goals|wins|losses] "
+            + "STAT (must be a valid player stat) [goals|wins|losses|draws] "
             + "VALUE"
             + "\nExample: " + COMMAND_WORD + " 1 wins 5"
             + "\nThe updated value should be within the stat constraints.";

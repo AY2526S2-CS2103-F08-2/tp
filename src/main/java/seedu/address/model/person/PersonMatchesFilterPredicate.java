@@ -15,6 +15,7 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     private final Optional<NumericComparison> goals;
     private final Optional<NumericComparison> wins;
     private final Optional<NumericComparison> losses;
+    private final Optional<NumericComparison> draws;
 
     /**
      * Creates a predicate with the given optional filter criteria.
@@ -22,7 +23,7 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     public PersonMatchesFilterPredicate(Optional<Role> role, Optional<Team> team,
                                         Optional<Status> status, Optional<Position> position,
                                         Optional<NumericComparison> goals, Optional<NumericComparison> wins,
-                                        Optional<NumericComparison> losses) {
+                                        Optional<NumericComparison> losses, Optional<NumericComparison> draws) {
         this.role = role;
         this.team = team;
         this.status = status;
@@ -30,6 +31,7 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
         this.goals = goals;
         this.wins = wins;
         this.losses = losses;
+        this.draws = draws;
     }
 
     @Override
@@ -40,7 +42,8 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
                 && position.map(value -> person.getPosition().equals(value)).orElse(true)
                 && goals.map(value -> matchesPlayerStat(person, StatField.GOALS, value)).orElse(true)
                 && wins.map(value -> matchesPlayerStat(person, StatField.WINS, value)).orElse(true)
-                && losses.map(value -> matchesPlayerStat(person, StatField.LOSSES, value)).orElse(true);
+                && losses.map(value -> matchesPlayerStat(person, StatField.LOSSES, value)).orElse(true)
+                && draws.map(value -> matchesPlayerStat(person, StatField.DRAWS, value)).orElse(true);
     }
 
     public Optional<Role> getRole() {
@@ -84,12 +87,13 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
                 && position.equals(otherPredicate.position)
                 && goals.equals(otherPredicate.goals)
                 && wins.equals(otherPredicate.wins)
-                && losses.equals(otherPredicate.losses);
+                && losses.equals(otherPredicate.losses)
+                && draws.equals(otherPredicate.draws);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(role, team, status, position, goals, wins, losses);
+        return Objects.hash(role, team, status, position, goals, wins, losses, draws);
     }
 
     /**

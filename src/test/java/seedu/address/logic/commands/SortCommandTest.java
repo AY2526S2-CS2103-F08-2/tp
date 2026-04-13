@@ -68,11 +68,13 @@ public class SortCommandTest {
         playerZoe.getStats().setGoalsScored(5);
         playerZoe.getStats().setMatchesWon(4);
         playerZoe.getStats().setMatchesLost(1);
+        playerZoe.getStats().setMatchesDrawn(3);
 
         Player playerBeth = (Player) PLAYER_BETH;
         playerBeth.getStats().setGoalsScored(2);
         playerBeth.getStats().setMatchesWon(1);
         playerBeth.getStats().setMatchesLost(3);
+        playerBeth.getStats().setMatchesDrawn(1);
         addressBook.addPerson(PLAYER_ZOE);
         addressBook.addPerson(STAFF_MIA);
         addressBook.addPerson(PLAYER_BETH);
@@ -220,6 +222,20 @@ public class SortCommandTest {
 
         assertCommandSuccess(command, model,
                 String.format(SortCommand.MESSAGE_SUCCESS, "players", "losses", SortCommand.ORDER_DESCENDING),
+                expectedModel);
+        assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_sortAllPersonsByDraws_success() {
+        SortCommand command = new SortCommand(Model.PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.DRAWS, "players", false);
+
+        expectedModel.updateFilteredPersonList(new PersonHasRolePredicate(Role.PLAYER));
+        expectedModel.updateSortedPersonListComparator(PersonSortAttribute.DRAWS.getComparator());
+
+        assertCommandSuccess(command, model,
+                String.format(SortCommand.MESSAGE_SUCCESS, "players", "draws", SortCommand.ORDER_ASCENDING),
                 expectedModel);
         assertEquals(List.of(PLAYER_BETH, PLAYER_ZOE), model.getFilteredPersonList());
     }

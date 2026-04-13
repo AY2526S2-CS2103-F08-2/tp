@@ -279,6 +279,7 @@ Examples:
 * `filter pos/Forward goals/>10`
 * `filter wins/<3`
 * `filter r/player losses/=0`
+* `filter draws/=2`
 
 ### Player Stats
 Every **player** will have stats that denote their individual performance. 
@@ -616,7 +617,7 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | **Edit**            | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                                      |
 | **Delete Event**    | `eventdelete INDEX` <br> e.g., `eventdelete 3`                                                                                                                                                                                        |
 | **Edit Event**      | `eventedit INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`eventedit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                                 |
-| **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10`                                                                |
+| **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM] [draws/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10 draws/>0`                               |
 | **Find**            | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                                       |
 | **List**            | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                                     |
 | **Sort**            | `sort by/ATTRIBUTE [desc]` / `sort r/player by/ATTRIBUTE [desc]` / `sort r/staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                                   |

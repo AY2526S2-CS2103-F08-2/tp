@@ -12,6 +12,7 @@ end box
 
 box Model MODEL_COLOR_T1
 participant "m:Model" as Model MODEL_COLOR
+participant "ps:PlayerStats" as PlayerStats MODEL_COLOR
 participant "p:Player" as Player MODEL_COLOR
 end box
 
@@ -55,10 +56,32 @@ activate Model
 Model --> UpdateCommand
 deactivate Model
 
-UpdateCommand -> Player : setMatchesWon(newValue)
+create PlayerStats
+UpdateCommand -> PlayerStats : new PlayerStats(oldStats)
+activate PlayerStats
+PlayerStats --> UpdateCommand
+deactivate PlayerStats
+
+UpdateCommand -> PlayerStats : setValue(newValue)
+activate PlayerStats
+PlayerStats --> UpdateCommand
+deactivate PlayerStats
+
+create Player
+UpdateCommand -> Player : new Player(player, ps)
 activate Player
 Player --> UpdateCommand
 deactivate Player
+
+UpdateCommand -> Model : setPerson(player, updatedPlayer)
+activate Model
+Model --> UpdateCommand
+deactivate Model
+
+UpdateCommand -> Model : updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)
+activate Model
+Model --> UpdateCommand
+deactivate Model
 
 create CommandResult
 UpdateCommand -> CommandResult

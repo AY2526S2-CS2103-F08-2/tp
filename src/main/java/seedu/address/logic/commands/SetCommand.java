@@ -25,7 +25,7 @@ public class SetCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Sets the specific stat of a given player.\n"
             + "Parameters: "
             + "INDEX (must be a positive integer) "
-            + "STAT (must be a valid player stat) [goals|wins|losses] "
+            + "STAT (must be a valid player stat) [goals|wins|losses|draws] "
             + "VALUE"
             + "\nExample: " + COMMAND_WORD + " 1 goals 10";
 

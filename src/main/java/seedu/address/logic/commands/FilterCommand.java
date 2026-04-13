@@ -17,11 +17,11 @@ public class FilterCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Filters persons by role, team, status, position, and player stats.\n"
             + "Parameters: [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[>|<|=]NUM] "
-            + "[wins/[>|<|=]NUM] [losses/[>|<|=]NUM]\n"
+            + "[wins/[>|<|=]NUM] [losses/[>|<|=]NUM] [draws/[>|<|=]NUM]\n"
             + "Examples:\n"
             + "  " + COMMAND_WORD + " r/player pos/Forward goals/>10\n"
             + "  " + COMMAND_WORD + " tm/First Team st/Active\n"
-            + "  " + COMMAND_WORD + " wins/<3";
+            + "  " + COMMAND_WORD + " draws/<3";
     public static final String MESSAGE_TEAM_NOT_FOUND = "Team %s does not exist in the address book!";
     public static final String MESSAGE_STATUS_NOT_FOUND = "Status %s does not exist in the address book!";
     public static final String MESSAGE_POSITION_NOT_FOUND = "Position %s does not exist in the address book!";
