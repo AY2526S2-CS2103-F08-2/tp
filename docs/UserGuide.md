@@ -281,6 +281,7 @@ These stats can be modified by the user via commands.
 - Staff do not have any performance stats.
 - Player stats will not persist if player becomes a staff.
 - A staff will have the default state of performance stats when converted to a player.
+- Values cannot be more than the `Integer` max limit (`2,147,483,647`)
 
 _Current valid stats: `goals`, `wins`, `losses`_
 
