@@ -25,6 +25,7 @@ public enum StatField {
     DRAWS(PlayerStats::getMatchesDrawn, PlayerStats::setMatchesDrawn,
             x -> x >= 0, StatField.MESSAGE_GTE_ZERO);
 
+    public static final String MESSAGE_GTE_ZERO = "The value for goals should be more or equal to 0.";
 
     public final String messageConstraints;
 
@@ -69,6 +70,4 @@ public enum StatField {
     public boolean isValid(int value) {
         return validator.test(value);
     }
-
-    public static final String MESSAGE_GTE_ZERO = "The value for goals should be more or equal to 0.";
 }
