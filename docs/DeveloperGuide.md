@@ -351,6 +351,13 @@ internal replacement steps are intentionally shown in a simplified form to keep 
 
 ![Model-level attribute rename cascade](images/AttributeRenameCascadeSequenceDiagram.png)
 
+#### Batch Import
+The `importcsv` command allows batch import of players/staff, with fields defined in each column.
+The **User Guide** will have the latest expected format. The parser is strict and expect the CSV file to comply with the given format.
+
+The CSV is custom, which allows behaviour such as escaped commas. 
+Parser behaviour is customizable by modifying `CsvImportService`/`CsvImportResult`.
+
 #### Storage behavior
 
 `JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
@@ -366,6 +373,8 @@ During load:
 #### UI behavior
 
 `PersonCard` renders `Team`, `Status`, and `Position` labels only when the person has non-default values.
+
+It also adds a red `staff` logo if the contact is a staff. If it is a player, the defined performance stats are displayed.
 
 ### Delete and bulk-delete confirmation flow
 
