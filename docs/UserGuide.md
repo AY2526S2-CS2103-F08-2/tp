@@ -506,6 +506,8 @@ Imports contacts from a given CSV file. Expects the CSV file to follow format st
 - If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
 
 - Then, the relevant error messages per row that failed to import will be displayed.
+- The CSV can contain commas (`,`) as part of the field, but escaped.
+  - `12 Clementi Road\, 612345`
 - **For tags,** each tag is separated by a semicolon (`;`)
 
 Format: `importcsv`
