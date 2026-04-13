@@ -7,7 +7,7 @@ participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":ListCommandParser" as ListCommandParser LOGIC_COLOR
 participant "lr:ListRoleCommand" as ListRoleCommand LOGIC_COLOR
-participant "r:CommandResult" as CommandResult LOGIC_COLOR
+participant "commandResult:CommandResult" as CommandResult LOGIC_COLOR
 end box
 
 box Model MODEL_COLOR_T1
@@ -27,7 +27,7 @@ activate ListCommandParser
 ListCommandParser --> AddressBookParser
 deactivate ListCommandParser
 
-AddressBookParser -> ListCommandParser : parse(" r/player")
+AddressBookParser -> ListCommandParser : parse("r/player")
 activate ListCommandParser
 
 create ListRoleCommand
@@ -57,10 +57,10 @@ deactivate Model
 create CommandResult
 ListRoleCommand -> CommandResult
 activate CommandResult
-CommandResult --> ListRoleCommand : r
+CommandResult --> ListRoleCommand : commandResult
 deactivate CommandResult
 
-ListRoleCommand --> LogicManager : r
+ListRoleCommand --> LogicManager : commandResult
 deactivate ListRoleCommand
 
 [<--LogicManager
