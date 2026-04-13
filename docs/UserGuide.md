@@ -267,7 +267,7 @@ These stats can be modified by the user via commands.
 - Player stats will not persist if player becomes a staff.
 - A staff will have the default state of performance stats when converted to a player.
 
-_Current valid stats: `goals`, `wins`, `losses`_
+_Current valid stats: `goals`, `wins`, `losses`, `draws`_
 
 #### Set player stat: `set`
 Sets a specific stat of a player to a given value.
