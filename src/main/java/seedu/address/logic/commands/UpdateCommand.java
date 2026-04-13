@@ -26,13 +26,14 @@ public class UpdateCommand extends Command {
             + " by incrementing it with the given value.\n"
             + "Parameters: "
             + "INDEX (must be a positive integer) "
-            + "STAT (must be a valid player stat) [goals|wins|losses] "
+            + "STAT (must be a valid player stat) [goals|wins|losses|draws] "
             + "VALUE"
-            + "\nExample: " + COMMAND_WORD + " 1 wins 5";
+            + "\nExample: " + COMMAND_WORD + " 1 wins 5"
+            + "\nThe updated value should be within the stat constraints.";
 
     public static final String MESSAGE_SET_PLAYER_SUCCESS = "Update %1$s\n%2$s: %3$s -> %4$s (%5$s)";
     public static final String MESSAGE_NOT_PLAYER = "This person must be a player.";
-    public static final String MESSAGE_STAT_OVERFLOW = "Stat value has exceeded the maximum limit."
+    public static final String MESSAGE_STAT_OVERFLOW = "Set value has exceeded the maximum limit."
             + "\nWhy are you trying to overflow it?";
 
     private final Index index;

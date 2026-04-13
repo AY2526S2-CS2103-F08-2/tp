@@ -45,7 +45,8 @@ public class FilterCommandTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 10)),
                 Optional.empty(),
-                Optional.empty());
+                Optional.empty(),
+                Optional.of(new NumericComparison(Operator.EQUALS, 2)));
         FilterCommand command = new FilterCommand(predicate);
 
         expectedModel.updateFilteredPersonList(predicate);
@@ -63,6 +64,7 @@ public class FilterCommandTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 2)),
+                Optional.empty(),
                 Optional.empty());
         FilterCommand command = new FilterCommand(predicate);
 
@@ -75,7 +77,7 @@ public class FilterCommandTest {
         Model model = new ModelManager(buildAddressBookWithFilterablePersons(), new UserPrefs());
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
                 Optional.empty(), Optional.of(new Team("Ghost Team")), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         FilterCommand command = new FilterCommand(predicate);
 
         assertCommandFailure(command, model, String.format(FilterCommand.MESSAGE_TEAM_NOT_FOUND, "Ghost Team"));
@@ -86,7 +88,7 @@ public class FilterCommandTest {
         Model model = new ModelManager(buildAddressBookWithFilterablePersons(), new UserPrefs());
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(new Status("Retired")), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         FilterCommand command = new FilterCommand(predicate);
 
         assertCommandFailure(command, model, String.format(FilterCommand.MESSAGE_STATUS_NOT_FOUND, "Retired"));
@@ -97,7 +99,7 @@ public class FilterCommandTest {
         Model model = new ModelManager(buildAddressBookWithFilterablePersons(), new UserPrefs());
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(new Position("Coach")),
-                Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         FilterCommand command = new FilterCommand(predicate);
 
         assertCommandFailure(command, model, String.format(FilterCommand.MESSAGE_POSITION_NOT_FOUND, "Coach"));
@@ -107,10 +109,11 @@ public class FilterCommandTest {
     public void equals() {
         PersonMatchesFilterPredicate firstPredicate = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER), Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)), Optional.empty(), Optional.empty());
+                Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
+                Optional.empty(), Optional.empty(), Optional.empty());
         PersonMatchesFilterPredicate secondPredicate = new PersonMatchesFilterPredicate(
                 Optional.empty(), Optional.of(new Team("First Team")), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 
         FilterCommand first = new FilterCommand(firstPredicate);
         FilterCommand second = new FilterCommand(secondPredicate);
@@ -126,7 +129,8 @@ public class FilterCommandTest {
     public void toStringMethod() {
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER), Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)), Optional.empty(), Optional.empty());
+                Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
+                Optional.empty(), Optional.empty(), Optional.empty());
         FilterCommand command = new FilterCommand(predicate);
 
         String expected = new ToStringBuilder(command)
@@ -152,6 +156,7 @@ public class FilterCommandTest {
         strikerPlayer.getStats().setGoalsScored(12);
         strikerPlayer.getStats().setMatchesWon(4);
         strikerPlayer.getStats().setMatchesLost(1);
+        strikerPlayer.getStats().setMatchesDrawn(2);
 
         Person backupForward = new PersonBuilder()
                 .withName("Backup Forward")
@@ -167,6 +172,7 @@ public class FilterCommandTest {
         backupForwardPlayer.getStats().setGoalsScored(3);
         backupForwardPlayer.getStats().setMatchesWon(1);
         backupForwardPlayer.getStats().setMatchesLost(2);
+        backupForwardPlayer.getStats().setMatchesDrawn(0);
 
         Person staff = new PersonBuilder()
                 .withName("Team Staff")

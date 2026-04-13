@@ -23,7 +23,7 @@ public class SortCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Sorts persons by a supported attribute.\n"
-            + "Parameters: [r/ROLE] by/[name | email | team | status | position | goals | wins | losses] "
+            + "Parameters: [r/ROLE] by/[name | email | team | status | position | goals | wins | losses | draws] "
             + "[desc]\n"
             + "Examples: " + COMMAND_WORD + " by/name desc, "
             + COMMAND_WORD + " r/player by/goals desc";
@@ -57,11 +57,15 @@ public class SortCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        Predicate<Person> predicateToApply = predicate == Model.PREDICATE_SHOW_ALL_PERSONS
-                ? model.getFilteredPersonListPredicate()
-                : predicate;
-        if (attribute.isPlayerStatAttribute()) {
+        Predicate<Person> predicateToApply = predicate;
+        if (predicate == Model.PREDICATE_SHOW_ALL_PERSONS && !attribute.isPlayerStatAttribute()) {
+            predicateToApply = model.getFilteredPersonListPredicate();
+        }
+        if (attribute.isPlayerStatAttribute() && predicate != Model.PREDICATE_SHOW_ALL_PERSONS) {
             predicateToApply = predicateToApply.and(new PersonHasRolePredicate(Role.PLAYER));
+        }
+        if (attribute.isPlayerStatAttribute() && predicate == Model.PREDICATE_SHOW_ALL_PERSONS) {
+            predicateToApply = new PersonHasRolePredicate(Role.PLAYER);
         }
         model.updateFilteredPersonList(predicateToApply);
         model.updateSortedPersonListComparator(comparator);

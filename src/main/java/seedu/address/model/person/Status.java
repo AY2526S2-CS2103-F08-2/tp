@@ -11,8 +11,8 @@ public class Status {
 
     public static final String DEFAULT_UNKNOWN_STATUS = "Unknown";
     public static final String MESSAGE_CONSTRAINTS =
-            "Status names should only contain alphanumeric characters, spaces, and hyphens,"
-                    + " and it should not be blank.";
+            "Status names must start and end with an alphanumeric character,"
+                    + " and may contain only alphanumeric characters, spaces, and hyphens in between.";
     public static final String VALIDATION_REGEX = "[\\p{Alnum}](?:[\\p{Alnum} -]*[\\p{Alnum}])?";
 
     public final String value;
@@ -74,4 +74,3 @@ public class Status {
         return value;
     }
 }
-

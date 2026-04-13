@@ -15,13 +15,16 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EventEditCommand.EditEventDescriptor;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.event.Event;
+import seedu.address.model.event.EventPlayerList;
 import seedu.address.testutil.EditEventDescriptorBuilder;
 import seedu.address.testutil.EventBuilder;
+import seedu.address.testutil.TypicalPersons;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for EventEditCommand.
@@ -52,6 +55,32 @@ public class EventEditCommandTest {
         String expectedMessage = EventEditCommand.MESSAGE_NO_FIELD_WAS_CHANGED;
 
         assertCommandFailure(eventEditCommand, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_editMetadata_preservesAttendance() throws CommandException {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(TypicalPersons.PLAYER_AMY);
+
+        Event baseEvent = new EventBuilder()
+                .withEventName("Warm Up")
+                .withEventType("TRAINING")
+                .withDate("2026-05-15 1600")
+                .withPlayers(java.util.Set.of(TypicalPersons.PLAYER_AMY))
+                .build();
+        Event eventWithAttendance = Event.createEventWithAttendees(baseEvent.getEventName(), baseEvent.getEventDate(),
+                baseEvent.getEventType(), baseEvent.getEventPlayerList(),
+                new EventPlayerList(java.util.Set.of(TypicalPersons.PLAYER_AMY)));
+        addressBook.addEvent(eventWithAttendance);
+
+        ModelManager model = new ModelManager(addressBook, new UserPrefs());
+        EditEventDescriptor descriptor = new EditEventDescriptorBuilder().withEventName("WarmUpUpdated").build();
+
+        new EventEditCommand(INDEX_FIRST_EVENT, descriptor).execute(model);
+
+        Event editedEvent = model.getEventList().get(0);
+        assertTrue(editedEvent.getAttendedPlayerList().contains(TypicalPersons.PLAYER_AMY));
+        assertEquals(TypicalPersons.PLAYER_AMY.getName().toString() + " : 100.0%\n", model.getAttendanceReport());
     }
 
     @Test

@@ -3,7 +3,10 @@ layout: page
 title: User Guide
 ---
 
-SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
+SoCcer Manager is a **desktop app for soccer academy managers, coaches, and team administrators** who need to manage
+players and staff across multiple teams. It is optimized for use via a Command Line Interface (CLI), where users type
+commands, while still having the benefits of a Graphical User Interface (GUI), the visual app window. If you can type
+fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -24,8 +27,8 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
    ![Ui](images/Ui.png)
 
    If double-clicking the jar does not launch the app on your system, use the terminal command above instead.
-   Also avoid storing the jar in a write-protected folder, because SoCcer Manager needs to create and update its
-   data files beside the jar.
+   Also avoid storing the jar in a write-protected folder, which is a folder where your computer does not allow
+   the app to create or update files.
 
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
@@ -52,7 +55,7 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
 
-   * `clear` : Clears all persons and events while keeping the default Team/Status/Position catalogs.
+   * `clear` : Immediately clears all persons and events while keeping the default Team/Status/Position catalogs. Use with care.
 
    * `exit` : Exits the app.
 
@@ -78,9 +81,9 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for some commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for some commands that do not take in parameters (such as `help` and `exit`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.<br>
-  Some fixed-format commands such as `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
+  Some fixed-format commands such as `clear`, `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
@@ -108,6 +111,8 @@ A person can have any number of tags (including 0)
 
 Notes:
 * `tm/TEAM`, `st/STATUS`, and `pos/POSITION` are optional.
+* A person's name is case insensitive. If `Alex Yeoh` exists in SoCcer Manager, `alex yeoh` will not be allowed to be 
+added.
 * If omitted, defaults are used: `Unassigned Team`, `Unknown`, `Unassigned Position`.
 * If provided, `TEAM`/`STATUS`/`POSITION` must already exist in their respective catalogs
   (see [Attributes](#attributes)).
@@ -118,35 +123,37 @@ Notes:
 
 Examples:
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe r/staff t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/Betsy Crowe r/staff t/physio e/betsycrowe@example.com a/Newgate Prison p/1234567 st/Active`
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street tm/First Team st/Active pos/Forward`
 
 ### Adding a match: `matchadd`
 
 Adds a match to the address book.
 
-Format: `matchadd n/OPPONENT_NAME d/DATE [st/STATUS | pos/POSITION | tm/TEAM] [pl/PLAYER_NAME]…​`
+Format: `matchadd n/OPPONENT_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​`
 
 Notes: 
 - Date must have format `yyyy-MM-dd HHmm`
 - Variable number of players can be added to the match, and must exist in the address book
 - Status, position and team are optional. If specified, will add all players that match ALL the parameters.
+- Warning: Currently, the app allows for players to be a part of multiple trainings/matches at the same time slot. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
 Examples:
-- `matchadd n/Mancherster United d/2026-05-15 1600`
-- `matchadd n/Mancherster United d/2026-05-15 1600 pl/John Doe`
-- `matchadd n/Mancherster United d/2026-05-15 1600 st/Active tm/First Team`
+- `matchadd n/Manchester United d/2026-05-15 1600`
+- `matchadd n/Manchester United d/2026-05-15 1600 pl/John Doe`
+- `matchadd n/Manchester United d/2026-05-15 1600 st/Active tm/First Team`
 
 ### Adding a training session: `trainingadd`
 
 Adds a training session to the address book.
 
-Format: `trainingadd n/TRAINING_NAME d/DATE [st/STATUS | pos/POSITION | tm/TEAM] [pl/PLAYER_NAME]…​`
+Format: `trainingadd n/TRAINING_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​`
 
 Notes:
 - Date must have format `yyyy-MM-dd HHmm`
 - Variable number of players can be added to the training session, and must exist in the address book
 - Status, position and team are optional. If specified, will add all players that match ALL the parameters.
+- Warning: Currently, the app allows for players to be a part of multiple trainings/matches at the same time slot. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
 Examples:
 - `trainingadd n/Warm Up d/2026-05-15 1600`
@@ -176,6 +183,8 @@ Examples:
 * `list tm/First Team`
 * `list r/player st/Active pos/Defender`
 
+![Example roster view after list commands](images/Ui.png)
+
 ### Marking attendance for events: `attendancemark`
 
 Marks attendance for specified players for the specified event.
@@ -186,6 +195,8 @@ Notes:
 - The event index provided must be a valid index.
 - The players provided must exist in the addressbook and also be part of the event player list.
 - Players who are not present have (NP) beside their name in the event player list. Those who are present have (P) instead.
+- Warning: Attendance can only be marked currently. Once a player is marked for attendance, they cannot be unmarked. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
+
 
 Examples:
 - `attendancemark 1 pl/Alex Yeoh`
@@ -222,11 +233,12 @@ Supported attributes:
 * `goals`
 * `wins`
 * `losses`
+* `draws`
 
 Notes:
-* `goals`, `wins`, and `losses` are player-only sort attributes.
-* `sort by/goals`, `sort by/wins`, and `sort by/losses` will show only players.
-* `sort r/staff by/goals`, `sort r/staff by/wins`, and `sort r/staff by/losses` are invalid.
+* `goals`, `wins`, `losses`, and `draws` are player-only sort attributes.
+* `sort by/goals`, `sort by/wins`, `sort by/losses`, and `sort by/draws` will show only players.
+* `sort r/staff by/goals`, `sort r/staff by/wins`, `sort r/staff by/losses`, and `sort r/staff by/draws` are invalid.
 
 Examples:
 * `sort by/name`
@@ -236,19 +248,29 @@ Examples:
 * `sort r/player by/position desc`
 * `sort by/wins desc`
 * `sort r/player by/goals desc`
+* `sort by/draws`
 * `sort r/staff by/name desc`
+
+Multi-step examples:
+1. Run `list r/staff`.
+2. Run `sort by/status`.
+3. The roster remains sorted by `status` using the current visible list.
+
+1. Run `list r/staff`.
+2. Run `sort by/goals`.
+3. The view switches to players only, because `goals` is a player-only sort attribute.
 
 ### Filtering persons: `filter`
 
 Filters persons in the UI using structured attribute and stat criteria.
 
 Format:
-* `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[>|<|=]NUM] [wins/[>|<|=]NUM] [losses/[>|<|=]NUM]`
+* `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[>|<|=]NUM] [wins/[>|<|=]NUM] [losses/[>|<|=]NUM] [draws/[>|<|=]NUM]`
 
 Rules:
 * All provided filters are combined using AND semantics.
 * Invalid `tm/`, `st/`, or `pos/` values are rejected if they do not exist in the current catalog.
-* `goals`, `wins`, and `losses` filters apply only to players.
+* `goals`, `wins`, `losses`, and `draws` filters apply only to players.
 * Use `list` to reset the filtered view and show all persons again.
 
 Examples:
@@ -257,6 +279,7 @@ Examples:
 * `filter pos/Forward goals/>10`
 * `filter wins/<3`
 * `filter r/player losses/=0`
+* `filter draws/=2`
 
 ### Player Stats
 Every **player** will have stats that denote their individual performance. 
@@ -266,8 +289,9 @@ These stats can be modified by the user via commands.
 - Staff do not have any performance stats.
 - Player stats will not persist if player becomes a staff.
 - A staff will have the default state of performance stats when converted to a player.
+- Values cannot be more than the `Integer` max limit (`2,147,483,647`)
 
-_Current valid stats: `goals`, `wins`, `losses`_
+_Current valid stats: `goals`, `wins`, `losses`, `draws`_
 
 #### Set player stat: `set`
 Sets a specific stat of a player to a given value.
@@ -302,7 +326,8 @@ Catalog behavior:
 * Renaming a catalog value automatically updates all persons currently assigned that value.
 * When creating catalog entries (`teamadd`/`statusadd`/`positionadd`), entered display casing is preserved.
   Matching and uniqueness checks remain case-insensitive.
-* Team, status, and position names must be non-blank and may contain only letters/numbers, spaces, and hyphens.
+* Team, status, and position names must start and end with a letter or number.
+  They may contain only letters, numbers, spaces, and hyphens in between.
 
 Role applicability:
 * `Team` and `Status` apply to both players and staff.
@@ -311,127 +336,76 @@ Role applicability:
 Display behavior:
 * Person cards show `Team`, `Status`, and `Position` only when the value is non-default.
 
+![Attribute display on person cards](images/attributeDisplay.png)
+
 For attribute catalog commands, value matching is case-insensitive. This means both `*edit` and `*delete`
 commands work regardless of letter case (for example, `teamdelete reserve team` matches `Reserve Team`).
 
 Case-only renames are supported for attribute edit commands. For example, if `R` exists in a catalog,
 `teamedit old/R new/r` (and similarly for `statusedit` / `positionedit`) updates the displayed casing.
 
-#### Listing teams: `teamlist`
+#### Listing attribute catalog values: `teamlist`, `statuslist`, `positionlist`
 
-Shows all teams in the team catalog.
+Shows all values in the selected attribute catalog.
 
-Format: `teamlist`
-
-Examples:
+Formats:
 * `teamlist`
+* `statuslist`
+* `positionlist`
 
-#### Adding a team: `teamadd`
+![Attribute catalog list output](images/attributeCatalogList.png)
 
-Adds a team to the team catalog.
+#### Adding attribute catalog values: `teamadd`, `statusadd`, `positionadd`
 
-Format: `teamadd TEAM_NAME`
+Adds a value to the selected attribute catalog.
+
+Formats:
+* `teamadd TEAM_NAME`
+* `statusadd STATUS_NAME`
+* `positionadd POSITION_NAME`
 
 Examples:
 * `teamadd Reserve Team`
+* `statusadd Rehab`
+* `positionadd Winger`
 
-#### Editing a team: `teamedit`
+#### Editing attribute catalog values: `teamedit`, `statusedit`, `positionedit`
 
-Renames an existing team in the team catalog.
+Renames an existing value in the selected attribute catalog.
 
-Format: `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME`
+Formats:
+* `teamedit old/OLD_TEAM_NAME new/NEW_TEAM_NAME`
+* `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME`
+* `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME`
 
 Examples:
 * `teamedit old/First Team new/Reserve Team`
+* `statusedit old/Active new/Rehab`
+* `positionedit old/Defender new/Center Back`
 
-#### Deleting a team: `teamdelete`
+#### Deleting attribute catalog values: `teamdelete`, `statusdelete`, `positiondelete`
 
-Deletes an existing team from the team catalog.
+Deletes an existing value from the selected attribute catalog.
 
-Format: `teamdelete TEAM_NAME`
+Formats:
+* `teamdelete TEAM_NAME`
+* `statusdelete STATUS_NAME`
+* `positiondelete POSITION_NAME`
 
 Examples:
 * `teamdelete Reserve Team`
-
-#### Listing statuses: `statuslist`
-
-Shows all statuses in the status catalog.
-
-Format: `statuslist`
-
-Examples:
-* `statuslist`
-
-#### Adding a status: `statusadd`
-
-Adds a status to the status catalog.
-
-Format: `statusadd STATUS_NAME`
-
-Examples:
-* `statusadd Rehab`
-
-#### Editing a status: `statusedit`
-
-Renames an existing status in the status catalog.
-
-Format: `statusedit old/OLD_STATUS_NAME new/NEW_STATUS_NAME`
-
-Examples:
-* `statusedit old/Active new/Rehab`
-
-#### Deleting a status: `statusdelete`
-
-Deletes an existing status from the status catalog.
-
-Format: `statusdelete STATUS_NAME`
-
-Examples:
 * `statusdelete Rehab`
-
-#### Listing positions: `positionlist`
-
-Shows all positions in the position catalog.
-
-Format: `positionlist`
-
-Examples:
-* `positionlist`
-
-#### Adding a position: `positionadd`
-
-Adds a position to the position catalog.
-
-Format: `positionadd POSITION_NAME`
-
-Examples:
-* `positionadd Winger`
-
-#### Editing a position: `positionedit`
-
-Renames an existing position in the position catalog.
-
-Format: `positionedit old/OLD_POSITION_NAME new/NEW_POSITION_NAME`
-
-Examples:
-* `positionedit old/Defender new/Center Back`
-
-#### Deleting a position: `positiondelete`
-
-Deletes an existing position from the position catalog.
-
-Format: `positiondelete POSITION_NAME`
-
-Examples:
 * `positiondelete Winger`
 
 ### Editing a person : `edit`
 
 Edits an existing person in SoCcer Manager.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+Notes:
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list.
+  The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * If provided, `tm/TEAM`, `st/STATUS`, and `pos/POSITION` must already exist in their respective catalogs.
@@ -439,9 +413,8 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] 
   (e.g., if `teamlist` contains `third team`, then `tm/Third Team` is stored as `third team`).
 * `pos/` is only applicable to players.
 * If the resulting role is `staff`, any provided `pos/` is rejected.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
+* When editing tags, the existing tags of the person will be removed. Tag editing is not cumulative.
+* You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
@@ -473,6 +446,7 @@ Format: `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
 * Prefixing with `r/player` or `r/staff` limits the results to that role.
+  The role prefix can appear before or after the keywords.
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
@@ -480,6 +454,7 @@ Format: `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find r/player John` returns players whose names match `John`
+* `find alex r/staff` returns staff whose names match `alex`
 * `find r/staff alex david` returns staff whose names match `alex` OR `david`
 * `find staff ben` treats `staff` as a normal name keyword (general search)
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
@@ -508,6 +483,18 @@ Examples:
 * `delete n/Amy Y` treats `Amy Y` as a literal name target.
 * `delete n/2` treats `2` as a literal name target.
 
+Step-by-step examples:
+1. To delete a single matched person:
+   Run `delete Bernice`.
+   If exactly one person matches, SoCcer Manager shows that person and asks for confirmation.
+   Type `y` to delete the person, or `n` to cancel.
+
+2. To delete when multiple persons match:
+   Run `delete Meier`.
+   If multiple persons match, SoCcer Manager shows a numbered clash list.
+   Type the clash index shown in the message, for example `2`.
+   After the person is selected, type `y` to confirm deletion or `n` to cancel.
+
 ### Deleting an event : `eventdelete`
 
 Format: `eventdelete INDEX`
@@ -534,11 +521,28 @@ Examples:
 * `deletebulk tm/Reserve Team`, then `y` deletes all persons assigned to `Reserve Team`.
 * `deletebulk st/Unavailable`, then `n` cancels the bulk deletion.
 
+Step-by-step example:
+1. Run `deletebulk tm/Reserve Team`.
+2. SoCcer Manager shows all matching persons in the message and in the current list.
+3. Review the affected persons before confirming.
+4. Type `y` to delete all shown matches, or `n` to cancel.
+
 ### Clearing all entries : `clear`
 
-Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
+Immediately clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position
+catalogs.
+
+Notes:
+* `clear` executes immediately when entered.
+* There is no confirmation step before the address book is cleared.
+* Use this command carefully because it removes all persons and events at once.
 
 Format: `clear`
+
+Notes:
+* `clear` executes immediately when entered.
+* There is no confirmation step before the address book is cleared.
+* Use this command carefully because it removes all persons and events at once.
 
 ### Exiting the program : `exit`
 
@@ -556,11 +560,24 @@ Imports contacts from a given CSV file. Expects the CSV file to follow format st
 
 **If headers are invalid, CSV importing will fail.**
 
-If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
+- If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
 
-Then, the relevant error messages per row that failed to import will be displayed.
+- Then, the relevant error messages per row that failed to import will be displayed.
+- The CSV can contain commas (`,`) as part of the field, but escaped.
+  - `12 Clementi Road\, 612345`
+- **For tags,** each tag is separated by a semicolon (`;`)
 
 Format: `importcsv`
+
+**Example CSV:**
+```csv
+name,role,address,phone,email,tags
+Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain;striker
+Bernice Lim,staff,45 Jurong West Ave 3,92345678,bernice.lim@example.com,manager
+Cheryl Goh,player,89 Bukit Timah Road,93456789,cheryl.goh@example.com,midfielder
+Daniel Lee,player,101 Pasir Ris Drive 4,94567890,daniel.lee@example.com,defender
+Ethan Ong,staff,22 Tampines Street 11,95678901,ethan.ong@example.com,physio
+```
 
 ### Saving the data
 
@@ -598,7 +615,7 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | Action              | Format, Examples                                                                                                                                                                                                                      |
 |---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Add**             | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 tm/First Team st/Active t/friend` |
-| **Match**           | `matchadd n/OPPONENT_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `matchadd n/Mancherster United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                    |
+| **Match**           | `matchadd n/OPPONENT_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `matchadd n/Manchester United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                   |
 | **Training**        | `trainingadd n/TRAINING_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `trainingadd n/Warm Up d/2026-06-16 1700 tm/First Team pl/John Doe`                                                         |
 | **Attendance**      | `attendance`                                                                                                                                                                                                                          |
 | **Attendance Mark** | `attendancemark INDEX [pl/PLAYER_NAME]…​` <br> e.g., `attendancemark 1 pl/Alex Yeoh pl/Bernice Yu`                                                                                                                                    |
@@ -608,10 +625,10 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | **Edit**            | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                                      |
 | **Delete Event**    | `eventdelete INDEX` <br> e.g., `eventdelete 3`                                                                                                                                                                                        |
 | **Edit Event**      | `eventedit INDEX [n/EVENT_NAME] [et/EVENT_TYPE] [d/DATE] [pl/PLAYER_NAME]…​`<br> e.g.,`eventedit 2 n/Barcelona et/MATCH pl/Alex Yeoh`                                                                                                 |
-| **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10`                                                                |
+| **Filter**          | `filter [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [goals/[><\|=]NUM] [wins/[>\|< \|=]NUM] [losses/[>\|<\|=]NUM] [draws/[>\|<\|=]NUM]`<br> e.g., `filter r/player pos/Forward goals/>10 draws/>0`                               |
 | **Find**            | `find [r/ROLE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`, `find r/player James`, `find r/staff Alex`                                                                                                                       |
-| **List**            | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                                   |
-| **Sort**            | `sort by/ATTRIBUTE [desc]` / `sort r/player by/ATTRIBUTE [desc]` / `sort r/staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                                  |
+| **List**            | `list` / `list r/ROLE` / `list [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION]`<br> e.g., `list r/player st/Active`                                                                                                                     |
+| **Sort**            | `sort by/ATTRIBUTE [desc]` / `sort r/player by/ATTRIBUTE [desc]` / `sort r/staff by/ATTRIBUTE [desc]`<br> e.g., `sort by/name desc`                                                                                                   |
 | **Set**             | `set INDEX STAT VALUE` <br> e.g., `set 1 goals 6`                                                                                                                                                                                     |
 | **Update**          | `update INDEX STAT VALUE` <br> e.g., `update 1 wins 1`                                                                                                                                                                                |
 | **Help**            | `help`                                                                                                                                                                                                                                |

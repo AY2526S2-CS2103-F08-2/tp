@@ -47,11 +47,7 @@ public class ListCommandParser implements Parser<seedu.address.logic.commands.Co
 
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(" " + trimmedArgs, PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
-        try {
-            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
-        } catch (ParseException pe) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE));
-        }
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS, PREFIX_POSITION);
 
         if (!argMultimap.getPreamble().trim().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE));

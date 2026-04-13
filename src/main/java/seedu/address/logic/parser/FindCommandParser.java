@@ -4,8 +4,10 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
@@ -34,21 +36,36 @@ public class FindCommandParser implements Parser<FindCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
 
-        String[] tokens = trimmedArgs.split("\\s+");
-        String firstToken = tokens[0];
+        List<String> tokens = Arrays.asList(trimmedArgs.split("\\s+"));
+        Optional<Role> role = Optional.empty();
+        List<String> nameKeywords = new ArrayList<>();
 
-        if (isRolePrefixedToken(firstToken)) {
-            if (tokens.length == 1) {
-                throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        for (String token : tokens) {
+            if (isRolePrefixedToken(token)) {
+                if (role.isPresent()) {
+                    throw new ParseException(
+                            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                }
+                role = Optional.of(ParserUtil.parseRole(token.substring(PREFIX_ROLE.getPrefix().length())));
+            } else {
+                nameKeywords.add(token);
             }
-            Role role = ParserUtil.parseRole(firstToken.substring(PREFIX_ROLE.getPrefix().length()));
-            List<String> nameKeywords = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
-            logger.fine(() -> String.format("Parsed role-aware find: role=%s keywords=%d", role, nameKeywords.size()));
-            return new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(role, nameKeywords));
         }
-        logger.fine(() -> String.format("Parsed global find with %d keywords", tokens.length));
-        return new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList(tokens)));
+
+        if (nameKeywords.isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        }
+
+        if (role.isPresent()) {
+            Role parsedRole = role.get();
+            logger.fine(() -> String.format("Parsed role-aware find: role=%s keywords=%d",
+                    parsedRole, nameKeywords.size()));
+            return new FindCommand(new RoleFilteredNameContainsKeywordsPredicate(parsedRole, nameKeywords));
+        }
+
+        logger.fine(() -> String.format("Parsed global find with %d keywords", nameKeywords.size()));
+        return new FindCommand(new NameContainsKeywordsPredicate(nameKeywords));
     }
 
     private boolean isRolePrefixedToken(String token) {
