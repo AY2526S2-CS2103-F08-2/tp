@@ -489,11 +489,12 @@ Examples:
 
 Deletes a person from SoCcer Manager by list index or name keywords.
 
-Format: `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`
+Format: `delete INDEX` or `delete n/NAME [MORE_KEYWORDS]`
 
 * `delete INDEX` selects the person at the specified `INDEX`.
 * The index refers to the index number shown in the displayed person list.
-* `delete KEYWORD [MORE_KEYWORDS]` searches by name (same name-matching rules as `find`).
+* `delete n/NAME [MORE_KEYWORDS]` searches by name (same name-matching rules as `find`).
+* Use `n/` when deleting by name, especially if the name contains values such as `Y`, `N`, or numbers.
 * If one person matches, it will show that person and ask for confirmation.
 * If multiple persons match, it will show a clash list with indexes. Enter the clash index to choose a person.
 * To confirm or cancel deletion, type `y`/`Y` or `n`/`N`.
@@ -502,8 +503,10 @@ Format: `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`
 
 Examples:
 * `list` followed by `delete 2`, then `y` deletes the 2nd person in SoCcer Manager.
-* `delete Bernice`, then `n` cancels deletion.
-* `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
+* `delete n/Bernice`, then `n` cancels deletion.
+* `delete n/Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
+* `delete n/Amy Y` treats `Amy Y` as a literal name target.
+* `delete n/2` treats `2` as a literal name target.
 
 ### Deleting an event : `eventdelete`
 
@@ -600,7 +603,7 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | **Attendance**      | `attendance`                                                                                                                                                                                                                          |
 | **Attendance Mark** | `attendancemark INDEX [pl/PLAYER_NAME]…​` <br> e.g., `attendancemark 1 pl/Alex Yeoh pl/Bernice Yu`                                                                                                                                    |
 | **Clear**           | `clear`                                                                                                                                                                                                                               |
-| **Delete**          | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)                                                                                             |
+| **Delete**          | `delete INDEX` or `delete n/NAME [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete n/Bernice`, `delete n/Meier` (then `2`, then `y`)                                                                                           |
 | **Delete Bulk**     | `deletebulk [t/TAG \| tm/TEAM \| st/STATUS]`<br> e.g., `deletebulk st/Unavailable` (then `y` or `n`)                                                                                                                                  |
 | **Edit**            | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                                      |
 | **Delete Event**    | `eventdelete INDEX` <br> e.g., `eventdelete 3`                                                                                                                                                                                        |

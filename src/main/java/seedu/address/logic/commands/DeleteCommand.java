@@ -32,10 +32,10 @@ public class DeleteCommand extends Command {
             + "You can confirm with Y/N after selecting a person.\n"
             + "Parameters:\n"
             + "  1) INDEX\n"
-            + "  2) NAME [MATCH_INDEX]\n"
+            + "  2) n/NAME [MORE_KEYWORDS]\n"
             + "Examples:\n"
             + "  " + COMMAND_WORD + " 3\n"
-            + "  " + COMMAND_WORD + " Ryan\n";
+            + "  " + COMMAND_WORD + " n/Ryan\n";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted %1$s: %2$s";
     public static final String MESSAGE_DELETE_PERSON_CANCELLED = "Deletion cancelled for %1$s: %2$s";

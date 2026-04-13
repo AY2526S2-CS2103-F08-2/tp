@@ -372,10 +372,13 @@ During load:
 The `delete` and `deletebulk` features use a parser-managed continuation flow so that follow-up inputs can stay short
 for the user.
 
-* For `delete`, an initial command can identify a player by list index or by matching name keywords.
+* For `delete`, an initial command can identify a player by list index or by matching name keywords, preferably using
+  the explicit `n/` prefix for name-based targets.
 * If the command is not yet confirmed, `DeleteInteractionFlow` stores enough context to interpret the next input as
   either confirmation (`y`), cancellation (`n`), or a clash-selection index.
 * For index-based deletion, a follow-up `y` is rewritten internally to `delete INDEX confirm`.
+* For criteria-based deletion, follow-up commands are normalized to the `delete n/NAME ...` form so names like `Y`,
+  `N`, or `2` are preserved as literal name targets.
 * For bulk deletion, a follow-up `y` or `n` is rewritten internally to
   `deletebulk y [t/TAG | tm/TEAM | st/STATUS]` or `deletebulk n [t/TAG | tm/TEAM | st/STATUS]`,
   preserving whichever criterion was originally used.
@@ -1105,5 +1108,4 @@ Compared to AB3, this project required significantly more effort due to the broa
 One particularly challenging area was the implementation of the Team/Status/Position attribute subsystem. Features such as protected defaults, delete guards for in-use attributes, rename cascades, catalog validation, and robust JSON recovery required coordinated changes across the model, commands, storage, and documentation. While we were able to reuse much of AB3’s architecture such as its command flow, storage framework, and JavaFX base, our main effort lay in adapting these foundations to support soccer-specific workflows and stricter domain rules.
 We also spent a substantial amount of effort on roster-management workflows, including deletion, listing, sorting, and filtering. Although these features may appear straightforward, they operate at the intersection of parsing, model updates, filtered-list state, and user feedback. For example, implementing safer deletion required explicit confirmation flows and clash-resolution logic, while more advanced list, sort, and filter functionality had to remain consistent across role-based views, attribute-backed filtering, and player statistics. The real challenge was not in building individual commands, but in ensuring that they worked seamlessly together.
 Finally, implementing batch CSV import revealed numerous edge cases that could potentially corrupt the application. As a result, we dedicated significant time to thoroughly validating and testing our custom CSV parser. This experience also highlighted the added complexity of supporting more advanced imports, such as those involving attributes and statistics, which would require even more comprehensive safeguards. Nonetheless, such enhancements remain feasible with sufficient time and careful implementation.
-
 

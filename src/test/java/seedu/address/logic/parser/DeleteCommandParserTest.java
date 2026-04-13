@@ -31,6 +31,10 @@ public class DeleteCommandParserTest {
         assertParseSuccess(parser, "meier 2", new DeleteCommand("meier 2", null, DeletionDecision.UNDECIDED));
         assertParseSuccess(parser, "Amy Y", new DeleteCommand("Amy Y", null, DeletionDecision.UNDECIDED));
         assertParseSuccess(parser, "Alex 2", new DeleteCommand("Alex 2", null, DeletionDecision.UNDECIDED));
+        assertParseSuccess(parser, "n/meier", new DeleteCommand("meier", null, DeletionDecision.UNDECIDED));
+        assertParseSuccess(parser, "n/Amy Y", new DeleteCommand("Amy Y", null, DeletionDecision.UNDECIDED));
+        assertParseSuccess(parser, "n/Alex 2", new DeleteCommand("Alex 2", null, DeletionDecision.UNDECIDED));
+        assertParseSuccess(parser, "n/2", new DeleteCommand("2", null, DeletionDecision.UNDECIDED));
     }
 
     @Test
@@ -47,11 +51,19 @@ public class DeleteCommandParserTest {
         assertParseSuccess(parser, "meier " + DeleteCommandParser.INTERNAL_MATCH_INDEX_MARKER + " 2 "
                         + DeleteCommandParser.INTERNAL_DECISION_MARKER + " y",
                 new DeleteCommand("meier", INDEX_SECOND_PERSON, DeletionDecision.CONFIRM));
+        assertParseSuccess(parser, "n/Amy Y " + DeleteCommandParser.INTERNAL_MATCH_INDEX_MARKER + " 2",
+                new DeleteCommand("Amy Y", INDEX_SECOND_PERSON, DeletionDecision.UNDECIDED));
+        assertParseSuccess(parser, "n/2 " + DeleteCommandParser.INTERNAL_DECISION_MARKER + " y",
+                new DeleteCommand("2", null, DeletionDecision.CONFIRM));
     }
 
     @Test
     public void parse_invalidArgs_throwsParseException() {
         assertParseFailure(parser, "", String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "Amy n/Bob",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "n/",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "meier " + DeleteCommandParser.INTERNAL_MATCH_INDEX_MARKER,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "meier " + DeleteCommandParser.INTERNAL_DECISION_MARKER,

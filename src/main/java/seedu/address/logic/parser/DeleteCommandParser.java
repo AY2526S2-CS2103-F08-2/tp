@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -35,6 +36,11 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             return parseCriteriaFollowUp(trimmedArgs, tokens);
         }
 
+        DeleteCommand prefixedCriteriaCommand = tryParsePrefixedCriteriaDelete(trimmedArgs);
+        if (prefixedCriteriaCommand != null) {
+            return prefixedCriteriaCommand;
+        }
+
         Index index = tryParseIndex(tokens[0]);
         if (index != null && tokens.length == 1) {
             return DeleteCommand.forAmbiguousNumericInput(trimmedArgs, index);
@@ -51,6 +57,26 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
 
         return new DeleteCommand(trimmedArgs, null, DeletionDecision.UNDECIDED);
+    }
+
+    private DeleteCommand tryParsePrefixedCriteriaDelete(String trimmedArgs) throws ParseException {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + trimmedArgs, PREFIX_NAME);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME);
+
+        if (argMultimap.getValue(PREFIX_NAME).isEmpty()) {
+            return null;
+        }
+
+        if (!argMultimap.getPreamble().isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        }
+
+        String criteria = argMultimap.getValue(PREFIX_NAME).orElse("").trim();
+        if (criteria.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        }
+
+        return new DeleteCommand(criteria, null, DeletionDecision.UNDECIDED);
     }
 
     private Index tryParseIndex(String token) {
@@ -89,7 +115,8 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
 
-        String criteria = String.join(" ", Arrays.copyOfRange(tokens, 0, firstMarkerIndex)).trim();
+        String criteriaArgument = String.join(" ", Arrays.copyOfRange(tokens, 0, firstMarkerIndex)).trim();
+        String criteria = parseCriteriaArgument(criteriaArgument);
         if (criteria.isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
@@ -125,6 +152,19 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
 
         return new DeleteCommand(criteria, matchIndex, DeletionDecision.UNDECIDED);
+    }
+
+    private String parseCriteriaArgument(String criteriaArgument) throws ParseException {
+        if (criteriaArgument.startsWith(PREFIX_NAME.getPrefix())) {
+            ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + criteriaArgument, PREFIX_NAME);
+            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME);
+            if (!argMultimap.getPreamble().isEmpty()) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            }
+            return argMultimap.getValue(PREFIX_NAME).orElse("").trim();
+        }
+
+        return criteriaArgument;
     }
 
     private boolean isInternalCriteriaFollowUp(String[] tokens) {

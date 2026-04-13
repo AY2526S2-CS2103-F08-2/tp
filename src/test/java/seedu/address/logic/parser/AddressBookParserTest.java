@@ -92,6 +92,12 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_deleteWithNamePrefix() throws Exception {
+        DeleteCommand command = (DeleteCommand) parser.parseCommand(DeleteCommand.COMMAND_WORD + " n/Amy Y");
+        assertEquals(new DeleteCommand("Amy Y", null, DeleteCommand.DeletionDecision.UNDECIDED), command);
+    }
+
+    @Test
     public void parseCommand_deleteBulk() throws Exception {
         DeleteBulkCommand command = (DeleteBulkCommand) parser.parseCommand(
                 DeleteBulkCommand.COMMAND_WORD + " t/graduated");

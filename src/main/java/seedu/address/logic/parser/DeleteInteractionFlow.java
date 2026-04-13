@@ -1,5 +1,7 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+
 import java.util.Locale;
 
 import seedu.address.commons.core.index.Index;
@@ -35,7 +37,7 @@ class DeleteInteractionFlow {
         }
 
         if (pendingDeleteContext.pendingDeleteCriteria != null && isPositiveInteger(trimmedInput)) {
-            return DeleteCommand.COMMAND_WORD + " " + pendingDeleteContext.pendingDeleteCriteria + " "
+            return DeleteCommand.COMMAND_WORD + " " + PREFIX_NAME + pendingDeleteContext.pendingDeleteCriteria + " "
                     + DeleteCommandParser.INTERNAL_MATCH_INDEX_MARKER + " " + trimmedInput;
         }
 
@@ -108,6 +110,7 @@ class DeleteInteractionFlow {
 
         StringBuilder commandBuilder = new StringBuilder(DeleteCommand.COMMAND_WORD)
                 .append(" ")
+                .append(PREFIX_NAME)
                 .append(deleteCommand.getCriteria());
         Index criteriaMatchIndex = deleteCommand.getCriteriaMatchIndex();
         if (criteriaMatchIndex != null) {
