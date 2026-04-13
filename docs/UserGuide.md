@@ -3,7 +3,10 @@ layout: page
 title: User Guide
 ---
 
-SoCcer Manager is a **desktop app for managing players and staff, optimized for use via a Command Line Interface** (CLI), where users type commands, while still having the benefits of a Graphical User Interface (GUI), the visual app window. If you can type fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
+SoCcer Manager is a **desktop app for soccer academy managers, coaches, and team administrators** who need to manage
+players and staff across multiple teams. It is optimized for use via a Command Line Interface (CLI), where users type
+commands, while still having the benefits of a Graphical User Interface (GUI), the visual app window. If you can type
+fast, SoCcer Manager can get your team management tasks done faster than traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -52,7 +55,7 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 
    * `delete 3` : Selects the 3rd contact for deletion, then confirm with `y` or `n`.
 
-   * `clear` : Clears all persons and events while keeping the default Team/Status/Position catalogs.
+   * `clear` : Immediately clears all persons and events while keeping the default Team/Status/Position catalogs. Use with care.
 
    * `exit` : Exits the app.
 
@@ -120,7 +123,7 @@ added.
 
 Examples:
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe r/staff t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/Betsy Crowe r/staff t/physio e/betsycrowe@example.com a/Newgate Prison p/1234567 st/Active`
 * `add n/John Doe r/player p/98765432 e/johnd@example.com a/John street tm/First Team st/Active pos/Forward`
 
 ### Adding a match: `matchadd`
@@ -180,6 +183,8 @@ Examples:
 * `list tm/First Team`
 * `list r/player st/Active pos/Defender`
 
+![Example roster view after list commands](images/Ui.png)
+
 ### Marking attendance for events: `attendancemark`
 
 Marks attendance for specified players for the specified event.
@@ -193,7 +198,7 @@ Notes:
 - Warning: Attendance can only be marked currently. Once a player is marked for attendance, they cannot be unmarked. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
 
-- Examples:
+Examples:
 - `attendancemark 1 pl/Alex Yeoh`
 - `attendancemark 2 pl/Alex Yeoh pl/Bernice Yu`
 
@@ -398,7 +403,9 @@ Edits an existing person in SoCcer Manager.
 
 Format: `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+Notes:
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list.
+  The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * If provided, `tm/TEAM`, `st/STATUS`, and `pos/POSITION` must already exist in their respective catalogs.
@@ -406,9 +413,8 @@ Format: `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm
   (e.g., if `teamlist` contains `third team`, then `tm/Third Team` is stored as `third team`).
 * `pos/` is only applicable to players.
 * If the resulting role is `staff`, any provided `pos/` is rejected.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
+* When editing tags, the existing tags of the person will be removed. Tag editing is not cumulative.
+* You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
@@ -520,14 +526,15 @@ Step-by-step example:
 
 ### Clearing all entries : `clear`
 
-Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
+Immediately clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position
+catalogs.
 
 Format: `clear`
 
-Example:
-1. Run `clear`.
-2. Read the confirmation prompt.
-3. Type `y` to proceed or `n` to cancel.
+Notes:
+* `clear` executes immediately when entered.
+* There is no confirmation step before the address book is cleared.
+* Use this command carefully because it removes all persons and events at once.
 
 ### Exiting the program : `exit`
 
@@ -600,8 +607,8 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | Action              | Format, Examples                                                                                                                                                                                                                      |
 |---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Add**             | `add n/NAME r/ROLE p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​` <br> e.g., `add n/James Ho r/staff p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 tm/First Team st/Active t/friend` |
-| **Match**           | `matchadd n/OPPONENT_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `matchadd n/Mancherster United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                      |
-| **Training**        | `trainingadd n/TRAINING_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `trainingadd n/Warm Up d/2026-06-16 1700 tm/First Team pl/John Doe`                                                           |
+| **Match**           | `matchadd n/OPPONENT_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `matchadd n/Manchester United d/2026-05-15 1600 tm/First Team pl/John Doe`                                                   |
+| **Training**        | `trainingadd n/TRAINING_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `trainingadd n/Warm Up d/2026-06-16 1700 tm/First Team pl/John Doe`                                                         |
 | **Attendance**      | `attendance`                                                                                                                                                                                                                          |
 | **Attendance Mark** | `attendancemark INDEX [pl/PLAYER_NAME]…​` <br> e.g., `attendancemark 1 pl/Alex Yeoh pl/Bernice Yu`                                                                                                                                    |
 | **Clear**           | `clear`                                                                                                                                                                                                                               |

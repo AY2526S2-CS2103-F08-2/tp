@@ -475,33 +475,33 @@ freeing the manager from manual memory tracking to focus on strategies and decis
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​          | I want to …​                                                 | So that…​                                                                               |
-|----------|------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| `* *`    | new user         | launch the app with sample data                              | I can see how the details and stats of players are displayed                            |
-| `* *`    | new user         | read the user guide                                          | I know how to use the commands to interact with the app                                 |
-| `* * *`  | new user         | add new players to the app                                   | I have an updated list of players                                                       |
-| `* * *`  | new user         | delete players/staff from the app                            | I can remove erroneous entries                                                          |
-| `* * *`  | new user         | view the staff list or player only list                      | I can focus on user-role related information without other roles' entries in the way    |
-| `* * *`  | new user         | add matches and trainings to the app                         | I have an updated list of different events                                              |
-| `* * *`  | new user         | edit and delete matches and trainings                        | I can remove and edit erroneous entries                                                 |
-| `* *`    | forgetful user   | quickly retrieve and view player stats                       | I can make better judgements on player performance                                      |
-| `*`      | expert user      | mass removal of players based on tags                        | I can ensure the system is not cluttered with redundant data                            |
-| `* *`    | experienced user | add attributes to each player                                | I can set who is on the first team, second team etc                                     |
-| `* *`    | experienced user | filter players based on tags or attributes                   | I can see all players based on the tag/attribute (first team, second team, injured etc) |
-| `*`      | experienced user | use the app to track attendance for trainings                | I know who is skipping training                                                         |
-| `* *`    | experienced user | search within the staff or player list                       | I can find a specific staff or user quickly                                             |
-| `* *`    | experienced user | edit staff or player information                             | I can ensure that the staff or player's list stays accurate over time                   |
-| `* *`    | experienced user | filter the players based on specific stats or traits         | I can reward players based on their performance                                         |
-| `* *`    | experienced user | add new batch of players' data using a CSV file              | I can easily update the database with the new players' data                             |
-| `* *`    | experienced user | add simple player stats (goals scored, wins, losses)         | I can see my best performing players                                                    |
-| `* *`    | experienced user | add advanced player stats (winrate, average goals per match) | I can further analyse my players based on their performance                             |
+| Priority | As a …​                | I want to …​                                                 | So that…​                                                                 |
+|----------|------------------------|--------------------------------------------------------------|---------------------------------------------------------------------------|
+| `* *`    | soccer academy manager | launch the app with sample data                              | I can quickly understand how player, staff, and event records are shown   |
+| `* *`    | soccer academy manager | read the user guide                                          | I can learn the command format before managing live data                  |
+| `* * *`  | soccer academy manager | add new players to the app                                   | I can keep the squad list up to date                                     |
+| `* * *`  | soccer academy manager | delete players or staff from the app                         | I can remove incorrect or outdated records                               |
+| `* * *`  | soccer coach           | view only players or only staff                              | I can focus on the group relevant to the task at hand                    |
+| `* * *`  | team administrator     | add matches and training sessions to the app                 | I can maintain an accurate schedule of team events                       |
+| `* * *`  | team administrator     | edit and delete matches and training sessions                | I can correct scheduling mistakes                                        |
+| `* *`    | soccer coach           | quickly retrieve and view player stats                       | I can assess player performance before making decisions                  |
+| `*`      | soccer academy manager | bulk delete players based on a shared tag                    | I can clean up records efficiently                                       |
+| `* *`    | soccer academy manager | assign attributes to each player                             | I can organize players by team, status, or position                      |
+| `* *`    | soccer coach           | filter players based on tags or attributes                   | I can review the exact group I need for training or match preparation    |
+| `*`      | soccer coach           | track attendance for training sessions                       | I can identify players who missed training                               |
+| `* *`    | team administrator     | search within the staff or player list                       | I can find a specific staff member or player quickly                     |
+| `* *`    | team administrator     | edit staff or player information                             | I can keep roster records accurate over time                             |
+| `* *`    | soccer coach           | filter players based on specific stats or traits             | I can identify players who meet performance criteria                     |
+| `* *`    | team administrator     | import a new batch of players using a CSV file               | I can update the roster efficiently                                      |
+| `* *`    | soccer coach           | record simple player stats such as goals, wins, and losses   | I can review basic performance indicators                                |
+| `* *`    | soccer coach           | view advanced player stats such as win rate or average goals per match | I can evaluate players in more detail                      |
 
 ### Use cases
 
 (For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified
 otherwise)
 
-**Use case: UC01 - Add new person**  
+**Use case: UC00 - Add new person**
 **MSS**
 
 1. Manager requests to add a person.
@@ -528,7 +528,7 @@ otherwise)
     * 2d1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
-**Use case: UC02 - Rename an attribute catalog value**  
+**Use case: UC01 - Rename an attribute catalog value**
 **MSS**
 
 1. Manager requests to rename an attribute catalog value.
@@ -552,7 +552,7 @@ otherwise)
     * 2c1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
-**Use case: UC03 - Delete an attribute catalog value**  
+**Use case: UC02 - Delete an attribute catalog value**
 **MSS**
 
 1. Manager requests to delete an attribute catalog value.
@@ -575,7 +575,7 @@ otherwise)
     * 2c1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-**Use case: UC04 - Edit person attributes**  
+**Use case: UC03 - Edit person attributes**
 **MSS**
 
 1. Manager requests to edit a person.
@@ -594,13 +594,13 @@ otherwise)
     * 2b1. SoCcer Manager informs the manager that the person was not updated.  
       Use case ends.
 
-**Use case: UC05 - View persons by role**  
+**Use case: UC04 - View persons by role**
 **MSS**
 
 1. Manager requests to list persons by role.
 2. Manager provides the target role to filter by.
-3. SoCcer Manager filters the visible person list by the requested role.
-4. SoCcer Manager shows the filtered list.  
+3. SoCcer Manager shows persons with the requested role.
+4. SoCcer Manager shows the resulting list.
    Use case ends.
 
 **Extensions**
@@ -613,106 +613,98 @@ otherwise)
     * 2b1. SoCcer Manager informs the manager that the list was not changed.  
       Use case ends.
 
-**Use case: UC06 - Filter persons using structured criteria**  
+**Use case: UC05 - Filter persons using structured criteria**
 **MSS**
 
 1. Manager requests to filter persons.
 2. Manager provides one or more structured criteria.
-3. SoCcer Manager validates the provided criteria.
-4. SoCcer Manager filters the visible person list using all specified criteria.
-5. SoCcer Manager shows the filtered list.  
+3. SoCcer Manager applies the provided criteria.
+4. SoCcer Manager shows the matching persons.
    Use case ends.
 
 **Extensions**
 
 * 2a. Manager provides role, team, status, or position criteria.
     * 2a1. SoCcer Manager applies exact-match filtering for the provided attributes.  
-      Use case resumes at step 4.
+      Use case resumes at step 3.
 
-* 2b. Manager provides stat comparison criteria for `goals`, `wins`, or `losses`.
+* 2b. Manager provides stat comparison criteria for `goals`, `wins`, `losses`, or `draws`.
     * 2b1. SoCcer Manager applies numeric comparison filtering for player stats.  
-      Use case resumes at step 4.
+      Use case resumes at step 3.
 
-* 3a. Manager provides an invalid role, attribute value, or malformed stat comparison.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2c. Manager provides an invalid role, attribute value, or malformed stat comparison.
+    * 2c1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. No persons match the provided criteria.
-    * 4a1. SoCcer Manager shows an empty filtered list.  
+* 3a. No persons match the provided criteria.
+    * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC07 - Sort persons by attribute or stat**  
+**Use case: UC06 - Sort persons by attribute or stat**
 **MSS**
 
 1. Manager requests to sort persons.
 2. Manager provides an optional role scope, a supported sort attribute, and an optional sort order.
-3. SoCcer Manager validates the requested sort configuration.
-4. SoCcer Manager applies the requested scope filter.
-5. SoCcer Manager sorts the visible person list by the requested attribute.
-6. SoCcer Manager shows the sorted list.  
+3. SoCcer Manager applies the requested scope, if any.
+4. SoCcer Manager sorts the relevant persons by the requested attribute.
+5. SoCcer Manager shows the sorted list.
    Use case ends.
 
 **Extensions**
 
 * 2a. Manager omits the role scope.
     * 2a1. For roster attributes, SoCcer Manager sorts the displayed list.  
-      Use case resumes at step 3.
+      Use case resumes at step 4.
 
 * 2b. Manager specifies descending order.
     * 2b1. SoCcer Manager sorts in descending order.  
+      Use case resumes at step 4.
+
+* 2c. Manager provides an unsupported sort attribute.
+    * 2c1. SoCcer Manager shows an error message.
+      Use case ends.
+
+* 5a. Manager sorts by `goals`, `wins`, `losses`, or `draws`.
+    * 5a1. SoCcer Manager switches to the player-only list before applying the sort.
       Use case resumes at step 5.
 
-* 3a. Manager provides an unsupported sort attribute.
-    * 3a1. SoCcer Manager shows an error message.  
+* 4b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, `sort r/staff by/losses`, or `sort r/staff by/draws`.
+    * 4b1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 5a. Manager sorts by `goals`, `wins`, or `losses`.
-    * 5a1. SoCcer Manager switches to the player-only list before applying the sort.
-      Use case resumes at step 6.
-
-* 5b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, or `sort r/staff by/losses`.
-    * 5b1. SoCcer Manager shows an error message.  
-      Use case ends.
-
-**Use case: UC08 - Bulk delete persons by shared criterion**  
+**Use case: UC07 - Bulk delete persons by shared criterion**
 **MSS**
 
 1. Manager requests to bulk delete persons.
 2. Manager provides exactly one supported criterion: `tag`, `team`, or `status`.
-3. SoCcer Manager validates the provided criterion.
-4. SoCcer Manager filters and shows the matching persons.
-5. SoCcer Manager requests confirmation.
-6. Manager confirms the bulk deletion.
-7. SoCcer Manager deletes all matching persons.
-8. SoCcer Manager shows a success message.  
+3. SoCcer Manager shows the persons matching the criterion.
+4. SoCcer Manager requests confirmation.
+5. Manager confirms the bulk deletion.
+6. SoCcer Manager deletes all matching persons.
+7. SoCcer Manager shows a success message.
    Use case ends.
 
 **Extensions**
 
-* 3a. Manager provides an unsupported or malformed criterion.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2a. Manager provides an unsupported or malformed criterion.
+    * 2a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. No persons match the provided criterion.
-    * 4a1. SoCcer Manager shows an error message.  
+* 3a. No persons match the provided criterion.
+    * 3a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 5a. Manager cancels the bulk deletion.
-    * 5a1. SoCcer Manager aborts the operation and shows a cancellation message.  
+* 5a. Manager provides a confirmation response other than `y` or `n`.
+    * 5a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 6a. Manager provides a confirmation response other than `y` or `n`.
-    * 6a1. SoCcer Manager shows an error message.  
-      Use case ends.
-
-**Use case: UC09 - List persons using attribute filters**  
+**Use case: UC08 - List persons using attribute filters**
 **MSS**
 
 1. Manager requests to list persons using filters.
 2. Manager provides zero or more of the following filters: role, team, status, and position.
-3. SoCcer Manager validates the provided filters.
-4. SoCcer Manager filters the visible person list using all specified filters.
-5. SoCcer Manager shows the filtered list.  
+3. SoCcer Manager applies all specified filters.
+4. SoCcer Manager shows the filtered list.
    Use case ends.
 
 **Extensions**
@@ -722,18 +714,18 @@ otherwise)
       Use case ends.
 
 * 2b. Manager provides only a role filter.
-    * 2b1. SoCcer Manager filters the visible person list by the requested role.  
-      Use case resumes at step 5.
+    * 2b1. SoCcer Manager shows persons with the requested role.
+      Use case resumes at step 4.
 
-* 3a. Manager provides an invalid role or malformed filter input.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2c. Manager provides an invalid role or malformed filter input.
+    * 2c1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. No persons match the provided filters.
-    * 4a1. SoCcer Manager shows an empty filtered list.  
+* 3a. No persons match the provided filters.
+    * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC10 - Set or update a player’s recorded performance stat**  
+**Use case: UC09 - Set or update a player’s recorded performance stat**
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
@@ -748,37 +740,29 @@ otherwise)
 
 **Extensions**
 
-* 3a. Manager specifies an invalid displayed index.
+* 3a. Manager specifies an invalid displayed index, stat field, or value.
     * 3a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. Specified person is not a player.
-    * 4a1. SoCcer Manager shows an error message.
-      Use case ends.
-
-* 5a. Manager specifies an invalid stat field.
-    * 5a1. SoCcer Manager shows an error message.
-      Use case ends.
-
-* 5b. Manager provides a value that causes the stat to become invalid.
-    * 5b1. SoCcer Manager shows an error message.
+* 3b. Specified person is not a player.
+    * 3b1. SoCcer Manager shows an error message.
       Use case ends.
 
 * 2a. Manager uses `set`.
     * 2a1. SoCcer Manager replaces the stat with the specified value.
-      Use case resumes at step 7.
+      Use case resumes at step 4.
 
 * 2b. Manager uses `update`.
     * 2b1. SoCcer Manager increments the stat by the specified value.
-      Use case resumes at step 7.
+      Use case resumes at step 4.
 
-**Use case: UC11 - Automatically display calculated stats for a player**  
+**Use case: UC10 - Automatically display calculated stats for a player**
 **MSS**
 
-1. Manager views the player list or player details in the UI.
+1. Manager views the player list or player details.
 2. SoCcer Manager retrieves each player’s recorded stats.
 3. SoCcer Manager computes the calculated stats for each player.
-4. SoCcer Manager displays the calculated stats under each player in the UI.
+4. SoCcer Manager displays the calculated stats.
    Use case ends.
 
 **Extensions**
@@ -791,42 +775,40 @@ otherwise)
     * 3a1. SoCcer Manager avoids division by zero and displays the default calculated value.
       Use case resumes at step 4.
 
-**Use case: UC12 - Batch import persons from a CSV file**  
+**Use case: UC11 - Batch import persons from a CSV file**
 **MSS**
 
 1. Manager requests to batch import persons from a CSV file.
-2. SoCcer Manager opens a file selection dialog.
-3. Manager selects a CSV file.
-4. SoCcer Manager validates the CSV header.
-5. SoCcer Manager reads each row in the CSV file.
-6. SoCcer Manager validates and imports each valid row as a person.
-7. SoCcer Manager skips invalid rows and records the reason for each skipped row.
-8. SoCcer Manager shows a summary of imported and skipped rows.  
+2. Manager provides a CSV file.
+3. SoCcer Manager checks whether the file format is supported.
+4. SoCcer Manager imports each valid row as a person.
+5. SoCcer Manager skips invalid rows and records the reason for each skipped row.
+6. SoCcer Manager shows a summary of imported and skipped rows.
    Use case ends.
 
 **Extensions**
 
-* 2a. Manager cancels file selection.
-    * 2a1. SoCcer Manager aborts the import.  
+* 2a. Manager does not provide a CSV file.
+    * 2a1. SoCcer Manager aborts the import.
       Use case ends.
 
-* 4a. CSV file has missing or unexpected fields in the header.
-    * 4a1. SoCcer Manager shows an error message.  
+* 3a. CSV file has missing or unexpected fields in the header.
+    * 3a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 6a. A row contains invalid person data.
-    * 6a1. SoCcer Manager skips the row and records the failure reason.  
-      Use case resumes at step 6.
+* 4a. A row contains invalid person data.
+    * 4a1. SoCcer Manager skips the row and records the failure reason.
+      Use case resumes at step 4.
 
-* 6b. A row duplicates an existing person or another valid row in the same import.
-    * 6b1. SoCcer Manager skips the row and records the failure reason.  
-      Use case resumes at step 6.
+* 4b. A row duplicates an existing person or another valid row in the same import.
+    * 4b1. SoCcer Manager skips the row and records the failure reason.
+      Use case resumes at step 4.
 
-* 8a. No valid rows are imported.
-    * 8a1. SoCcer Manager shows a summary indicating that all rows were skipped.  
+* 6a. No valid rows are imported.
+    * 6a1. SoCcer Manager shows a summary indicating that all rows were skipped.
       Use case ends.
 
-**Use case: UC13 - Add new training**  
+**Use case: UC12 - Add new training**
 **MSS**
 
 1. Manager wants to record a new training session.
@@ -865,6 +847,10 @@ otherwise)
 * **Attribute**: A catalog-backed categorisation assigned to a person, such as Team, Status, or Position
 * **Attribute catalog**: The approved set of values for an attribute. A Team, Status, or Position value must exist in
   its catalog before it can be assigned to a person
+* **Confirmation flow**: A multi-step interaction that requires the manager to confirm or cancel an operation before
+  it takes effect
+* **Event**: A scheduled match or training session managed by the system
+* **Filtered list**: The currently displayed subset of persons produced by commands such as `list`, `filter`, or `find`
 * **Position**: The roles that each player is specialised/assigned in the team
 * **Performance Stats**: The player statistics based on their previous games (e.g. goals, wins, losses,
   calculated winrate, etc.)
