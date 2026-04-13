@@ -8,6 +8,7 @@ public class PlayerStats {
     private int goalsScored; // total number of goals scored
     private int matchesWon; // total matches won
     private int matchesLost; // total matches lost
+    private int matchesDrawn; // total matches drawn
 
     /**
      * Constructs a {@code PlayerStats} with a fresh default state. (all 0s)
@@ -24,6 +25,7 @@ public class PlayerStats {
         this.goalsScored = toCopy.goalsScored;
         this.matchesWon = toCopy.matchesWon;
         this.matchesLost = toCopy.matchesLost;
+        this.matchesDrawn = toCopy.matchesDrawn;
     }
 
     public int getGoalsScored() {
@@ -50,12 +52,21 @@ public class PlayerStats {
         this.matchesLost = matchesLost;
     }
 
+    public int getMatchesDrawn() {
+        return matchesDrawn;
+    }
+
+    public void setMatchesDrawn(int matchesDrawn) {
+        this.matchesDrawn = matchesDrawn;
+    }
 
     @Override
     public String toString() {
         return "{ goalsScored = " + goalsScored
                 + ", matchesWon = " + matchesWon
-                + ", matchesLost = " + matchesLost + " }";
+                + ", matchesLost = " + matchesLost
+                + ", matchesDrawn = " + matchesDrawn
+                + " }";
     }
 
     @Override
@@ -73,6 +84,7 @@ public class PlayerStats {
         PlayerStats otherPlayerStats = (PlayerStats) other;
         return otherPlayerStats.getGoalsScored() == goalsScored
                 && otherPlayerStats.getMatchesWon() == matchesWon
-                && otherPlayerStats.getMatchesLost() == matchesLost;
+                && otherPlayerStats.getMatchesLost() == matchesLost
+                && otherPlayerStats.getMatchesDrawn() == matchesDrawn;
     }
 }

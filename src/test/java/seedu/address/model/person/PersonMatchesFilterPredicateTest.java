@@ -32,7 +32,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.empty());
         PersonMatchesFilterPredicate mismatchingStatus = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -40,7 +41,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.empty());
         PersonMatchesFilterPredicate mismatchingPosition = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -48,7 +50,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Defender")),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.empty());
         PersonMatchesFilterPredicate mismatchingLosses = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -56,7 +59,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)),
+                Optional.empty());
 
         assertTrue(matchingPredicate.test(player));
         assertFalse(mismatchingStatus.test(player));
@@ -72,7 +76,7 @@ public class PersonMatchesFilterPredicateTest {
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 0)),
-                Optional.empty(), Optional.empty());
+                Optional.empty(), Optional.empty(), Optional.empty());
 
         assertFalse(predicate.test(staff));
     }
@@ -86,7 +90,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
         PersonMatchesFilterPredicate second = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -94,7 +99,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
         PersonMatchesFilterPredicate differentTeam = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("Second Team")),
@@ -102,7 +108,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
         PersonMatchesFilterPredicate differentStatus = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -110,7 +117,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
         PersonMatchesFilterPredicate differentPosition = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -118,7 +126,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Defender")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
         PersonMatchesFilterPredicate differentGoals = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -126,7 +135,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 6)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
         PersonMatchesFilterPredicate differentWins = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -134,7 +144,8 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 2)),
-                Optional.of(new NumericComparison(Operator.EQUALS, 0)));
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)));
         PersonMatchesFilterPredicate differentLosses = new PersonMatchesFilterPredicate(
                 Optional.of(Role.PLAYER),
                 Optional.of(new Team("First Team")),
@@ -142,7 +153,17 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(new Position("Forward")),
                 Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
                 Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 1)),
                 Optional.of(new NumericComparison(Operator.EQUALS, 1)));
+        PersonMatchesFilterPredicate differentDraws = new PersonMatchesFilterPredicate(
+                Optional.of(Role.PLAYER),
+                Optional.of(new Team("First Team")),
+                Optional.of(new Status("Active")),
+                Optional.of(new Position("Forward")),
+                Optional.of(new NumericComparison(Operator.GREATER_THAN, 5)),
+                Optional.of(new NumericComparison(Operator.LESS_THAN, 3)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 0)),
+                Optional.of(new NumericComparison(Operator.EQUALS, 2)));
 
         assertTrue(first.equals(first));
         assertTrue(first.equals(second));
@@ -153,6 +174,7 @@ public class PersonMatchesFilterPredicateTest {
         assertFalse(first.equals(differentGoals));
         assertFalse(first.equals(differentWins));
         assertFalse(first.equals(differentLosses));
+        assertFalse(first.equals(differentDraws));
         assertFalse(first.equals(1));
         assertFalse(first.equals(null));
     }

@@ -125,7 +125,9 @@ public class EditCommand extends Command {
             throw new CommandException(MESSAGE_POSITION_NOT_APPLICABLE_TO_STAFF);
         }
 
-        if (updatedRole == Role.STAFF && eventListContainsPerson(model, personToEdit)) {
+        if (personToEdit.getRole() == Role.PLAYER
+                && updatedRole == Role.STAFF
+                && eventListContainsPerson(model, personToEdit)) {
             throw new CommandException(String.format(MESSAGE_REMOVE_FROM_EVENT_FIRST,
                     personToEdit.getName().toString()));
         }

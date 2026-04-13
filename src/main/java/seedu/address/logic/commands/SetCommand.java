@@ -25,12 +25,14 @@ public class SetCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Sets the specific stat of a given player.\n"
             + "Parameters: "
             + "INDEX (must be a positive integer) "
-            + "STAT (must be a valid player stat) [goals|wins|losses] "
+            + "STAT (must be a valid player stat) [goals|wins|losses|draws] "
             + "VALUE"
             + "\nExample: " + COMMAND_WORD + " 1 goals 10";
 
     public static final String MESSAGE_SET_PLAYER_SUCCESS = "Set %1$s\n%2$s: %3$s -> %4$s";
     public static final String MESSAGE_NOT_PLAYER = "This person must be a player.";
+    public static final String MESSAGE_STAT_OVERFLOW = "Set value has exceeded the maximum limit."
+            + "\nWhy are you trying to overflow it?";
 
     private final Index index;
     private final StatField stat;

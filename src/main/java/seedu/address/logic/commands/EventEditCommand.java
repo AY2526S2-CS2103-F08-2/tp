@@ -124,8 +124,13 @@ public class EventEditCommand extends Command {
         }
 
         EventPlayerList eventPlayerList = new EventPlayerList(playerList);
+        Set<Person> attendedPlayers = eventToEdit.getAttendedPlayerList().asUnmodifiableObservableList().stream()
+                .filter(playerList::contains)
+                .collect(java.util.stream.Collectors.toSet());
+        EventPlayerList attendedPlayerList = new EventPlayerList(attendedPlayers);
 
-        return Event.createEvent(updatedName, updatedEventDate, updatedEventType, eventPlayerList);
+        return Event.createEventWithAttendees(updatedName, updatedEventDate, updatedEventType,
+                eventPlayerList, attendedPlayerList);
     }
 
     @Override

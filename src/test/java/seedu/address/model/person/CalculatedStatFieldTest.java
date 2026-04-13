@@ -40,7 +40,8 @@ public class CalculatedStatFieldTest {
     public void getValue_winRate_mixedRecord() {
         stats.setMatchesWon(3);
         stats.setMatchesLost(1);
-        // 3 / (3 + 1) * 100 = 75.0
+        stats.setMatchesDrawn(0);
+        // 3 / (3 + 1 + 0) * 100 = 75.0
         assertEquals(75.0, CalculatedStatField.WIN_RATE.getValue(stats), DELTA);
     }
 
@@ -48,7 +49,17 @@ public class CalculatedStatFieldTest {
     public void getValue_winRate_equalWinsAndLosses() {
         stats.setMatchesWon(4);
         stats.setMatchesLost(4);
+        stats.setMatchesDrawn(0);
         assertEquals(50.0, CalculatedStatField.WIN_RATE.getValue(stats), DELTA);
+    }
+
+    @Test
+    public void getValue_winRate_withDraw() {
+        stats.setMatchesWon(3);
+        stats.setMatchesLost(1);
+        stats.setMatchesDrawn(1);
+        // 3 / (3 + 1 + 1) * 100 = 60.0
+        assertEquals(60.0, CalculatedStatField.WIN_RATE.getValue(stats), DELTA);
     }
 
     // ======================== GOALS_PER_GAME ========================
@@ -62,6 +73,7 @@ public class CalculatedStatFieldTest {
     public void getValue_goalsPerGame_noGoals() {
         stats.setMatchesWon(3);
         stats.setMatchesLost(2);
+        stats.setMatchesDrawn(0);
         assertEquals(0.0, CalculatedStatField.GOALS_PER_GAME.getValue(stats), DELTA);
     }
 
@@ -70,6 +82,7 @@ public class CalculatedStatFieldTest {
         stats.setGoalsScored(10);
         stats.setMatchesWon(3);
         stats.setMatchesLost(2);
+        stats.setMatchesDrawn(0);
         // 10 / (3 + 2) = 2.0
         assertEquals(2.0, CalculatedStatField.GOALS_PER_GAME.getValue(stats), DELTA);
     }
@@ -79,7 +92,18 @@ public class CalculatedStatFieldTest {
         stats.setGoalsScored(7);
         stats.setMatchesWon(2);
         stats.setMatchesLost(1);
+        stats.setMatchesDrawn(0);
         // 7 / (2 + 1) = 2.33
+        assertEquals(2.33, CalculatedStatField.GOALS_PER_GAME.getValue(stats), DELTA);
+    }
+
+    @Test
+    public void getValue_goalsPerGame_withDraws() {
+        stats.setGoalsScored(7);
+        stats.setMatchesWon(1);
+        stats.setMatchesLost(1);
+        stats.setMatchesDrawn(1);
+        // 7 / (1 + 1 + 1) = 2.33
         assertEquals(2.33, CalculatedStatField.GOALS_PER_GAME.getValue(stats), DELTA);
     }
 

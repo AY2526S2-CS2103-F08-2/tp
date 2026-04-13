@@ -23,7 +23,7 @@ public class SortCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Sorts persons by a supported attribute.\n"
-            + "Parameters: [r/ROLE] by/[name | email | team | status | position | goals | wins | losses] "
+            + "Parameters: [r/ROLE] by/[name | email | team | status | position | goals | wins | losses | draws] "
             + "[desc]\n"
             + "Examples: " + COMMAND_WORD + " by/name desc, "
             + COMMAND_WORD + " r/player by/goals desc";

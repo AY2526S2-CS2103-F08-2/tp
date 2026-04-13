@@ -229,11 +229,11 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 The `filter` command is implemented as a predicate-based list narrowing operation.
 
 * `FilterCommandParser` parses optional role, team, status, and position criteria, together with optional numeric
-  comparisons for `goals`, `wins`, and `losses`.
+  comparisons for `goals`, `wins`, `losses`, and `draws`.
 * Parsed criteria are assembled into `PersonMatchesFilterPredicate`, which combines all supplied filters with
   AND semantics.
 * `FilterCommand` applies that predicate through `Model#updateFilteredPersonList(...)`.
-* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, or `losses` filters.
+* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, `losses`, or `draws` filters.
 
 The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
 
@@ -255,7 +255,30 @@ Implementation details:
 The corresponding sequence-diagram source for the filtered path is recorded in
 `docs/diagrams/ListFilteredSequenceDiagram.puml`.
 
-### Update player stats command
+### Player Stats (and Calculated Stats)
+Each **player** owns a `PlayerStats` object that contains the player's performance stats. These stats can be modified by the user through commands.
+
+- Each stat is a defined enum constant in `StatField`, consisting of a defined getter, setter and validation function for each stat
+  - `Function<PlayerStats, Integer> getter`
+  - `BiConsumer<PlayerStats, Integer> setter`
+  - `Predicate<Integer> validator`
+- To define a new player stat, simply define it as a new enum constant in `StatField`, and link it with the corresponding getter/setter/validation functions in `PlayerStats`
+- This design is meant to be **data-driven**, so that the only modifications needed are minimal:
+  - `StatField` : to define to new stat 
+  - `PlayerStats` : to link getter/setter/validation functions, and update `copy()`/`equals()`
+  - `SetCommand`/`UpdateCommand` : to update usage message
+- Other components such as JSON storage, UI, will reflect the new addition automatically and will work as intended.
+
+**Calculated stats:**
+
+As opposed to basic player stats, calculated stats are advanced player performance stats based on the existing stats of the player.
+
+- These stats cannot be directly set/updated, but rather, once the player base stats change, these calculated stats are automatically updated by recalculating with respect to the new values.
+- Therefore, these advanced stats are meant to be **read-only**.
+- Just like basic player stats, new calculated stats can be defined by adding a new enum constant to `CalculatedStatField`,
+with the relevant calculation `Function<PlayerStats, Double>`.
+
+**Commands to modify player stats:**
 
 The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
 which creates a `UpdateCommand` with the given parameters (`INDEX, STAT, VALUE`).
@@ -351,6 +374,13 @@ internal replacement steps are intentionally shown in a simplified form to keep 
 
 ![Model-level attribute rename cascade](images/AttributeRenameCascadeSequenceDiagram.png)
 
+#### Batch Import
+The `importcsv` command allows batch import of players/staff, with fields defined in each column.
+The **User Guide** will have the latest expected format. The parser is strict and expect the CSV file to comply with the given format.
+
+The CSV is custom, which allows behaviour such as escaped commas. 
+Parser behaviour is customizable by modifying `CsvImportService`/`CsvImportResult`.
+
 #### Storage behavior
 
 `JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
@@ -366,6 +396,8 @@ During load:
 #### UI behavior
 
 `PersonCard` renders `Team`, `Status`, and `Position` labels only when the person has non-default values.
+
+It also adds a red `staff` logo if the contact is a staff. If it is a player, the defined performance stats are displayed.
 
 ### Delete and bulk-delete confirmation flow
 
@@ -391,12 +423,12 @@ The sequence diagram below shows the confirmed index-based delete path after the
 to the filtered person list.
 
 * `SortCommandParser` parses the scope (`r/player`, `r/staff`, or all persons), the `by/...` attribute
-  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
+  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, `losses`, or `draws`), and the optional `desc` modifier.
 * `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
   ordering stay aligned.
 * Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
-* Stat-based comparators read from `PlayerStats`; non-player entries are treated as stat value `0` so mixed lists can
-  still be sorted without special-case command failures.
+* Stat-based comparators read from `PlayerStats`; when the requested attribute is `goals`, `wins`, or `losses`,
+  `SortCommand` switches the visible list to players before applying the comparator.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
@@ -443,139 +475,132 @@ freeing the manager from manual memory tracking to focus on strategies and decis
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​          | I want to …​                                                 | So that…​                                                                               |
-|----------|------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| `* *`    | new user         | launch the app with sample data                              | I can see how the details and stats of players are displayed                            |
-| `* *`    | new user         | read the user guide                                          | I know how to use the commands to interact with the app                                 |
-| `* * *`  | new user         | add new players to the app                                   | I have an updated list of players                                                       |
-| `* * *`  | new user         | delete players/staff from the app                            | I can remove erroneous entries                                                          |
-| `* * *`  | new user         | view the staff list or player only list                      | I can focus on user-role related information without other roles' entries in the way    |
-| `* * *`  | new user         | add matches and trainings to the app                         | I have an updated list of different events                                              |
-| `* * *`  | new user         | edit and delete matches and trainings                        | I can remove and edit erroneous entries                                                 |
-| `* *`    | forgetful user   | quickly retrieve and view player stats                       | I can make better judgements on player performance                                      |
-| `*`      | expert user      | mass removal of players based on tags                        | I can ensure the system is not cluttered with redundant data                            |
-| `* *`    | experienced user | add attributes to each player                                | I can set who is on the first team, second team etc                                     |
-| `* *`    | experienced user | filter players based on tags or attributes                   | I can see all players based on the tag/attribute (first team, second team, injured etc) |
-| `*`      | experienced user | use the app to track attendance for trainings                | I know who is skipping training                                                         |
-| `* *`    | experienced user | search within the staff or player list                       | I can find a specific staff or user quickly                                             |
-| `* *`    | experienced user | edit staff or player information                             | I can ensure that the staff or player's list stays accurate over time                   |
-| `* *`    | experienced user | filter the players based on specific stats or traits         | I can reward players based on their performance                                         |
-| `* *`    | experienced user | add new batch of players' data using a CSV file              | I can easily update the database with the new players' data                             |
-| `* *`    | experienced user | add simple player stats (goals scored, wins, losses)         | I can see my best performing players                                                    |
-| `* *`    | experienced user | add advanced player stats (winrate, average goals per match) | I can further analyse my players based on their performance                             |
+| Priority | As a …​                | I want to …​                                                 | So that…​                                                                 |
+|----------|------------------------|--------------------------------------------------------------|---------------------------------------------------------------------------|
+| `* *`    | soccer academy manager | launch the app with sample data                              | I can quickly understand how player, staff, and event records are shown   |
+| `* *`    | soccer academy manager | read the user guide                                          | I can learn the command format before managing live data                  |
+| `* * *`  | soccer academy manager | add new players to the app                                   | I can keep the squad list up to date                                     |
+| `* * *`  | soccer academy manager | delete players or staff from the app                         | I can remove incorrect or outdated records                               |
+| `* * *`  | soccer coach           | view only players or only staff                              | I can focus on the group relevant to the task at hand                    |
+| `* * *`  | team administrator     | add matches and training sessions to the app                 | I can maintain an accurate schedule of team events                       |
+| `* * *`  | team administrator     | edit and delete matches and training sessions                | I can correct scheduling mistakes                                        |
+| `* *`    | soccer coach           | quickly retrieve and view player stats                       | I can assess player performance before making decisions                  |
+| `*`      | soccer academy manager | bulk delete players based on a shared tag                    | I can clean up records efficiently                                       |
+| `* *`    | soccer academy manager | assign attributes to each player                             | I can organize players by team, status, or position                      |
+| `* *`    | soccer coach           | filter players based on tags or attributes                   | I can review the exact group I need for training or match preparation    |
+| `*`      | soccer coach           | track attendance for training sessions                       | I can identify players who missed training                               |
+| `* *`    | team administrator     | search within the staff or player list                       | I can find a specific staff member or player quickly                     |
+| `* *`    | team administrator     | edit staff or player information                             | I can keep roster records accurate over time                             |
+| `* *`    | soccer coach           | filter players based on specific stats or traits             | I can identify players who meet performance criteria                     |
+| `* *`    | team administrator     | import a new batch of players using a CSV file               | I can update the roster efficiently                                      |
+| `* *`    | soccer coach           | record simple player stats such as goals, wins, and losses   | I can review basic performance indicators                                |
+| `* *`    | soccer coach           | view advanced player stats such as win rate or average goals per match | I can evaluate players in more detail                      |
 
 ### Use cases
 
 (For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified
 otherwise)
 
-**Use case: UC00 - Add new person**  
+**Use case: UC00 - Add new person**
 **MSS**
 
 1. Manager requests to add a person.
 2. Manager provides person details, including optional attribute values.
-3. SoCcer Manager validates person details and optional attribute constraints.
-4. SoCcer Manager adds the person and shows a confirmation message.  
+3. SoCcer Manager adds the person.
+4. SoCcer Manager informs the manager that the person was added.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Invalid person details (e.g., invalid name/phone/email/address).
-    * 2a1. SoCcer Manager shows error message.  
+    * 2a1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
 * 2b. At least one optional provided attribute does not exist in the corresponding catalog.
-    * 2b1. SoCcer Manager shows error message.  
+    * 2b1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
 * 2c. Manager assigns a non-default position to a staff member.
-    * 2c1. SoCcer Manager shows error message.  
+    * 2c1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
-* 3a. Duplicate person detected.
-    * 3a1. SoCcer Manager shows error message.  
+* 2d. Manager provides details that match an existing person.
+    * 2d1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
-*a. At any time, manager cancels.  
-Use case ends.
-
-**Use case: UC01 - Rename an attribute catalog value**  
+**Use case: UC01 - Rename an attribute catalog value**
 **MSS**
 
 1. Manager requests to rename an attribute catalog value.
 2. Manager provides the existing value and the replacement value.
-3. SoCcer Manager validates rename constraints.
-4. SoCcer Manager renames the catalog value.
-5. SoCcer Manager updates all persons currently assigned the original value.
-6. SoCcer Manager shows a success message.  
+3. SoCcer Manager renames the catalog value.
+4. SoCcer Manager updates all persons currently assigned the original value.
+5. SoCcer Manager informs the manager that the catalog value was renamed.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Existing value does not exist in the catalog.
-    * 2a1. SoCcer Manager shows error message.  
+    * 2a1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
 * 2b. Replacement value duplicates an existing catalog value.
-    * 2b1. SoCcer Manager shows error message.  
+    * 2b1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
 * 2c. Manager attempts to rename a protected default value.
-    * 2c1. SoCcer Manager shows error message.  
+    * 2c1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
-**Use case: UC02 - Delete an attribute catalog value**  
+**Use case: UC02 - Delete an attribute catalog value**
 **MSS**
 
 1. Manager requests to delete an attribute catalog value.
 2. Manager specifies the catalog value to delete.
-3. SoCcer Manager validates deletion constraints.
-4. SoCcer Manager deletes the catalog value.
-5. SoCcer Manager shows a success message.  
+3. SoCcer Manager deletes the catalog value.
+4. SoCcer Manager informs the manager that the catalog value was deleted.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Specified value does not exist in the catalog.
-    * 2a1. SoCcer Manager shows error message.  
+    * 2a1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-* 3a. Manager attempts to delete a protected default value.
-    * 3a1. SoCcer Manager shows error message.  
+* 2b. Manager attempts to delete a protected default value.
+    * 2b1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-* 3b. Specified value is currently assigned to one or more persons.
-    * 3b1. SoCcer Manager shows error message.  
+* 2c. Specified value is currently assigned to one or more persons.
+    * 2c1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-**Use case: UC03 - Edit person attributes**  
+**Use case: UC03 - Edit person attributes**
 **MSS**
 
 1. Manager requests to edit a person.
 2. Manager identifies the person to edit and provides one or more updated attribute values.
-3. SoCcer Manager validates the request against relevant constraints.
-4. SoCcer Manager updates the person.
-5. SoCcer Manager shows a success message.  
+3. SoCcer Manager updates the person's attributes.
+4. SoCcer Manager informs the manager that the person was updated.  
    Use case ends.
 
 **Extensions**
 
 * 2a. Manager specifies an invalid person.
-    * 2a1. SoCcer Manager shows error message.  
-      Use case resumes at step 2.
+    * 2a1. SoCcer Manager informs the manager that the person was not updated.  
+      Use case ends.
 
-* 3a. At least one provided value is invalid or violates an attribute or role constraint.
-    * 3a1. SoCcer Manager shows error message.  
-      Use case resumes at step 2.
+* 2b. Manager provides an attribute value that cannot be used for that person.
+    * 2b1. SoCcer Manager informs the manager that the person was not updated.  
+      Use case ends.
 
-**Use case: UC04 - View persons by role**  
+**Use case: UC04 - View persons by role**
 **MSS**
 
 1. Manager requests to list persons by role.
 2. Manager provides the target role to filter by.
-3. SoCcer Manager validates the requested role.
-4. SoCcer Manager filters the visible person list by the requested role.
-5. SoCcer Manager shows the filtered list.  
+3. SoCcer Manager shows persons with the requested role.
+4. SoCcer Manager shows the resulting list.
    Use case ends.
 
 **Extensions**
@@ -584,110 +609,102 @@ Use case ends.
     * 2a1. SoCcer Manager treats role keyword case-insensitively.  
       Use case resumes at step 3.
 
-* 3a. Manager provides an unsupported role keyword.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2b. Manager provides an unsupported role keyword.
+    * 2b1. SoCcer Manager informs the manager that the list was not changed.  
       Use case ends.
 
-**Use case: UC05 - Filter persons using structured criteria**  
+**Use case: UC05 - Filter persons using structured criteria**
 **MSS**
 
 1. Manager requests to filter persons.
 2. Manager provides one or more structured criteria.
-3. SoCcer Manager validates the provided criteria.
-4. SoCcer Manager filters the visible person list using all specified criteria.
-5. SoCcer Manager shows the filtered list.  
+3. SoCcer Manager applies the provided criteria.
+4. SoCcer Manager shows the matching persons.
    Use case ends.
 
 **Extensions**
 
 * 2a. Manager provides role, team, status, or position criteria.
     * 2a1. SoCcer Manager applies exact-match filtering for the provided attributes.  
-      Use case resumes at step 4.
+      Use case resumes at step 3.
 
-* 2b. Manager provides stat comparison criteria for `goals`, `wins`, or `losses`.
+* 2b. Manager provides stat comparison criteria for `goals`, `wins`, `losses`, or `draws`.
     * 2b1. SoCcer Manager applies numeric comparison filtering for player stats.  
-      Use case resumes at step 4.
+      Use case resumes at step 3.
 
-* 3a. Manager provides an invalid role, attribute value, or malformed stat comparison.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2c. Manager provides an invalid role, attribute value, or malformed stat comparison.
+    * 2c1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. No persons match the provided criteria.
-    * 4a1. SoCcer Manager shows an empty filtered list.  
+* 3a. No persons match the provided criteria.
+    * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC06 - Sort persons by attribute or stat**  
+**Use case: UC06 - Sort persons by attribute or stat**
 **MSS**
 
 1. Manager requests to sort persons.
 2. Manager provides an optional role scope, a supported sort attribute, and an optional sort order.
-3. SoCcer Manager validates the requested sort configuration.
-4. SoCcer Manager applies the requested scope filter.
-5. SoCcer Manager sorts the visible person list by the requested attribute.
-6. SoCcer Manager shows the sorted list.  
+3. SoCcer Manager applies the requested scope, if any.
+4. SoCcer Manager sorts the relevant persons by the requested attribute.
+5. SoCcer Manager shows the sorted list.
    Use case ends.
 
 **Extensions**
 
 * 2a. Manager omits the role scope.
-    * 2a1. SoCcer Manager sorts all visible persons.  
-      Use case resumes at step 3.
+    * 2a1. For roster attributes, SoCcer Manager sorts the displayed list.  
+      Use case resumes at step 4.
 
 * 2b. Manager specifies descending order.
     * 2b1. SoCcer Manager sorts in descending order.  
+      Use case resumes at step 4.
+
+* 2c. Manager provides an unsupported sort attribute.
+    * 2c1. SoCcer Manager shows an error message.
+      Use case ends.
+
+* 5a. Manager sorts by `goals`, `wins`, `losses`, or `draws`.
+    * 5a1. SoCcer Manager switches to the player-only list before applying the sort.
       Use case resumes at step 5.
 
-* 3a. Manager provides an unsupported sort attribute.
-    * 3a1. SoCcer Manager shows an error message.  
+* 4b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, `sort r/staff by/losses`, or `sort r/staff by/draws`.
+    * 4b1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 5a. Manager sorts by `goals`, `wins`, or `losses`.
-    * 5a1. SoCcer Manager limits the visible list to players before applying the sort.  
-      Use case resumes at step 6.
-
-* 5b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, or `sort r/staff by/losses`.
-    * 5b1. SoCcer Manager shows an error message.  
-      Use case ends.
-
-**Use case: UC07 - Bulk delete persons by shared criterion**  
+**Use case: UC07 - Bulk delete persons by shared criterion**
 **MSS**
 
 1. Manager requests to bulk delete persons.
 2. Manager provides exactly one supported criterion: `tag`, `team`, or `status`.
-3. SoCcer Manager validates the provided criterion.
-4. SoCcer Manager filters and shows the matching persons.
-5. SoCcer Manager requests confirmation.
-6. Manager confirms the bulk deletion.
-7. SoCcer Manager deletes all matching persons.
-8. SoCcer Manager shows a success message.  
+3. SoCcer Manager shows the persons matching the criterion.
+4. SoCcer Manager requests confirmation.
+5. Manager confirms the bulk deletion.
+6. SoCcer Manager deletes all matching persons.
+7. SoCcer Manager shows a success message.
    Use case ends.
 
 **Extensions**
 
-* 3a. Manager provides an unsupported or malformed criterion.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2a. Manager provides an unsupported or malformed criterion.
+    * 2a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. No persons match the provided criterion.
-    * 4a1. SoCcer Manager shows an error message.  
+* 3a. No persons match the provided criterion.
+    * 3a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 5a. Manager cancels the bulk deletion.
-    * 5a1. SoCcer Manager aborts the operation and shows a cancellation message.  
+* 5a. Manager provides a confirmation response other than `y` or `n`.
+    * 5a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 6a. Manager provides a confirmation response other than `y` or `n`.
-    * 6a1. SoCcer Manager shows an error message.  
-      Use case ends.
-
-**Use case: UC08 - List persons using attribute filters**  
+**Use case: UC08 - List persons using attribute filters**
 **MSS**
 
 1. Manager requests to list persons using filters.
 2. Manager provides zero or more of the following filters: role, team, status, and position.
-3. SoCcer Manager validates the provided filters.
-4. SoCcer Manager filters the visible person list using all specified filters.
-5. SoCcer Manager shows the filtered list.  
+3. SoCcer Manager applies all specified filters.
+4. SoCcer Manager shows the filtered list.
    Use case ends.
 
 **Extensions**
@@ -697,18 +714,18 @@ Use case ends.
       Use case ends.
 
 * 2b. Manager provides only a role filter.
-    * 2b1. SoCcer Manager filters the visible person list by the requested role.  
-      Use case resumes at step 5.
+    * 2b1. SoCcer Manager shows persons with the requested role.
+      Use case resumes at step 4.
 
-* 3a. Manager provides an invalid role or malformed filter input.
-    * 3a1. SoCcer Manager shows an error message.  
+* 2c. Manager provides an invalid role or malformed filter input.
+    * 2c1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. No persons match the provided filters.
-    * 4a1. SoCcer Manager shows an empty filtered list.  
+* 3a. No persons match the provided filters.
+    * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC09 - Set or update a player’s recorded performance stat**  
+**Use case: UC09 - Set or update a player’s recorded performance stat**
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
@@ -718,42 +735,34 @@ Use case ends.
 5. SoCcer Manager validates that the resulting stat value satisfies the stat constraints.
 6. SoCcer Manager updates the player’s stat.
 7. SoCcer Manager refreshes the player details shown in the UI, including any calculated stats derived from the updated values.
-8. SoCcer Manager shows a success message.
+8. SoCcer Manager shows a success message.  
    Use case ends.
 
 **Extensions**
 
-* 3a. Manager specifies an invalid displayed index.
+* 3a. Manager specifies an invalid displayed index, stat field, or value.
     * 3a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. Specified person is not a player.
-    * 4a1. SoCcer Manager shows an error message.
-      Use case ends.
-
-* 5a. Manager specifies an invalid stat field.
-    * 5a1. SoCcer Manager shows an error message.
-      Use case ends.
-
-* 5b. Manager provides a value that causes the stat to become invalid.
-    * 5b1. SoCcer Manager shows an error message.
+* 3b. Specified person is not a player.
+    * 3b1. SoCcer Manager shows an error message.
       Use case ends.
 
 * 2a. Manager uses `set`.
     * 2a1. SoCcer Manager replaces the stat with the specified value.
-      Use case resumes at step 7.
+      Use case resumes at step 4.
 
 * 2b. Manager uses `update`.
     * 2b1. SoCcer Manager increments the stat by the specified value.
-      Use case resumes at step 7.
+      Use case resumes at step 4.
 
-**Use case: UC10 - Automatically display calculated stats for a player**  
+**Use case: UC10 - Automatically display calculated stats for a player**
 **MSS**
 
-1. Manager views the player list or player details in the UI.
+1. Manager views the player list or player details.
 2. SoCcer Manager retrieves each player’s recorded stats.
 3. SoCcer Manager computes the calculated stats for each player.
-4. SoCcer Manager displays the calculated stats under each player in the UI.
+4. SoCcer Manager displays the calculated stats.
    Use case ends.
 
 **Extensions**
@@ -766,55 +775,54 @@ Use case ends.
     * 3a1. SoCcer Manager avoids division by zero and displays the default calculated value.
       Use case resumes at step 4.
 
-**Use case: UC11 - Batch import persons from a CSV file**  
+**Use case: UC11 - Batch import persons from a CSV file**
 **MSS**
 
 1. Manager requests to batch import persons from a CSV file.
-2. SoCcer Manager opens a file selection dialog.
-3. Manager selects a CSV file.
-4. SoCcer Manager validates the CSV header.
-5. SoCcer Manager reads each row in the CSV file.
-6. SoCcer Manager validates and imports each valid row as a person.
-7. SoCcer Manager skips invalid rows and records the reason for each skipped row.
-8. SoCcer Manager shows a summary of imported and skipped rows.  
+2. Manager provides a CSV file.
+3. SoCcer Manager checks whether the file format is supported.
+4. SoCcer Manager imports each valid row as a person.
+5. SoCcer Manager skips invalid rows and records the reason for each skipped row.
+6. SoCcer Manager shows a summary of imported and skipped rows.
    Use case ends.
 
 **Extensions**
 
-* 2a. Manager cancels file selection.
-    * 2a1. SoCcer Manager aborts the import.  
+* 2a. Manager does not provide a CSV file.
+    * 2a1. SoCcer Manager aborts the import.
       Use case ends.
 
-* 4a. CSV file has missing or unexpected fields in the header.
-    * 4a1. SoCcer Manager shows an error message.  
+* 3a. CSV file has missing or unexpected fields in the header.
+    * 3a1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 6a. A row contains invalid person data.
-    * 6a1. SoCcer Manager skips the row and records the failure reason.  
-      Use case resumes at step 6.
+* 4a. A row contains invalid person data.
+    * 4a1. SoCcer Manager skips the row and records the failure reason.
+      Use case resumes at step 4.
 
-* 6b. A row duplicates an existing person or another valid row in the same import.
-    * 6b1. SoCcer Manager skips the row and records the failure reason.  
-      Use case resumes at step 6.
+* 4b. A row duplicates an existing person or another valid row in the same import.
+    * 4b1. SoCcer Manager skips the row and records the failure reason.
+      Use case resumes at step 4.
 
-* 8a. No valid rows are imported.
-    * 8a1. SoCcer Manager shows a summary indicating that all rows were skipped.  
+* 6a. No valid rows are imported.
+    * 6a1. SoCcer Manager shows a summary indicating that all rows were skipped.
       Use case ends.
 
-**Use case: UC12 - Add new training**  
+**Use case: UC12 - Add new training**
 **MSS**
 
 1. Manager wants to record a new training session.
 2. Manager provides the name of the training session, date, and players that attended the training.
 3. SoCcer Manager checks that the players exist in the address book.
 4. SoCcer Manager adds the training session with the specified name, date, and players.
+   Use case ends.
 
 **Extensions**
 
 * 2a. Manager provides an attribute.
     * 2a1. SoCcer Manager checks that the attribute exists.
-    * 2a2. SoCcer Manager finds all the players with the attribute.
-      Use case resumes at step 3.
+      * 2a2. SoCcer Manager gets a list of all the players with the specified attribute.
+        Use case resumes at step 4.
 
 ### Non-Functional Requirements
 
@@ -827,17 +835,22 @@ Use case ends.
    typical laptop.
 5. All successful modifying commands should automatically save data to prevent loss of information.
 6. The application should prevent data corruption and handle unexpected shutdowns safely.
-7. A user with above-average typing speed should be able to complete common tasks faster using commands than using
-   mouse-driven interactions.
-8. The system should provide clear and actionable error messages when invalid input is entered.
-9. The application should not crash during normal usage and should handle invalid inputs gracefully.
-10. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be
-    added without major refactoring.
+7. The system should provide clear and actionable error messages when invalid input is entered.
+8. The application should not crash during normal usage and should handle invalid inputs gracefully.
+9. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be
+   added without major refactoring.
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Academy**: The full set of staff/players used to represent all contacts in the contact list
+* **Attribute**: A catalog-backed categorisation assigned to a person, such as Team, Status, or Position
+* **Attribute catalog**: The approved set of values for an attribute. A Team, Status, or Position value must exist in
+  its catalog before it can be assigned to a person
+* **Confirmation flow**: A multi-step interaction that requires the manager to confirm or cancel an operation before
+  it takes effect
+* **Event**: A scheduled match or training session managed by the system
+* **Filtered list**: The currently displayed subset of persons produced by commands such as `list`, `filter`, or `find`
 * **Position**: The roles that each player is specialised/assigned in the team
 * **Performance Stats**: The player statistics based on their previous games (e.g. goals, wins, losses,
   calculated winrate, etc.)
@@ -877,13 +890,19 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: List all persons using the `list` command. Ensure multiple persons are in the list.
 
     2. Test case: `delete 1`<br>
-       Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
-       Timestamp in the status bar is updated.
+       Expected: The first contact is selected for deletion and a confirmation prompt is shown. No person is deleted
+       yet. The status bar timestamp is not updated.
 
     3. Test case: `delete 0`<br>
-       Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+       Expected: No person is deleted immediately. If a person with the literal name `0` exists, that person is
+       selected for deletion and a confirmation prompt is shown. Otherwise, an error message reports that no persons
+       match `0`. Status bar remains the same.
 
-    4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+    4. Test case: `delete 1`, then `y`<br>
+       Expected: The first contact is deleted from the list. Details of the deleted contact are shown in the status
+       message. Timestamp in the status bar is updated.
+
+    5. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
 
 ### Attributes (catalog + assignment)
@@ -932,6 +951,38 @@ testers are expected to do more *exploratory* testing.
     2. Test case: `teamedit old/Second Team new/Reserve Team`<br>
        Expected: Command succeeds and all persons previously assigned `Second Team` now display `Reserve Team`.
 
+### Player Stats
+1. Updating player stats with `update `
+   1. Prerequisites: At least one player in the list.
+   2. Test case: `update 1 wins 5` <br>
+   Expected: Win count of player at index 1 increases by 5. Success message shows old and new value with increment. 
+   3. Test case: `update 1 losses -1` <br>
+   Expected: Rejected if resulting value would go below 0. Error message indicates value must be more or equal to 0. 
+   4. Test case: `update 1 invalidstat 5` <br>
+   Expected: Rejected with invalid command format message. 
+   5. Test case: `update 0 wins 5` <br>
+   Expected: Rejected with invalid index message.
+   6. Test case: `update 2 goals 10` where index 2 has a staff role <br>
+   Expected: Rejected with error message indicating this person must be a player.
+
+2. Setting player stats with `set`
+   1. Prerequisites: At least one player in the list.
+   2. Test case: `set 1 goals 10` <br>
+   Expected: Goals of player at index 1 is set to exactly 10 regardless of previous value. Success message shows old and new value.
+   3. Test case: `set 1 draws 0` <br>
+   Expected: Draws set to 0. Valid since 0 is within the allowed range.
+   4. Test case: `set 1 wins -1` <br>
+   Expected: Rejected with error message indicating value must be more or equal to 0.
+   5. Test case: `set 2 goals 10` where index 2 is a staff member <br>
+   Expected: Rejected with error message indicating this person must be a player.
+
+3. Calculated stats display
+   1. Prerequisites: A player with 0 wins, 0 losses, 0 draws.
+   2. Test case: Observe **win rate** and **goals per game** displayed <br>
+   Expected: Both show 0.00 (_no division by zero error_).
+   3. Test case: `set 1 wins 3` then `set 1 losses 1` <br>
+   Expected: Win rate updates live to 75.00%. Goals per game updates accordingly.
+
 ### Role-scoped list
 
 1. Listing persons by role
@@ -968,16 +1019,19 @@ testers are expected to do more *exploratory* testing.
     5. Test case: `filter wins/<3`<br>
        Expected: Only players with fewer than 3 wins are shown. Staff do not match this stat filter.
 
-    6. Test case: `filter goals/10`<br>
+    6. Test case: `filter draws/=2`<br>
+       Expected: Only players with exactly 2 draws are shown. Staff do not match this stat filter.
+
+    7. Test case: `filter goals/10`<br>
        Expected: Command is rejected with an invalid format message.
 
-    7. Test case: `filter tm/Nonexistent Team`<br>
+    8. Test case: `filter tm/Nonexistent Team`<br>
         Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
 
-    8. Test case: `filter st/Retired`<br>
+    9. Test case: `filter st/Retired`<br>
         Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
 
-    9. Test case: `filter pos/Coach`<br>
+    10. Test case: `filter pos/Coach`<br>
         Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
    
 2. Listing persons with attribute filters
@@ -1022,21 +1076,24 @@ testers are expected to do more *exploratory* testing.
 
 2. Sorting by player stats
 
-    1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
+    1. Prerequisites: At least two players with different `goals`, `wins`, `losses`, or `draws` values.
 
     2. Test case: `sort by/goals`<br>
-       Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
+       Expected: Only players are shown, ordered by goals in ascending order.
 
     3. Test case: `sort by/wins desc`<br>
-       Expected: Persons are ordered by wins in descending order.
+       Expected: Only players are shown, ordered by wins in descending order.
 
     4. Test case: `sort r/player by/losses`<br>
        Expected: Only players are shown, ordered by losses in ascending order.
 
-    5. Test case: `sort r/staff by/goals`<br>
+    5. Test case: `sort by/draws`<br>
+       Expected: Only players are shown, ordered by draws in ascending order.
+
+    6. Test case: `sort r/staff by/goals`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
-    6. Test case: `sort r/player by/unknown`<br>
+    7. Test case: `sort r/player by/unknown`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data
@@ -1099,6 +1156,7 @@ testers are expected to do more *exploratory* testing.
    The current filter command supports role, team, status, position, and numeric player stats, but not tags. We plan to add t/TAG support so users can combine tag-based filtering with existing structured criteria, e.g. filter r/player t/captain st/Active.
 8. **Allow sorting by additional player performance metrics:**
    The current sort command supports only goals, wins, and losses for player performance sorting. We plan to extend it to support other player metrics already tracked or derived in the product, such as win rate or average goals per game, so users can rank players using a broader view of performance.
+8. **Prevent players from being assigned to multiple events that occur at the same time** Currently, two (and more) events can be created at the same date and time, and players can be assigned to both events. We plan to add support for checking if there is any overlap in dates and times so that players cannot be assigned to multiple events happening at the same time.
 --------------------------------------------------------------------------------------------------------------------
 
 ## Appendix: Effort
@@ -1109,4 +1167,3 @@ Compared to AB3, this project required significantly more effort due to the broa
 One particularly challenging area was the implementation of the Team/Status/Position attribute subsystem. Features such as protected defaults, delete guards for in-use attributes, rename cascades, catalog validation, and robust JSON recovery required coordinated changes across the model, commands, storage, and documentation. While we were able to reuse much of AB3’s architecture such as its command flow, storage framework, and JavaFX base, our main effort lay in adapting these foundations to support soccer-specific workflows and stricter domain rules.
 We also spent a substantial amount of effort on roster-management workflows, including deletion, listing, sorting, and filtering. Although these features may appear straightforward, they operate at the intersection of parsing, model updates, filtered-list state, and user feedback. For example, implementing safer deletion required explicit confirmation flows and clash-resolution logic, while more advanced list, sort, and filter functionality had to remain consistent across role-based views, attribute-backed filtering, and player statistics. The real challenge was not in building individual commands, but in ensuring that they worked seamlessly together.
 Finally, implementing batch CSV import revealed numerous edge cases that could potentially corrupt the application. As a result, we dedicated significant time to thoroughly validating and testing our custom CSV parser. This experience also highlighted the added complexity of supporting more advanced imports, such as those involving attributes and statistics, which would require even more comprehensive safeguards. Nonetheless, such enhancements remain feasible with sufficient time and careful implementation.
-

@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DRAWS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GOALS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_LOSSES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_POSITION;
@@ -29,9 +30,9 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     @Override
     public FilterCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS,
-                PREFIX_POSITION, PREFIX_GOALS, PREFIX_WINS, PREFIX_LOSSES);
+                PREFIX_POSITION, PREFIX_GOALS, PREFIX_WINS, PREFIX_LOSSES, PREFIX_DRAWS);
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ROLE, PREFIX_TEAM, PREFIX_STATUS,
-                PREFIX_POSITION, PREFIX_GOALS, PREFIX_WINS, PREFIX_LOSSES);
+                PREFIX_POSITION, PREFIX_GOALS, PREFIX_WINS, PREFIX_LOSSES, PREFIX_DRAWS);
 
         if (!argMultimap.getPreamble().isEmpty() || hasNoCriteria(argMultimap)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
@@ -44,9 +45,10 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         Optional<NumericComparison> goals = parseOptionalNumericComparison(argMultimap, PREFIX_GOALS);
         Optional<NumericComparison> wins = parseOptionalNumericComparison(argMultimap, PREFIX_WINS);
         Optional<NumericComparison> losses = parseOptionalNumericComparison(argMultimap, PREFIX_LOSSES);
+        Optional<NumericComparison> draws = parseOptionalNumericComparison(argMultimap, PREFIX_DRAWS);
 
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(role, team, status,
-                position, goals, wins, losses);
+                position, goals, wins, losses, draws);
         return new FilterCommand(predicate);
     }
 
@@ -57,7 +59,8 @@ public class FilterCommandParser implements Parser<FilterCommand> {
                 && !argMultimap.getValue(PREFIX_POSITION).isPresent()
                 && !argMultimap.getValue(PREFIX_GOALS).isPresent()
                 && !argMultimap.getValue(PREFIX_WINS).isPresent()
-                && !argMultimap.getValue(PREFIX_LOSSES).isPresent();
+                && !argMultimap.getValue(PREFIX_LOSSES).isPresent()
+                && !argMultimap.getValue(PREFIX_DRAWS).isPresent();
     }
 
     private Optional<Role> parseOptionalRole(ArgumentMultimap argMultimap) throws ParseException {

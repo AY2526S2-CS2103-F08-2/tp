@@ -7,7 +7,7 @@ participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":SortCommandParser" as SortCommandParser LOGIC_COLOR
 participant "s:SortCommand" as SortCommand LOGIC_COLOR
-participant "r:CommandResult" as CommandResult LOGIC_COLOR
+participant "commandResult:CommandResult" as CommandResult LOGIC_COLOR
 end box
 
 box Model MODEL_COLOR_T1
@@ -27,7 +27,7 @@ activate SortCommandParser
 SortCommandParser --> AddressBookParser
 deactivate SortCommandParser
 
-AddressBookParser -> SortCommandParser : parse(" r/player by/email desc")
+AddressBookParser -> SortCommandParser : parse("r/player by/email desc")
 activate SortCommandParser
 
 create SortCommand
@@ -62,10 +62,10 @@ create CommandResult
 SortCommand -> CommandResult
 activate CommandResult
 
-CommandResult --> SortCommand
+CommandResult --> SortCommand : commandResult
 deactivate CommandResult
 
-SortCommand --> LogicManager : r
+SortCommand --> LogicManager : commandResult
 deactivate SortCommand
 
 [<--LogicManager

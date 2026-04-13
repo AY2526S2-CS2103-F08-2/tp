@@ -17,11 +17,15 @@ import java.util.function.Predicate;
  */
 public enum StatField {
     GOALS(PlayerStats::getGoalsScored, PlayerStats::setGoalsScored,
-            x -> x >= 0, "The value for goals should be more or equal to 0."),
+            x -> x >= 0, StatField.MESSAGE_GTE_ZERO),
     WINS(PlayerStats::getMatchesWon, PlayerStats::setMatchesWon,
-            x -> x >= 0, "The value for wins should be more or equal to 0."),
+            x -> x >= 0, StatField.MESSAGE_GTE_ZERO),
     LOSSES(PlayerStats::getMatchesLost, PlayerStats::setMatchesLost,
-            x -> x >= 0, "The value for losses should be more or equal to 0.");
+            x -> x >= 0, StatField.MESSAGE_GTE_ZERO),
+    DRAWS(PlayerStats::getMatchesDrawn, PlayerStats::setMatchesDrawn,
+            x -> x >= 0, StatField.MESSAGE_GTE_ZERO);
+
+    public static final String MESSAGE_GTE_ZERO = "The value set should be greater or equal to 0.";
 
     public final String messageConstraints;
 
