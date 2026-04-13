@@ -72,7 +72,7 @@ public class AttendanceMarkCommand extends Command {
 
         for (String s : playerNames) {
             Optional<Person> personToMark = model.getAddressBook().getPersonList().stream()
-                    .filter(p -> p.getName().fullName.equals(s))
+                    .filter(p -> p.getName().toString().equalsIgnoreCase(s))
                     .findFirst();
 
             if (personToMark.isPresent()) {
