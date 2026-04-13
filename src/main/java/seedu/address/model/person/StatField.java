@@ -25,7 +25,7 @@ public enum StatField {
     DRAWS(PlayerStats::getMatchesDrawn, PlayerStats::setMatchesDrawn,
             x -> x >= 0, StatField.MESSAGE_GTE_ZERO);
 
-    public static final String MESSAGE_GTE_ZERO = "The value for goals should be more or equal to 0.";
+    public static final String MESSAGE_GTE_ZERO = "The value set should be greater or equal to 0.";
 
     public final String messageConstraints;
 
