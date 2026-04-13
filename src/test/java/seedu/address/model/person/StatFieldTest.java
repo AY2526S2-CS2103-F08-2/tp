@@ -69,6 +69,7 @@ public class StatFieldTest {
         // other fields unaffected
         assertEquals(0, stats.getMatchesWon());
         assertEquals(0, stats.getMatchesLost());
+        assertEquals(0, stats.getMatchesDrawn());
     }
 
     @Test
@@ -77,6 +78,7 @@ public class StatFieldTest {
         assertEquals(4, stats.getMatchesWon());
         assertEquals(0, stats.getGoalsScored());
         assertEquals(0, stats.getMatchesLost());
+        assertEquals(0, stats.getMatchesDrawn());
     }
 
     @Test
@@ -85,6 +87,16 @@ public class StatFieldTest {
         assertEquals(2, stats.getMatchesLost());
         assertEquals(0, stats.getGoalsScored());
         assertEquals(0, stats.getMatchesWon());
+        assertEquals(0, stats.getMatchesDrawn());
+    }
+
+    @Test
+    public void setValue_draws_doesNotAffectOtherFields() {
+        StatField.DRAWS.setValue(stats, 3);
+        assertEquals(0, stats.getMatchesLost());
+        assertEquals(0, stats.getGoalsScored());
+        assertEquals(0, stats.getMatchesWon());
+        assertEquals(3, stats.getMatchesDrawn());
     }
 
     @Test
@@ -108,12 +120,13 @@ public class StatFieldTest {
     @Test
     public void values_containsExpectedFields() {
         StatField[] fields = StatField.values();
-        assertEquals(3, fields.length);
+        assertEquals(4, fields.length);
 
         // verify all expected fields are present
         boolean hasGoals = false;
         boolean hasWins = false;
         boolean hasLosses = false;
+        boolean hasDraws = false;
         for (StatField field : fields) {
             if (field == StatField.GOALS) {
                 hasGoals = true;
@@ -124,9 +137,13 @@ public class StatFieldTest {
             if (field == StatField.LOSSES) {
                 hasLosses = true;
             }
+            if (field == StatField.DRAWS) {
+                hasDraws = true;
+            }
         }
         assertTrue(hasGoals);
         assertTrue(hasWins);
         assertTrue(hasLosses);
+        assertTrue(hasDraws);
     }
 }
