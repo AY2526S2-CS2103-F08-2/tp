@@ -404,10 +404,13 @@ It also adds a red `staff` logo if the contact is a staff. If it is a player, th
 The `delete` and `deletebulk` features use a parser-managed continuation flow so that follow-up inputs can stay short
 for the user.
 
-* For `delete`, an initial command can identify a player by list index or by matching name keywords.
+* For `delete`, an initial command can identify a player by list index or by matching name keywords, preferably using
+  the explicit `n/` prefix for name-based targets.
 * If the command is not yet confirmed, `DeleteInteractionFlow` stores enough context to interpret the next input as
   either confirmation (`y`), cancellation (`n`), or a clash-selection index.
 * For index-based deletion, a follow-up `y` is rewritten internally to `delete INDEX confirm`.
+* For criteria-based deletion, follow-up commands are normalized to the `delete n/NAME ...` form so names like `Y`,
+  `N`, or `2` are preserved as literal name targets.
 * For bulk deletion, a follow-up `y` or `n` is rewritten internally to
   `deletebulk y [t/TAG | tm/TEAM | st/STATUS]` or `deletebulk n [t/TAG | tm/TEAM | st/STATUS]`,
   preserving whichever criterion was originally used.

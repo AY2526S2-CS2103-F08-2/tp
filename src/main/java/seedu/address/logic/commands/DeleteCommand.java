@@ -14,7 +14,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.NameContainsAllKeywordsPredicate;
+import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 
 /**
@@ -32,10 +32,10 @@ public class DeleteCommand extends Command {
             + "You can confirm with Y/N after selecting a person.\n"
             + "Parameters:\n"
             + "  1) INDEX\n"
-            + "  2) NAME [MATCH_INDEX]\n"
+            + "  2) n/NAME [MORE_KEYWORDS]\n"
             + "Examples:\n"
             + "  " + COMMAND_WORD + " 3\n"
-            + "  " + COMMAND_WORD + " Ryan\n";
+            + "  " + COMMAND_WORD + " n/Ryan\n";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted %1$s: %2$s";
     public static final String MESSAGE_DELETE_PERSON_CANCELLED = "Deletion cancelled for %1$s: %2$s";
@@ -86,10 +86,7 @@ public class DeleteCommand extends Command {
      * @param deletionDecision user confirmation state.
      */
     public DeleteCommand(Index targetIndex, DeletionDecision deletionDecision) {
-        this.targetIndex = targetIndex;
-        this.criteria = null;
-        this.criteriaMatchIndex = null;
-        this.deletionDecision = deletionDecision;
+        this(targetIndex, null, null, deletionDecision);
     }
 
     /**
@@ -100,16 +97,48 @@ public class DeleteCommand extends Command {
      * @param deletionDecision user confirmation state.
      */
     public DeleteCommand(String criteria, Index criteriaMatchIndex, DeletionDecision deletionDecision) {
-        this.targetIndex = null;
-        this.criteria = criteria.trim();
+        this(null, criteria, criteriaMatchIndex, deletionDecision);
+    }
+
+    private DeleteCommand(Index targetIndex, String criteria, Index criteriaMatchIndex,
+                          DeletionDecision deletionDecision) {
+        this.targetIndex = targetIndex;
+        this.criteria = criteria == null ? null : criteria.trim();
         this.criteriaMatchIndex = criteriaMatchIndex;
         this.deletionDecision = deletionDecision;
+    }
+
+    /**
+     * Creates a {@code DeleteCommand} for input that could refer to either an index or a literal numeric name.
+     */
+    public static DeleteCommand forAmbiguousNumericInput(String criteria, Index targetIndex) {
+        return new DeleteCommand(targetIndex, criteria, null, DeletionDecision.UNDECIDED);
+    }
+
+    /**
+     * Creates a {@code DeleteCommand} for numeric input that could refer to either an index or a literal name,
+     * while carrying an explicit confirmation decision.
+     */
+    public static DeleteCommand forAmbiguousNumericInput(String criteria, Index targetIndex,
+                                                         DeletionDecision deletionDecision) {
+        return new DeleteCommand(targetIndex, criteria, null, deletionDecision);
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        if (targetIndex != null && criteria != null) {
+            return executeAmbiguousDelete(model);
+        }
+
         return targetIndex != null ? executeIndexDelete(model) : executeCriteriaDelete(model);
+    }
+
+    private CommandResult executeAmbiguousDelete(Model model) throws CommandException {
+        boolean hasExactNameMatch = model.getAddressBook().getPersonList().stream()
+                .anyMatch(person -> person.getName().fullName.equalsIgnoreCase(criteria));
+
+        return hasExactNameMatch ? executeCriteriaDelete(model) : executeIndexDelete(model);
     }
 
     private CommandResult executeIndexDelete(Model model) throws CommandException {
@@ -123,9 +152,8 @@ public class DeleteCommand extends Command {
     }
 
     private CommandResult executeCriteriaDelete(Model model) throws CommandException {
-        NameContainsAllKeywordsPredicate predicate = buildNamePredicate(criteria);
-        model.updateFilteredPersonList(predicate);
-        List<Person> matches = model.getFilteredPersonList();
+        NameContainsKeywordsPredicate predicate = buildNamePredicate(criteria);
+        List<Person> matches = model.getPersonsMatching(predicate);
         if (matches.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_NO_MATCHING_PERSON, criteria));
         }
@@ -172,9 +200,9 @@ public class DeleteCommand extends Command {
                 NO_KEYWORD.toUpperCase(Locale.ROOT)));
     }
 
-    private NameContainsAllKeywordsPredicate buildNamePredicate(String rawCriteria) {
+    private NameContainsKeywordsPredicate buildNamePredicate(String rawCriteria) {
         List<String> keywords = Arrays.asList(rawCriteria.trim().split("\\s+"));
-        return new NameContainsAllKeywordsPredicate(keywords);
+        return new NameContainsKeywordsPredicate(keywords);
     }
 
     private String formatMatches(List<Person> matches) {
@@ -216,6 +244,13 @@ public class DeleteCommand extends Command {
      */
     public boolean isCriteriaDelete() {
         return criteria != null;
+    }
+
+    /**
+     * Returns true if this command was created from numeric input that could be interpreted as either a name or index.
+     */
+    public boolean isAmbiguousNumericDelete() {
+        return targetIndex != null && criteria != null;
     }
 
     @Override

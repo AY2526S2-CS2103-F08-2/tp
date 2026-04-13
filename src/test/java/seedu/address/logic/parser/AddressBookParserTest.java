@@ -79,7 +79,8 @@ public class AddressBookParserTest {
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
                 DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
-        assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
+        assertEquals(DeleteCommand.forAmbiguousNumericInput(
+                String.valueOf(INDEX_FIRST_PERSON.getOneBased()), INDEX_FIRST_PERSON), command);
     }
 
     @Test
@@ -88,6 +89,12 @@ public class AddressBookParserTest {
                 DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased()
                         + " " + DeleteCommand.CONFIRM_KEYWORD);
         assertEquals(new DeleteCommand(INDEX_FIRST_PERSON, true), command);
+    }
+
+    @Test
+    public void parseCommand_deleteWithNamePrefix() throws Exception {
+        DeleteCommand command = (DeleteCommand) parser.parseCommand(DeleteCommand.COMMAND_WORD + " n/Amy Y");
+        assertEquals(new DeleteCommand("Amy Y", null, DeleteCommand.DeletionDecision.UNDECIDED), command);
     }
 
     @Test
