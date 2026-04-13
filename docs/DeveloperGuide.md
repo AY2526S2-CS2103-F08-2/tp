@@ -630,8 +630,7 @@ Use case ends.
 **Extensions**
 
 * 2a. Manager omits the role scope.
-    * 2a1. For roster attributes such as `name`, `email`, `team`, `status`, and `position`, SoCcer Manager sorts the
-      current visible list.  
+    * 2a1. For roster attributes, SoCcer Manager sorts the displayed list.  
       Use case resumes at step 3.
 
 * 2b. Manager specifies descending order.
@@ -643,8 +642,7 @@ Use case ends.
       Use case ends.
 
 * 5a. Manager sorts by `goals`, `wins`, or `losses`.
-    * 5a1. SoCcer Manager switches to the player-only list before applying the sort, even if the previous visible list
-      contained staff or a mixed roster.  
+    * 5a1. SoCcer Manager switches to the player-only list before applying the sort.
       Use case resumes at step 6.
 
 * 5b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, or `sort r/staff by/losses`.
