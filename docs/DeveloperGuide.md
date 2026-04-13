@@ -821,12 +821,10 @@ otherwise)
    typical laptop.
 5. All successful modifying commands should automatically save data to prevent loss of information.
 6. The application should prevent data corruption and handle unexpected shutdowns safely.
-7. A user with above-average typing speed should be able to complete common tasks faster using commands than using
-   mouse-driven interactions.
-8. The system should provide clear and actionable error messages when invalid input is entered.
-9. The application should not crash during normal usage and should handle invalid inputs gracefully.
-10. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be
-    added without major refactoring.
+7. The system should provide clear and actionable error messages when invalid input is entered.
+8. The application should not crash during normal usage and should handle invalid inputs gracefully.
+9. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be
+   added without major refactoring.
 
 ### Glossary
 
