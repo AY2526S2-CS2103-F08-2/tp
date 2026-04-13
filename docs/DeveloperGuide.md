@@ -1091,6 +1091,7 @@ testers are expected to do more *exploratory* testing.
    The current filter command supports role, team, status, position, and numeric player stats, but not tags. We plan to add t/TAG support so users can combine tag-based filtering with existing structured criteria, e.g. filter r/player t/captain st/Active.
 7. **Allow sorting by additional player performance metrics:**
    The current sort command supports only goals, wins, and losses for player performance sorting. We plan to extend it to support other player metrics already tracked or derived in the product, such as win rate or average goals per game, so users can rank players using a broader view of performance.
+8. **Prevent players from being assigned to multiple events that occur at the same time** Currently, two (and more) events can be created at the same date and time, and players can be assigned to both events. We plan to add support for checking if there is any overlap in dates and times so that players cannot be assigned to multiple events happening at the same time.
 --------------------------------------------------------------------------------------------------------------------
 
 ## Appendix: Effort
