@@ -1164,9 +1164,24 @@ testers are expected to do more *exploratory* testing.
 
 ## Appendix: Effort
 
-Overall, the project was manageable, though we encountered initial difficulties understanding the existing AB3 codebase. Before implementing new features, we first had to grasp the underlying parser and command structure. This was followed by significant refactoring to support our new `Player` and `Staff`roles, with `Person` redesigned as an abstract class. However, this change introduced widespread issues, many existing tests and components broke due to the tight coupling between `Person` and the address book. We invested considerable effort early on to resolve these issues and build a solid understanding of the system’s architecture.
-Unlike AB3, which manages a single entity (`Person`), our SoCcer Manager introduces an additional abstraction in the form of the `Event` class. Its subclasses, `Match` and `Training`, depend on `Person`, creating inter-entity relationships. For instance, deleting a player from the system must also ensure that they are removed from any associated events. Managing these dependencies across multiple entity types was a recurring challenge throughout the project.
-Compared to AB3, this project required significantly more effort due to the broader range of domain concepts involved: players, staff, events, player statistics, and catalog-backed attributes. A major portion of our work focused on integrating these features cleanly into the existing parser–command–model–storage architecture while maintaining consistency across validation, JSON persistence, and UI updates.
-One particularly challenging area was the implementation of the Team/Status/Position attribute subsystem. Features such as protected defaults, delete guards for in-use attributes, rename cascades, catalog validation, and robust JSON recovery required coordinated changes across the model, commands, storage, and documentation. While we were able to reuse much of AB3’s architecture such as its command flow, storage framework, and JavaFX base, our main effort lay in adapting these foundations to support soccer-specific workflows and stricter domain rules.
-We also spent a substantial amount of effort on roster-management workflows, including deletion, listing, sorting, and filtering. Although these features may appear straightforward, they operate at the intersection of parsing, model updates, filtered-list state, and user feedback. For example, implementing safer deletion required explicit confirmation flows and clash-resolution logic, while more advanced list, sort, and filter functionality had to remain consistent across role-based views, attribute-backed filtering, and player statistics. The real challenge was not in building individual commands, but in ensuring that they worked seamlessly together.
-Finally, implementing batch CSV import revealed numerous edge cases that could potentially corrupt the application. As a result, we dedicated significant time to thoroughly validating and testing our custom CSV parser. This experience also highlighted the added complexity of supporting more advanced imports, such as those involving attributes and statistics, which would require even more comprehensive safeguards. Nonetheless, such enhancements remain feasible with sufficient time and careful implementation.
+SoCcer Manager required substantially more effort than AB3 because it extends the original single-entity address book
+into a soccer-management system with multiple connected domain concepts: players, staff, events, player statistics,
+catalog-backed attributes, and bulk import.
+
+Key sources of complexity:
+
+* **Domain model refactoring:** We redesigned `Person` into `Player` and `Staff`, which required changes across
+  parser, command, model, storage, UI, and test code. This was difficult because much of AB3 assumed a single concrete
+  `Person` type.
+* **Inter-entity relationships:** Events (`Match` and `Training`) depend on players. This introduced cascading
+  behavior, such as keeping event rosters consistent when players are edited or deleted.
+* **Attribute subsystem:** Team, Status, and Position required catalog storage, protected defaults, assignment
+  validation, in-use delete guards, rename cascades, JSON recovery, and UI display behavior.
+* **Roster workflows:** Listing, sorting, filtering, deletion, and confirmation flows had to work consistently across
+  mixed player/staff data, filtered views, and player-only statistics.
+* **CSV import robustness:** Batch import required careful validation so that malformed rows could be handled without
+  unnecessarily losing valid data.
+
+We reused AB3's main architecture, including its parser-command-model-storage structure and JavaFX UI foundation. The
+main project effort was in adapting that foundation to support soccer-specific workflows, stronger domain constraints,
+and relationships between multiple entity types.
