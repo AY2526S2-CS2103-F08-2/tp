@@ -46,6 +46,10 @@ public class SetCommandParser implements Parser<SetCommand> {
         try {
             value = Integer.parseInt(splitArgs[ARG_VALUE]);
         } catch (NumberFormatException e) {
+            if (splitArgs[ARG_VALUE].matches("-?\\d+")) {
+                // for values more than integer limit
+                throw new ParseException(SetCommand.MESSAGE_STAT_OVERFLOW);
+            }
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, SetCommand.MESSAGE_USAGE));
         }
