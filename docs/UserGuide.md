@@ -529,6 +529,11 @@ Step-by-step example:
 Immediately clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position
 catalogs.
 
+Notes:
+* `clear` executes immediately when entered.
+* There is no confirmation step before the address book is cleared.
+* Use this command carefully because it removes all persons and events at once.
+
 Format: `clear`
 
 Notes:
@@ -611,7 +616,7 @@ Furthermore, certain edits can cause SoCcer Manager to behave in unexpected ways
 | **Training**        | `trainingadd n/TRAINING_NAME d/DATE [st/STATUS \| pos/POSITION \| tm/TEAM] [pl/PLAYER_NAME]…​` <br> e.g., `trainingadd n/Warm Up d/2026-06-16 1700 tm/First Team pl/John Doe`                                                         |
 | **Attendance**      | `attendance`                                                                                                                                                                                                                          |
 | **Attendance Mark** | `attendancemark INDEX [pl/PLAYER_NAME]…​` <br> e.g., `attendancemark 1 pl/Alex Yeoh pl/Bernice Yu`                                                                                                                                    |
-| **Clear**           | `clear`                                                                                                                                                                                                                               |
+| **Clear**           | `clear`<br>Immediately clears all persons and events. Use with care.                                                                                                                                                                  |
 | **Delete**          | `delete INDEX` or `delete KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete 3` (then `y`), `delete Bernice`, `delete Meier` (then `2`, then `y`)                                                                                             |
 | **Delete Bulk**     | `deletebulk [t/TAG \| tm/TEAM \| st/STATUS]`<br> e.g., `deletebulk st/Unavailable` (then `y` or `n`)                                                                                                                                  |
 | **Edit**            | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [tm/TEAM] [st/STATUS] [pos/POSITION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee tm/Second Team st/Unavailable`                                                      |

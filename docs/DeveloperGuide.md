@@ -1140,17 +1140,21 @@ testers are expected to do more *exploratory* testing.
    as a result, visually similar values such as `First Team` and `First  Team` can coexist as distinct
    catalog entries. A planned enhancement is to normalize repeated internal whitespace during attribute parsing so that
    equivalent attribute values are treated consistently during duplicate checks, storage, and person assignment.
-2. **Allow user to unmark attendance for specific events:**
+2. **Add a confirmation safeguard for `clear`:**
+   Currently, `clear` executes immediately and clears all persons and events without a confirmation step. This makes it
+   a high-impact command that users must use carefully. A planned enhancement is to add an explicit confirmation flow
+   before the clear operation is applied.
+3. **Allow user to unmark attendance for specific events:**
    Currently, users are only able to mark the attendance of players for events. They cannot reverse this and unmark someone
    who attended. This could potentially be useful if the user accidentally marks someone as attended or the player only attends
    for a short amount of time and the user wants to remove their attendance.
-3. **Allow user to import players with preset attributes/stats:** When importing from CSV, users currently are only able to import contacts without the ability to define their attributes and stats. Then, the user has to manually update these one-by-one by commands. Allowing importing of preset attributes/stats can further help the user in mass importing players with more specific data.
-4. **Allow matches to affect player performance stats:** Currently, performance stats of players can only be modified by the user via commands. If the user adds a new match, they also have to update the performance of each player manually. By recording player stats like goals/wins in matches, and then cascade it to update each player's performance stat, it will automate this process and save a lot of time for the user.
-5. **Preserve the previous roster view after cancelling delete flows:**
+4. **Allow user to import players with preset attributes/stats:** When importing from CSV, users currently are only able to import contacts without the ability to define their attributes and stats. Then, the user has to manually update these one-by-one by commands. Allowing importing of preset attributes/stats can further help the user in mass importing players with more specific data.
+5. **Allow matches to affect player performance stats:** Currently, performance stats of players can only be modified by the user via commands. If the user adds a new match, they also have to update the performance of each player manually. By recording player stats like goals/wins in matches, and then cascade it to update each player's performance stat, it will automate this process and save a lot of time for the user.
+6. **Preserve the previous roster view after cancelling delete flows:**
    Currently, deletebulk n resets the person list to the full roster instead of restoring the user’s previous filtered/sorted view. We plan to preserve the active list predicate and sorting state before entering the delete confirmation flow, and restore that same view when the deletion is cancelled.
-6. **Allow filtering by tags in the `filter` command:**
+7. **Allow filtering by tags in the `filter` command:**
    The current filter command supports role, team, status, position, and numeric player stats, but not tags. We plan to add t/TAG support so users can combine tag-based filtering with existing structured criteria, e.g. filter r/player t/captain st/Active.
-7. **Allow sorting by additional player performance metrics:**
+8. **Allow sorting by additional player performance metrics:**
    The current sort command supports only goals, wins, and losses for player performance sorting. We plan to extend it to support other player metrics already tracked or derived in the product, such as win rate or average goals per game, so users can rank players using a broader view of performance.
 8. **Prevent players from being assigned to multiple events that occur at the same time** Currently, two (and more) events can be created at the same date and time, and players can be assigned to both events. We plan to add support for checking if there is any overlap in dates and times so that players cannot be assigned to multiple events happening at the same time.
 --------------------------------------------------------------------------------------------------------------------
