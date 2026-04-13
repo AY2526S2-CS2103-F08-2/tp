@@ -255,7 +255,30 @@ Implementation details:
 The corresponding sequence-diagram source for the filtered path is recorded in
 `docs/diagrams/ListFilteredSequenceDiagram.puml`.
 
-### Update player stats command
+### Player Stats (and Calculated Stats)
+Each **player** owns a `PlayerStats` object that contains the player's performance stats. These stats can be modified by the user through commands.
+
+- Each stat is a defined enum constant in `StatField`, consisting of a defined getter, setter and validation function for each stat
+  - `Function<PlayerStats, Integer> getter`
+  - `BiConsumer<PlayerStats, Integer> setter`
+  - `Predicate<Integer> validator`
+- To define a new player stat, simply define it as a new enum constant in `StatField`, and link it with the corresponding getter/setter/validation functions in `PlayerStats`
+- This design is meant to be **data-driven**, so that the only modifications needed are minimal:
+  - `StatField` : to define to new stat 
+  - `PlayerStats` : to link getter/setter/validation functions, and update `copy()`/`equals()`
+  - `SetCommand`/`UpdateCommand` : to update usage message
+- Other components such as JSON storage, UI, will reflect the new addition automatically and will work as intended.
+
+**Calculated stats:**
+
+As opposed to basic player stats, calculated stats are advanced player performance stats based on the existing stats of the player.
+
+- These stats cannot be directly set/updated, but rather, once the player base stats change, these calculated stats are automatically updated by recalculating with respect to the new values.
+- Therefore, these advanced stats are meant to be **read-only**.
+- Just like basic player stats, new calculated stats can be defined by adding a new enum constant to `CalculatedStatField`,
+with the relevant calculation `Function<PlayerStats, Double>`.
+
+**Commands to modify player stats:**
 
 The `update` command (`set` command works similarly) is handled by the `AddressBookParser` via the `UpdateCommandParser`,
 which creates a `UpdateCommand` with the given parameters (`INDEX, STAT, VALUE`).
@@ -927,6 +950,38 @@ testers are expected to do more *exploratory* testing.
 
     2. Test case: `teamedit old/Second Team new/Reserve Team`<br>
        Expected: Command succeeds and all persons previously assigned `Second Team` now display `Reserve Team`.
+
+### Player Stats
+1. Updating player stats with `update `
+   1. Prerequisites: At least one player in the list.
+   2. Test case: `update 1 wins 5` <br>
+   Expected: Win count of player at index 1 increases by 5. Success message shows old and new value with increment. 
+   3. Test case: `update 1 losses -1` <br>
+   Expected: Rejected if resulting value would go below 0. Error message indicates value must be more or equal to 0. 
+   4. Test case: `update 1 invalidstat 5` <br>
+   Expected: Rejected with invalid command format message. 
+   5. Test case: `update 0 wins 5` <br>
+   Expected: Rejected with invalid index message.
+   6. Test case: `update 2 goals 10` where index 2 has a staff role <br>
+   Expected: Rejected with error message indicating this person must be a player.
+
+2. Setting player stats with `set`
+   1. Prerequisites: At least one player in the list.
+   2. Test case: `set 1 goals 10` <br>
+   Expected: Goals of player at index 1 is set to exactly 10 regardless of previous value. Success message shows old and new value.
+   3. Test case: `set 1 draws 0` <br>
+   Expected: Draws set to 0. Valid since 0 is within the allowed range.
+   4. Test case: `set 1 wins -1` <br>
+   Expected: Rejected with error message indicating value must be more or equal to 0.
+   5. Test case: `set 2 goals 10` where index 2 is a staff member <br>
+   Expected: Rejected with error message indicating this person must be a player.
+
+3. Calculated stats display
+   1. Prerequisites: A player with 0 wins, 0 losses, 0 draws.
+   2. Test case: Observe **win rate** and **goals per game** displayed <br>
+   Expected: Both show 0.00 (_no division by zero error_).
+   3. Test case: `set 1 wins 3` then `set 1 losses 1` <br>
+   Expected: Win rate updates live to 75.00%. Goals per game updates accordingly.
 
 ### Role-scoped list
 
