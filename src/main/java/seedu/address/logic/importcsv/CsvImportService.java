@@ -12,6 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.Parser;
+import seedu.address.logic.parser.ParserUtil;
+import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -72,7 +75,7 @@ public class CsvImportService {
                     model.addPerson(person);
                     result.incrementSuccessful();
 
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException | ParseException e) {
                     result.addFailureMessage("Row " + rowNumber + ": " + e.getMessage());
                 }
             }
@@ -96,7 +99,7 @@ public class CsvImportService {
         }
     }
 
-    private Person parsePerson(String line) {
+    private Person parsePerson(String line) throws ParseException {
         List<String> values = trimTrailingEmptyFields(parseCsvLine(line));
 
         if (values.size() != EXPECTED_HEADERS.size()) {
@@ -110,11 +113,11 @@ public class CsvImportService {
         String emailString = values.get(4).trim();
         String tagsString = values.get(5).trim();
 
-        Name name = new Name(nameString);
-        Role role = Role.valueOf(roleString.toUpperCase());
-        Address address = new Address(addressString);
-        Phone phone = new Phone(phoneString);
-        Email email = new Email(emailString);
+        Name name = ParserUtil.parseName(nameString);
+        Role role = ParserUtil.parseRole(roleString);
+        Address address = ParserUtil.parseAddress(addressString);
+        Phone phone = ParserUtil.parsePhone(phoneString);
+        Email email = ParserUtil.parseEmail(emailString);
         Set<Tag> tags = parseTags(tagsString);
 
         return Person.createPerson(name, phone, email, address, tags, role);
