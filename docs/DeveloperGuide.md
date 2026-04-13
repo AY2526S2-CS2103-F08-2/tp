@@ -351,6 +351,13 @@ internal replacement steps are intentionally shown in a simplified form to keep 
 
 ![Model-level attribute rename cascade](images/AttributeRenameCascadeSequenceDiagram.png)
 
+#### Batch Import
+The `importcsv` command allows batch import of players/staff, with fields defined in each column.
+The **User Guide** will have the latest expected format. The parser is strict and expect the CSV file to comply with the given format.
+
+The CSV is custom, which allows behaviour such as escaped commas. 
+Parser behaviour is customizable by modifying `CsvImportService`/`CsvImportResult`.
+
 #### Storage behavior
 
 `JsonSerializableAddressBook` persists all three catalogs (`teams`, `positions`, `statuses`) and persons.
@@ -366,6 +373,8 @@ During load:
 #### UI behavior
 
 `PersonCard` renders `Team`, `Status`, and `Position` labels only when the person has non-default values.
+
+It also adds a red `staff` logo if the contact is a staff. If it is a player, the defined performance stats are displayed.
 
 ### Delete and bulk-delete confirmation flow
 
@@ -395,8 +404,8 @@ to the filtered person list.
 * `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
   ordering stay aligned.
 * Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
-* Stat-based comparators read from `PlayerStats`; non-player entries are treated as stat value `0` so mixed lists can
-  still be sorted without special-case command failures.
+* Stat-based comparators read from `PlayerStats`; when the requested attribute is `goals`, `wins`, or `losses`,
+  `SortCommand` switches the visible list to players before applying the comparator.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
@@ -469,13 +478,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 (For all use cases below, the **System** is the `SoCcer Manager` and the **Actor** is the `manager`, unless specified
 otherwise)
 
-Reusable extension for applicable multi-step use cases:
-
-* a. At any time, Manager cancels the operation.
-    * a1. SoCcer Manager aborts the operation and shows a cancellation message.
-      Use case ends.
-
-**Use case: UC00 - Add new person**  
+**Use case: UC01 - Add new person**  
 **MSS**
 
 1. Manager requests to add a person.
@@ -502,7 +505,7 @@ Reusable extension for applicable multi-step use cases:
     * 2d1. SoCcer Manager informs the manager that the person was not added.  
       Use case resumes at step 2.
 
-**Use case: UC01 - Rename an attribute catalog value**  
+**Use case: UC02 - Rename an attribute catalog value**  
 **MSS**
 
 1. Manager requests to rename an attribute catalog value.
@@ -526,7 +529,7 @@ Reusable extension for applicable multi-step use cases:
     * 2c1. SoCcer Manager informs the manager that the catalog value was not renamed.  
       Use case ends.
 
-**Use case: UC02 - Delete an attribute catalog value**  
+**Use case: UC03 - Delete an attribute catalog value**  
 **MSS**
 
 1. Manager requests to delete an attribute catalog value.
@@ -549,7 +552,7 @@ Reusable extension for applicable multi-step use cases:
     * 2c1. SoCcer Manager informs the manager that the catalog value was not deleted.  
       Use case ends.
 
-**Use case: UC03 - Edit person attributes**  
+**Use case: UC04 - Edit person attributes**  
 **MSS**
 
 1. Manager requests to edit a person.
@@ -568,7 +571,7 @@ Reusable extension for applicable multi-step use cases:
     * 2b1. SoCcer Manager informs the manager that the person was not updated.  
       Use case ends.
 
-**Use case: UC04 - View persons by role**  
+**Use case: UC05 - View persons by role**  
 **MSS**
 
 1. Manager requests to list persons by role.
@@ -587,7 +590,7 @@ Reusable extension for applicable multi-step use cases:
     * 2b1. SoCcer Manager informs the manager that the list was not changed.  
       Use case ends.
 
-**Use case: UC05 - Filter persons using structured criteria**  
+**Use case: UC06 - Filter persons using structured criteria**  
 **MSS**
 
 1. Manager requests to filter persons.
@@ -614,7 +617,7 @@ Reusable extension for applicable multi-step use cases:
     * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC06 - Sort persons by attribute or stat**  
+**Use case: UC07 - Sort persons by attribute or stat**  
 **MSS**
 
 1. Manager requests to sort persons.
@@ -627,8 +630,8 @@ Reusable extension for applicable multi-step use cases:
 **Extensions**
 
 * 2a. Manager omits the role scope.
-    * 2a1. SoCcer Manager sorts all visible persons.  
-      Use case resumes at step 4.
+    * 2a1. For roster attributes, SoCcer Manager sorts the displayed list.  
+      Use case resumes at step 2.
 
 * 2b. Manager specifies descending order.
     * 2b1. SoCcer Manager sorts in descending order.  
@@ -638,15 +641,15 @@ Reusable extension for applicable multi-step use cases:
     * 2c1. SoCcer Manager shows an error message.
       Use case ends.
 
-* 4a. Manager sorts by `goals`, `wins`, or `losses`.
-    * 4a1. SoCcer Manager applies the sort only to players.
+* 5a. Manager sorts by `goals`, `wins`, or `losses`.
+    * 5a1. SoCcer Manager switches to the player-only list before applying the sort.
       Use case resumes at step 5.
 
 * 4b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, or `sort r/staff by/losses`.
     * 4b1. SoCcer Manager shows an error message.
       Use case ends.
 
-**Use case: UC07 - Bulk delete persons by shared criterion**  
+**Use case: UC08 - Bulk delete persons by shared criterion**  
 **MSS**
 
 1. Manager requests to bulk delete persons.
@@ -672,7 +675,7 @@ Reusable extension for applicable multi-step use cases:
     * 5a1. SoCcer Manager shows an error message.
       Use case ends.
 
-**Use case: UC08 - List persons using attribute filters**  
+**Use case: UC09 - List persons using attribute filters**  
 **MSS**
 
 1. Manager requests to list persons using filters.
@@ -699,14 +702,17 @@ Reusable extension for applicable multi-step use cases:
     * 3a1. SoCcer Manager shows an empty result.
       Use case ends.
 
-**Use case: UC09 - Set or update a player’s recorded performance stat**  
+**Use case: UC10 - Set or update a player’s recorded performance stat**  
 **MSS**
 
 1. Manager requests to modify a player’s recorded performance stat.
 2. Manager specifies the displayed player index, the stat field, and the new value or increment value.
-3. SoCcer Manager checks that the request is valid for the selected person and stat.
-4. SoCcer Manager updates the player’s stat.
-5. SoCcer Manager shows a success message.
+3. SoCcer Manager validates the index and stat request.
+4. SoCcer Manager checks that the specified person is a player.
+5. SoCcer Manager validates that the resulting stat value satisfies the stat constraints.
+6. SoCcer Manager updates the player’s stat.
+7. SoCcer Manager refreshes the player details shown in the UI, including any calculated stats derived from the updated values.
+8. SoCcer Manager shows a success message.  
    Use case ends.
 
 **Extensions**
@@ -727,7 +733,7 @@ Reusable extension for applicable multi-step use cases:
     * 2b1. SoCcer Manager increments the stat by the specified value.
       Use case resumes at step 4.
 
-**Use case: UC10 - Automatically display calculated stats for a player**  
+**Use case: UC11 - Automatically display calculated stats for a player**  
 **MSS**
 
 1. Manager views the player list or player details.
@@ -746,7 +752,7 @@ Reusable extension for applicable multi-step use cases:
     * 3a1. SoCcer Manager avoids division by zero and displays the default calculated value.
       Use case resumes at step 4.
 
-**Use case: UC11 - Batch import persons from a CSV file**  
+**Use case: UC12 - Batch import persons from a CSV file**  
 **MSS**
 
 1. Manager requests to batch import persons from a CSV file.
@@ -779,20 +785,21 @@ Reusable extension for applicable multi-step use cases:
     * 6a1. SoCcer Manager shows a summary indicating that all rows were skipped.
       Use case ends.
 
-**Use case: UC12 - Add new training**  
+**Use case: UC13 - Add new training**  
 **MSS**
 
 1. Manager wants to record a new training session.
 2. Manager provides the name of the training session, date, and players that attended the training.
 3. SoCcer Manager checks that the players exist in the address book.
 4. SoCcer Manager adds the training session with the specified name, date, and players.
+   Use case ends.
 
 **Extensions**
 
 * 2a. Manager provides an attribute.
     * 2a1. SoCcer Manager checks that the attribute exists.
-    * 2a2. SoCcer Manager finds all the players with the attribute.
-      Use case resumes at step 3.
+      * 2a2. SoCcer Manager gets a list of all the players with the specified attribute.
+        Use case resumes at step 4.
 
 ### Non-Functional Requirements
 
@@ -805,12 +812,10 @@ Reusable extension for applicable multi-step use cases:
    typical laptop.
 5. All successful modifying commands should automatically save data to prevent loss of information.
 6. The application should prevent data corruption and handle unexpected shutdowns safely.
-7. A user with above-average typing speed should be able to complete common tasks faster using commands than using
-   mouse-driven interactions.
-8. The system should provide clear and actionable error messages when invalid input is entered.
-9. The application should not crash during normal usage and should handle invalid inputs gracefully.
-10. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be
-    added without major refactoring.
+7. The system should provide clear and actionable error messages when invalid input is entered.
+8. The application should not crash during normal usage and should handle invalid inputs gracefully.
+9. The codebase should be modular and structured to allow new features (e.g., attendance or finance tracking) to be
+   added without major refactoring.
 
 ### Glossary
 
@@ -862,13 +867,19 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: List all persons using the `list` command. Ensure multiple persons are in the list.
 
     2. Test case: `delete 1`<br>
-       Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
-       Timestamp in the status bar is updated.
+       Expected: The first contact is selected for deletion and a confirmation prompt is shown. No person is deleted
+       yet. The status bar timestamp is not updated.
 
     3. Test case: `delete 0`<br>
-       Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+       Expected: No person is deleted immediately. If a person with the literal name `0` exists, that person is
+       selected for deletion and a confirmation prompt is shown. Otherwise, an error message reports that no persons
+       match `0`. Status bar remains the same.
 
-    4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+    4. Test case: `delete 1`, then `y`<br>
+       Expected: The first contact is deleted from the list. Details of the deleted contact are shown in the status
+       message. Timestamp in the status bar is updated.
+
+    5. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
 
 ### Attributes (catalog + assignment)
@@ -1010,10 +1021,10 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
 
     2. Test case: `sort by/goals`<br>
-       Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
+       Expected: Only players are shown, ordered by goals in ascending order.
 
     3. Test case: `sort by/wins desc`<br>
-       Expected: Persons are ordered by wins in descending order.
+       Expected: Only players are shown, ordered by wins in descending order.
 
     4. Test case: `sort r/player by/losses`<br>
        Expected: Only players are shown, ordered by losses in ascending order.
@@ -1080,6 +1091,7 @@ testers are expected to do more *exploratory* testing.
    The current filter command supports role, team, status, position, and numeric player stats, but not tags. We plan to add t/TAG support so users can combine tag-based filtering with existing structured criteria, e.g. filter r/player t/captain st/Active.
 7. **Allow sorting by additional player performance metrics:**
    The current sort command supports only goals, wins, and losses for player performance sorting. We plan to extend it to support other player metrics already tracked or derived in the product, such as win rate or average goals per game, so users can rank players using a broader view of performance.
+8. **Prevent players from being assigned to multiple events that occur at the same time** Currently, two (and more) events can be created at the same date and time, and players can be assigned to both events. We plan to add support for checking if there is any overlap in dates and times so that players cannot be assigned to multiple events happening at the same time.
 --------------------------------------------------------------------------------------------------------------------
 
 ## Appendix: Effort

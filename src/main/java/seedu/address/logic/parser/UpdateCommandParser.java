@@ -46,6 +46,10 @@ public class UpdateCommandParser implements Parser<UpdateCommand> {
         try {
             value = Integer.parseInt(splitArgs[ARG_VALUE]);
         } catch (NumberFormatException e) {
+            if (splitArgs[ARG_VALUE].matches("-?\\d+")) {
+                // for values more than integer limit
+                throw new ParseException(UpdateCommand.MESSAGE_STAT_OVERFLOW);
+            }
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, UpdateCommand.MESSAGE_USAGE));
         }

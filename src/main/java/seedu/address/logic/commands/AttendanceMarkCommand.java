@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PLAYER;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -70,9 +71,11 @@ public class AttendanceMarkCommand extends Command {
         EventPlayerList updatedAttendees =
                 new EventPlayerList(new HashSet<>(eventToMark.getAttendedPlayerList().asUnmodifiableObservableList()));
 
+        List<String> actualPlayerNames = new ArrayList<>();
+
         for (String s : playerNames) {
             Optional<Person> personToMark = model.getAddressBook().getPersonList().stream()
-                    .filter(p -> p.getName().fullName.equals(s))
+                    .filter(p -> p.getName().toString().equalsIgnoreCase(s))
                     .findFirst();
 
             if (personToMark.isPresent()) {
@@ -85,6 +88,7 @@ public class AttendanceMarkCommand extends Command {
                         throw new CommandException(String.format(MESSAGE_ALREADY_MARKED + p.getName().fullName));
                     }
                     updatedAttendees.add(p);
+                    actualPlayerNames.add(p.getName().toString());
                 } else {
                     throw new CommandException(String.format(MESSAGE_PLAYER_NOT_FOUND + s));
                 }
@@ -102,6 +106,6 @@ public class AttendanceMarkCommand extends Command {
         model.setEvent(eventToMark, updatedEvent);
 
         return new CommandResult(String.format(MESSAGE_MARK_ATTENDANCE_SUCCESS,
-                String.join(", ", playerNames)));
+                String.join(", ", actualPlayerNames)));
     }
 }
