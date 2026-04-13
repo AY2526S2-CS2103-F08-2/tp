@@ -131,6 +131,7 @@ Notes:
 - Date must have format `yyyy-MM-dd HHmm`
 - Variable number of players can be added to the match, and must exist in the address book
 - Status, position and team are optional. If specified, will add all players that match ALL the parameters.
+- Warning: Currently, the app allows for players to be a part of multiple trainings/matches at the same time slot. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
 Examples:
 - `matchadd n/Manchester United d/2026-05-15 1600`
@@ -147,6 +148,7 @@ Notes:
 - Date must have format `yyyy-MM-dd HHmm`
 - Variable number of players can be added to the training session, and must exist in the address book
 - Status, position and team are optional. If specified, will add all players that match ALL the parameters.
+- Warning: Currently, the app allows for players to be a part of multiple trainings/matches at the same time slot. See [_Planned Enhancements_](DeveloperGuide.md#appendix-planned-enhancements)
 
 Examples:
 - `trainingadd n/Warm Up d/2026-05-15 1600`
