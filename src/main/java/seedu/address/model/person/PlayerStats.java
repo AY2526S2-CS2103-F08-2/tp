@@ -25,6 +25,7 @@ public class PlayerStats {
         this.goalsScored = toCopy.goalsScored;
         this.matchesWon = toCopy.matchesWon;
         this.matchesLost = toCopy.matchesLost;
+        this.matchesDrawn = toCopy.matchesDrawn;
     }
 
     public int getGoalsScored() {
