@@ -74,6 +74,10 @@ public class MainWindow extends UiPart<Stage> {
         // Center window at active screen
         primaryStage.centerOnScreen();
 
+        // Auto-size
+        primaryStage.setWidth(1000);
+        primaryStage.setHeight(1000);
+
         helpWindow = new HelpWindow();
     }
 
