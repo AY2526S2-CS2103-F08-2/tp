@@ -78,9 +78,9 @@ SoCcer Manager is a **desktop app for managing players and staff, optimized for 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for some commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for some commands that do not take in parameters (such as `help` and `exit`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.<br>
-  Some fixed-format commands such as `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
+  Some fixed-format commands such as `clear`, `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
@@ -239,6 +239,15 @@ Examples:
 * `sort by/wins desc`
 * `sort r/player by/goals desc`
 * `sort r/staff by/name desc`
+
+Multi-step examples:
+1. Run `list r/staff`.
+2. Run `sort by/status`.
+3. The roster remains sorted by `status` using the current visible list.
+
+1. Run `list r/staff`.
+2. Run `sort by/goals`.
+3. The view switches to players only, because `goals` is a player-only sort attribute.
 
 ### Filtering persons: `filter`
 
@@ -457,6 +466,18 @@ Examples:
 * `delete Bernice`, then `n` cancels deletion.
 * `delete Meier`, then `2`, then `y` deletes the 2nd matched person in the clash list.
 
+Step-by-step examples:
+1. To delete a single matched person:
+   Run `delete Bernice`.
+   If exactly one person matches, SoCcer Manager shows that person and asks for confirmation.
+   Type `y` to delete the person, or `n` to cancel.
+
+2. To delete when multiple persons match:
+   Run `delete Meier`.
+   If multiple persons match, SoCcer Manager shows a numbered clash list.
+   Type the clash index shown in the message, for example `2`.
+   After the person is selected, type `y` to confirm deletion or `n` to cancel.
+
 ### Deleting an event : `eventdelete`
 
 Format: `eventdelete INDEX`
@@ -483,11 +504,22 @@ Examples:
 * `deletebulk tm/Reserve Team`, then `y` deletes all persons assigned to `Reserve Team`.
 * `deletebulk st/Unavailable`, then `n` cancels the bulk deletion.
 
+Step-by-step example:
+1. Run `deletebulk tm/Reserve Team`.
+2. SoCcer Manager shows all matching persons in the message and in the current list.
+3. Review the affected persons before confirming.
+4. Type `y` to delete all shown matches, or `n` to cancel.
+
 ### Clearing all entries : `clear`
 
 Clears all persons and events from SoCcer Manager while keeping the default Team, Status, and Position catalogs.
 
 Format: `clear`
+
+Example:
+1. Run `clear`.
+2. Read the confirmation prompt.
+3. Type `y` to proceed or `n` to cancel.
 
 ### Exiting the program : `exit`
 

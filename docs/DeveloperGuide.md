@@ -395,8 +395,8 @@ to the filtered person list.
 * `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
   ordering stay aligned.
 * Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
-* Stat-based comparators read from `PlayerStats`; non-player entries are treated as stat value `0` so mixed lists can
-  still be sorted without special-case command failures.
+* Stat-based comparators read from `PlayerStats`; when the requested attribute is `goals`, `wins`, or `losses`,
+  `SortCommand` switches the visible list to players before applying the comparator.
 * `SortCommand` updates the filtered list predicate before applying the selected comparator in `ModelManager`.
 * `ModelManager` exposes the result through a `SortedList<Person>`, so the UI observes the sorted order directly.
 
@@ -623,7 +623,7 @@ otherwise)
 **Extensions**
 
 * 2a. Manager omits the role scope.
-    * 2a1. SoCcer Manager sorts all visible persons.  
+    * 2a1. For roster attributes, SoCcer Manager sorts the displayed list.  
       Use case resumes at step 3.
 
 * 2b. Manager specifies descending order.
@@ -635,7 +635,7 @@ otherwise)
       Use case ends.
 
 * 5a. Manager sorts by `goals`, `wins`, or `losses`.
-    * 5a1. SoCcer Manager limits the visible list to players before applying the sort.  
+    * 5a1. SoCcer Manager switches to the player-only list before applying the sort.
       Use case resumes at step 6.
 
 * 5b. Manager attempts `sort r/staff by/goals`, `sort r/staff by/wins`, or `sort r/staff by/losses`.
@@ -711,7 +711,7 @@ otherwise)
 5. SoCcer Manager validates that the resulting stat value satisfies the stat constraints.
 6. SoCcer Manager updates the player’s stat.
 7. SoCcer Manager refreshes the player details shown in the UI, including any calculated stats derived from the updated values.
-8. SoCcer Manager shows a success message.
+8. SoCcer Manager shows a success message.  
    Use case ends.
 
 **Extensions**
@@ -874,13 +874,19 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: List all persons using the `list` command. Ensure multiple persons are in the list.
 
     2. Test case: `delete 1`<br>
-       Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
-       Timestamp in the status bar is updated.
+       Expected: The first contact is selected for deletion and a confirmation prompt is shown. No person is deleted
+       yet. The status bar timestamp is not updated.
 
     3. Test case: `delete 0`<br>
-       Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+       Expected: No person is deleted immediately. If a person with the literal name `0` exists, that person is
+       selected for deletion and a confirmation prompt is shown. Otherwise, an error message reports that no persons
+       match `0`. Status bar remains the same.
 
-    4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+    4. Test case: `delete 1`, then `y`<br>
+       Expected: The first contact is deleted from the list. Details of the deleted contact are shown in the status
+       message. Timestamp in the status bar is updated.
+
+    5. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
 
 ### Attributes (catalog + assignment)
@@ -1022,10 +1028,10 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
 
     2. Test case: `sort by/goals`<br>
-       Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
+       Expected: Only players are shown, ordered by goals in ascending order.
 
     3. Test case: `sort by/wins desc`<br>
-       Expected: Persons are ordered by wins in descending order.
+       Expected: Only players are shown, ordered by wins in descending order.
 
     4. Test case: `sort r/player by/losses`<br>
        Expected: Only players are shown, ordered by losses in ascending order.
