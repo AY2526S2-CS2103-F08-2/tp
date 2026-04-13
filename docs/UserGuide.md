@@ -503,11 +503,22 @@ Imports contacts from a given CSV file. Expects the CSV file to follow format st
 
 **If headers are invalid, CSV importing will fail.**
 
-If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
+- If row contains invalid fields (eg: name contains symbols, duplicates), the entire row will be skipped, but the importing process will still continue.
 
-Then, the relevant error messages per row that failed to import will be displayed.
+- Then, the relevant error messages per row that failed to import will be displayed.
+- **For tags,** each tag is separated by a semicolon (`;`)
 
 Format: `importcsv`
+
+**Example CSV:**
+```csv
+name,role,address,phone,email,tags
+Alex Tan,player,12 Clementi Road,91234567,alex.tan@example.com,captain;striker
+Bernice Lim,staff,45 Jurong West Ave 3,92345678,bernice.lim@example.com,manager
+Cheryl Goh,player,89 Bukit Timah Road,93456789,cheryl.goh@example.com,midfielder
+Daniel Lee,player,101 Pasir Ris Drive 4,94567890,daniel.lee@example.com,defender
+Ethan Ong,staff,22 Tampines Street 11,95678901,ethan.ong@example.com,physio
+```
 
 ### Saving the data
 
