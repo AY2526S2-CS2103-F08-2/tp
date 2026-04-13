@@ -125,7 +125,7 @@ Examples:
 
 Adds a match to the address book.
 
-Format: `matchadd n/OPPONENT_NAME d/DATE [st/STATUS | pos/POSITION | tm/TEAM] [pl/PLAYER_NAME]…​`
+Format: `matchadd n/OPPONENT_NAME d/DATE [st/STATUS] [pos/POSITION] [tm/TEAM] [pl/PLAYER_NAME]…​`
 
 Notes: 
 - Date must have format `yyyy-MM-dd HHmm`
