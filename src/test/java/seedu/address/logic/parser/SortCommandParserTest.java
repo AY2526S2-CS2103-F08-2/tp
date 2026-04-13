@@ -75,6 +75,13 @@ public class SortCommandParserTest {
     }
 
     @Test
+    public void parse_sortAllPersonsByDraws_returnsSortCommand() throws Exception {
+        SortCommand expected = new SortCommand(PREDICATE_SHOW_ALL_PERSONS,
+                PersonSortAttribute.DRAWS, "players", false);
+        assertEquals(expected, parser.parse("by/draws"));
+    }
+
+    @Test
     public void parse_caseInsensitive_returnsSortCommand() throws Exception {
         SortCommand expected = new SortCommand(
                 new PersonHasRolePredicate(Role.STAFF), PersonSortAttribute.NAME, "staff", false);

@@ -229,11 +229,11 @@ The sequence diagram below illustrates the interaction flow using `execute("list
 The `filter` command is implemented as a predicate-based list narrowing operation.
 
 * `FilterCommandParser` parses optional role, team, status, and position criteria, together with optional numeric
-  comparisons for `goals`, `wins`, and `losses`.
+  comparisons for `goals`, `wins`, `losses`, and `draws`.
 * Parsed criteria are assembled into `PersonMatchesFilterPredicate`, which combines all supplied filters with
   AND semantics.
 * `FilterCommand` applies that predicate through `Model#updateFilteredPersonList(...)`.
-* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, or `losses` filters.
+* Stat comparisons only match players; non-player entries do not satisfy `goals`, `wins`, `losses`, or `draws` filters.
 
 The following sequence diagram illustrates `filter r/player pos/Forward goals/>10`.
 
@@ -414,7 +414,7 @@ The sequence diagram below shows the confirmed index-based delete path after the
 to the filtered person list.
 
 * `SortCommandParser` parses the scope (`r/player`, `r/staff`, or all persons), the `by/...` attribute
-  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, or `losses`), and the optional `desc` modifier.
+  (`name`, `email`, `team`, `status`, `position`, `goals`, `wins`, `losses`, or `draws`), and the optional `desc` modifier.
 * `PersonSortAttribute` centralizes the comparator for each supported sort key so parser validation and runtime
   ordering stay aligned.
 * Attribute-based comparators use case-insensitive ordering with name-based tie-breaking for predictable output.
@@ -1019,16 +1019,19 @@ testers are expected to do more *exploratory* testing.
     5. Test case: `filter wins/<3`<br>
        Expected: Only players with fewer than 3 wins are shown. Staff do not match this stat filter.
 
-    6. Test case: `filter goals/10`<br>
+    6. Test case: `filter draws/=2`<br>
+       Expected: Only players with exactly 2 draws are shown. Staff do not match this stat filter.
+
+    7. Test case: `filter goals/10`<br>
        Expected: Command is rejected with an invalid format message.
 
-    7. Test case: `filter tm/Nonexistent Team`<br>
+    8. Test case: `filter tm/Nonexistent Team`<br>
         Expected: Command is rejected because the team does not exist in the catalog. Filtered list is unchanged.
 
-    8. Test case: `filter st/Retired`<br>
+    9. Test case: `filter st/Retired`<br>
         Expected: Command is rejected because the status does not exist in the catalog. Filtered list is unchanged.
 
-    9. Test case: `filter pos/Coach`<br>
+    10. Test case: `filter pos/Coach`<br>
         Expected: Command is rejected because the position does not exist in the catalog. Filtered list is unchanged.
    
 2. Listing persons with attribute filters
@@ -1073,7 +1076,7 @@ testers are expected to do more *exploratory* testing.
 
 2. Sorting by player stats
 
-    1. Prerequisites: At least two players with different `goals`, `wins`, or `losses` values.
+    1. Prerequisites: At least two players with different `goals`, `wins`, `losses`, or `draws` values.
 
     2. Test case: `sort by/goals`<br>
        Expected: Persons are ordered by goals in ascending order. Non-player entries, if present, are treated as value `0`.
@@ -1084,10 +1087,13 @@ testers are expected to do more *exploratory* testing.
     4. Test case: `sort r/player by/losses`<br>
        Expected: Only players are shown, ordered by losses in ascending order.
 
-    5. Test case: `sort r/staff by/goals`<br>
+    5. Test case: `sort by/draws`<br>
+       Expected: Only players are shown, ordered by draws in ascending order.
+
+    6. Test case: `sort r/staff by/goals`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
-    6. Test case: `sort r/player by/unknown`<br>
+    7. Test case: `sort r/player by/unknown`<br>
        Expected: Command is rejected with an invalid format message. Filtered list order is unchanged.
 
 ### Saving data

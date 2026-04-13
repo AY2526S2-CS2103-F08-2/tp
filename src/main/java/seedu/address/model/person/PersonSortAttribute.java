@@ -30,6 +30,9 @@ public enum PersonSortAttribute {
             .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
     LOSSES("losses", Comparator
             .comparingInt((Person person) -> getStatValue(person, StatField.LOSSES))
+            .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER)),
+    DRAWS("draws", Comparator
+            .comparingInt((Person person) -> getStatValue(person, StatField.DRAWS))
             .thenComparing(person -> person.getName().fullName, String.CASE_INSENSITIVE_ORDER));
 
     private final String keyword;
@@ -52,7 +55,7 @@ public enum PersonSortAttribute {
      * Returns whether this sort attribute is based on player-only stats.
      */
     public boolean isPlayerStatAttribute() {
-        return this == GOALS || this == WINS || this == LOSSES;
+        return this == GOALS || this == WINS || this == LOSSES || this == DRAWS;
     }
 
     /**
