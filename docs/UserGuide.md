@@ -133,9 +133,9 @@ Notes:
 - Status, position and team are optional. If specified, will add all players that match ALL the parameters.
 
 Examples:
-- `matchadd n/Mancherster United d/2026-05-15 1600`
-- `matchadd n/Mancherster United d/2026-05-15 1600 pl/John Doe`
-- `matchadd n/Mancherster United d/2026-05-15 1600 st/Active tm/First Team`
+- `matchadd n/Manchester United d/2026-05-15 1600`
+- `matchadd n/Manchester United d/2026-05-15 1600 pl/John Doe`
+- `matchadd n/Manchester United d/2026-05-15 1600 st/Active tm/First Team`
 
 ### Adding a training session: `trainingadd`
 
