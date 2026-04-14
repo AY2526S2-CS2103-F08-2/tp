@@ -81,9 +81,9 @@ fast, SoCcer Manager can get your team management tasks done faster than traditi
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for some commands that do not take in parameters (such as `help` and `exit`) will be ignored.<br>
+* Extraneous parameters for some commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.<br>
-  Some fixed-format commands such as `clear`, `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
+  Some fixed-format commands such as `teamlist`, `statuslist`, and `positionlist` reject extra input instead.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
